@@ -17,7 +17,13 @@
 开发步骤
 
 1，使用vscode开发工具构建项目
+
 2，使用vite初始化项目名称为VeAdmin
+
 3，安装EsLint代码插件
+
 4，安装sass进行通用布局
-5，安装route
+
+5，安装vue-route并挂载
+
+6，开发登录login-user页面
