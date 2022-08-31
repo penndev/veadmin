@@ -9,6 +9,15 @@
 
 1, 使用 基于vue3的element 的大框架
 
-2, 使用 vite 而不是慢的 webpack
+2, 路由功能，用户登录退出功能，tab切换功能，keepactive功能，
 
-3, 尽量使用sass与ts语法来完成框架部分
+
+
+
+开发步骤
+
+1，使用vscode开发工具构建项目
+2，使用vite初始化项目名称为VeAdmin
+3，安装EsLint代码插件
+4，安装sass进行通用布局
+5，安装route
