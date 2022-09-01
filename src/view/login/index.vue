@@ -14,35 +14,38 @@
 
         </div>
 
-        <el-form ref="loginForm">
+        <el-form ref="loginForm" v-model="formData" >
           <el-form-item prop="username">
-            <el-input placeholder="请输入用户名" >
+            <el-input v-model="formData.username" placeholder="请输入用户名" >
               <template #suffix>
                 <span class="input-icon">
-                  <el-icon>
-                    <user />
-                  </el-icon>
+                  <el-icon><User /></el-icon>
                 </span>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input placeholder="请输入密码">
+            <el-input
+              placeholder="请输入密码"
+              v-model="formData.password"
+              :type="lock === 'lock' ? 'password' : 'text'"
+              >
               <template #suffix>
-                <span class="input-icon">
+                <a class="input-icon">
                   <el-icon>
                     <component
                       :is="lock"
                       @click="handleChangeLock"
                     />
                   </el-icon>
-                </span>
+                </a>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="captcha">
             <div class="vPicBox">
               <el-input
+                v-model="formData.captcha"
                 placeholder="请输入验证码"
                 style="width: 60%"
               />
@@ -56,7 +59,8 @@
           </el-form-item>
           <el-form-item>
             <el-button
-              type="primary" size="large" style="width: 46%; margin-left: 8%"
+              type="primary" size="large" style="width: 46%;"
+              @click="formSubmit(formData)"
             >
               登 录
             </el-button>
@@ -85,6 +89,16 @@ const handleChangeCaptcha = () => {
   captcha.value = 'https://t7.baidu.com/it/u=3676218341,3686214618&fm=193&f=GIF'
 }
 
+const formData = ref({
+  username: '',
+  password: '',
+  captcha: ''
+})
+
+const formSubmit = (form) => {
+  console.log(form.value)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -102,9 +116,6 @@ const handleChangeCaptcha = () => {
         padding-top: 4px;
     }
     .login_panle {
-        // position: absolute;
-        // top: 3vh;
-        // left: 2vw;
         width: 96vw;
         height: 100vh;
         background-color: rgba(255, 255, 255, .8);
@@ -112,7 +123,7 @@ const handleChangeCaptcha = () => {
         border-radius: 10px;
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: center;
         .login_panle_right {
             // background-image: url("@/assets/vue.svg");
             background-image: url("@/assets/logo-with-shadow.png");
@@ -182,10 +193,7 @@ const handleChangeCaptcha = () => {
         display: none;
     }
     .login_panle {
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
+        margin-left: 2vw;
     }
     .login_panle_form {
         width: 100%;
