@@ -1,3 +1,3 @@
 <template>
-    <h1>DashBoard</h1>
+    <h1>Icon</h1>
 </template>

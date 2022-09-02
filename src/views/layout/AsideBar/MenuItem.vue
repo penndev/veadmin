@@ -25,9 +25,7 @@
         </el-icon>
         <span>{{item.meta.title}}</span>
       </template>
-      <el-menu-item-group>
-        <MenuItem v-for="(item,index) in item.children" :key="index" :item="item" />
-      </el-menu-item-group>
+      <MenuItem v-for="(item,index) in item.children" :key="index" :item="item" />
     </el-sub-menu>
 
 </template>
