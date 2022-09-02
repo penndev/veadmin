@@ -3,6 +3,8 @@
 </template>
 <style lang="scss">
 html, body {
-  margin:0;
+  margin: 0;
+  border: 0;
+  padding: 0;
 }
 </style>
