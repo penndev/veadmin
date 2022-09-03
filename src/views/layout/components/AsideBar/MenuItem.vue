@@ -2,18 +2,19 @@
     <!-- <div v-if="item.children">{{item.children.length}}</div> -->
     <!-- 单个功能展示 -->
     <el-menu-item v-if="item.meta && !item.children" :index="item.path">
-      <template #title>
-        <el-icon v-if="item.meta.icon">
+      <el-icon v-if="item.meta.icon">
           <component :is="item.meta.icon" />
-        </el-icon>
+      </el-icon>
+      <template #title>
         <span>{{item.meta.title}}</span>
       </template>
     </el-menu-item>
+
     <el-menu-item v-else-if="item.children && item.children.length == 1" :index="item.path">
+      <el-icon v-if="item.children[0].meta.icon">
+        <component :is="item.children[0].meta.icon" />
+      </el-icon>
       <template #title>
-        <el-icon v-if="item.children[0].meta.icon">
-          <component :is="item.children[0].meta.icon" />
-        </el-icon>
         <span>{{item.children[0].meta.title}}</span>
       </template>
     </el-menu-item>

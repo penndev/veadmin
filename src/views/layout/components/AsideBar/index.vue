@@ -3,6 +3,7 @@
       <el-menu
         unique-opened
         :collapse="collapse"
+        :collapse-transition="false"
         :background-color="variables.sidebarBgcolor"
         :text-color="variables.sidebarColor"
         :router="true"
@@ -17,3 +18,9 @@ import MenuItem from './MenuItem.vue'
 import variables from '@/styles/variables.module.scss'
 defineProps(['routes', 'collapse'])
 </script>
+
+<style scoped>
+.el-menu {
+  border: 0;
+}
+</style>

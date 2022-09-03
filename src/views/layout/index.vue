@@ -1,28 +1,33 @@
 <template>
     <el-container class="ea-layout">
-      <el-aside class="ea-aside">
-          <div class="logo" >
+      <el-aside class="ea-aside" :class="{'ea-aside--collapse': layout.collapse }" >
+          <div class="logo "    >
             <img class="logoimg" src="@/assets/logo.svg">
-            <h2 v-if="!collapse" class="logotitle" > {{ $env.VITE_NAME }} </h2>
+            <h2 v-if="!layout.collapse" class="logotitle" > {{ $env.VITE_NAME }} </h2>
           </div>
-          <AsideBar :routes="routelist" :collapse="collapse" />
+          <AsideBar :routes="routelist" :collapse="layout.collapse" />
       </el-aside>
-
-      <el-main class="ea-main">
-        <router-view></router-view>
-      </el-main>
+      <el-container>
+        <el-header class="ea-header">
+          <NavBar  v-model:collapse="layout.collapse" />
+        </el-header>
+        <el-main class="ea-main">
+          <router-view></router-view>
+        </el-main>
+      </el-container>
 
     </el-container>
 </template>
 
 <script setup>
+import { AsideBar, NavBar } from './components'
 
 import { resolve } from 'path'
-import { ref } from 'vue'
-import router from '@/route'
-import AsideBar from './AsideBar/index.vue'
-// 收起状态
-const collapse = ref(false)
+import router from '@/router'
+
+import layoutStoe from '@/stores/layout'
+
+const layout = layoutStoe()
 
 // 格式化路由数据
 const routerAll = (routes) => {
@@ -39,9 +44,7 @@ const routerAll = (routes) => {
   }
   return routelist
 }
-
 const routelist = routerAll(router.options.routes)
-
 </script>
 
 <style lang="scss" scoped>
@@ -50,35 +53,48 @@ const routelist = routerAll(router.options.routes)
 .ea-layout{
     display: flex;
     justify-content:space-between;
-    // background-color: var(--ve-backgound-color);
+
     .ea-aside{
-      width: 220px;
+      width: 200px;
       text-align: center;
       background-color: $sidebarBgcolor;
-
-        height: 100vh;
-        .logo {
-          .logoimg {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            background: #fff;
-            border-radius: 50%;
-            padding: 3px;
-          }
-          .logotitle {
-            display: inline-block;
-            color: #fff;
-            font-weight: 600;
-            font-size: 20px;
-            vertical-align: middle;
-            padding-left: 10px;
+      height: 100vh;
+      .logo {
+        background: $sidebarBgcolor;
+        height: 60px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        color: #fff;
+        .logoimg {
+          width: 30px;
+          height: 30px;
+          background: #fff;
+          border-radius: 50%;
         }
+        .logotitle {
+          width: auto;
+          display: inline-block;
+          font-weight: 600;
+          font-size: 20px;
+          padding-left: 10px;
         }
-
+      }
+      .el-menu {
+        border: 0;
+      }
     }
+    .ea-aside--collapse {
+      width: auto !important;
+    }
+    .ea-header {
+      height: 60px;
+      margin-bottom: 1px;
+    }
+
     .ea-main{
       width: auto !important;
+      background-color: $mainBgcolor;
     }
 }
 
