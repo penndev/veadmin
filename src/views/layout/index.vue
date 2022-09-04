@@ -15,6 +15,8 @@
         <el-header class="ea-header">
           <NavBar  v-model:collapse="layout.collapse" :breadcrumb="breadcrumb" />
         </el-header>
+        <HistoryBar class="ea-history" />
+
         <el-main class="ea-main">
           <router-view></router-view>
         </el-main>
@@ -24,7 +26,7 @@
 </template>
 
 <script setup>
-import { AsideBar, NavBar } from './components'
+import { AsideBar, NavBar, HistoryBar } from './components'
 import { layoutStoe } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -45,6 +47,8 @@ watch(route, () => {
 const router = useRouter()
 const routelist = router.options.routes
 const routerActive = ref(route.path)
+
+// console.log(router.options)
 
 </script>
 
@@ -88,14 +92,18 @@ const routerActive = ref(route.path)
     .ea-aside--collapse {
       width: auto !important;
     }
-    .ea-header {
-      height: 60px;
-      margin-bottom: 1px;
+    // .ea-header {
+    // }
+    .ea-history{
+      border-top: 1px solid $mainBgcolor;
     }
 
     .ea-main{
       width: auto !important;
       background-color: $mainBgcolor;
+    }
+    .ea-container {
+      background-color: #fff;
     }
 }
 

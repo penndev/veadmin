@@ -39,10 +39,11 @@ defineEmits(['update:collapse'])
 <style lang="scss" scoped>
 
 .ea-nav {
-  padding: 0;
   display: flex;
   align-items: center;
   height: 100%;
+  padding: 0;
+
   .ea-collapse{
     font-size: 28px;
     line-height: 0;
