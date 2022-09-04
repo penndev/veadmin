@@ -27,3 +27,9 @@
 5，安装vue-route并挂载
 
 6，开发登录login-user页面
+
+7, 开发layout布局views文件夹
+
+8, 开发可开关侧边栏，并使用pania来管理状态
+
+9, 开发顶部面包屑和全屏功能 - ing

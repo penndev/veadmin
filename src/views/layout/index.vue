@@ -3,13 +3,17 @@
       <el-aside class="ea-aside" :class="{'ea-aside--collapse': layout.collapse }" >
           <div class="logo "    >
             <img class="logoimg" src="@/assets/logo.svg">
-            <h2 v-if="!layout.collapse" class="logotitle" > {{ $env.VITE_NAME }} </h2>
+            <h2 v-if="!layout.collapse" class="logotitle" > {{$env.VE_NAME}} </h2>
           </div>
-          <AsideBar :routes="routelist" :collapse="layout.collapse" />
+          <AsideBar
+            :routes="routelist"
+            :collapse="layout.collapse"
+            :active="routerActive"
+           />
       </el-aside>
       <el-container>
         <el-header class="ea-header">
-          <NavBar  v-model:collapse="layout.collapse" />
+          <NavBar  v-model:collapse="layout.collapse" :breadcrumb="breadcrumb" />
         </el-header>
         <el-main class="ea-main">
           <router-view></router-view>
@@ -21,30 +25,27 @@
 
 <script setup>
 import { AsideBar, NavBar } from './components'
+import { layoutStoe } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
 
-import { resolve } from 'path'
-import router from '@/router'
+import { watch, ref } from 'vue'
 
-import layoutStoe from '@/stores/layout'
-
+// 通用组件布局
 const layout = layoutStoe()
 
-// 格式化路由数据
-const routerAll = (routes) => {
-  const routelist = []
-  const formatRouteChildren = (children, basePath) => {
-    children.path = resolve(basePath, children.path)
-    if (children.children) {
-      for (const item of children.children) { formatRouteChildren(item, children.path) }
-    }
-  }
-  for (const item of routes) {
-    formatRouteChildren(item, '/')
-    routelist.push(item)
-  }
-  return routelist
-}
-const routelist = routerAll(router.options.routes)
+// 处理监听路由的面包屑
+const route = useRoute()
+const breadcrumb = ref(route.matched)
+watch(route, () => {
+  breadcrumb.value = route.matched
+  routerActive.value = route.path
+})
+
+// 处理侧边栏路由列表
+const router = useRouter()
+const routelist = router.options.routes
+const routerActive = ref(route.path)
+
 </script>
 
 <style lang="scss" scoped>

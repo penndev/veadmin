@@ -7,6 +7,7 @@
         :background-color="variables.sidebarBgcolor"
         :text-color="variables.sidebarColor"
         :router="true"
+        :default-active="active"
       >
         <MenuItem v-for="(item, index) in routes" :key="index" :item="item" />
       </el-menu>
@@ -16,7 +17,8 @@
 <script setup>
 import MenuItem from './MenuItem.vue'
 import variables from '@/styles/variables.module.scss'
-defineProps(['routes', 'collapse'])
+defineProps(['routes', 'collapse', 'active'])
+
 </script>
 
 <style scoped>

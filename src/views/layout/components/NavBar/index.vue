@@ -4,6 +4,15 @@
     <el-icon v-if="collapse" ><Expand /></el-icon>
     <el-icon v-else ><Fold /></el-icon>
   </div>
+
+  <el-breadcrumb class="ea-breadcrumb" separator-icon="ArrowRight">
+    <el-breadcrumb-item :to="{ path: '/' }"><strong>首页</strong></el-breadcrumb-item>
+    <template v-for="(item,index) in breadcrumb" :key="index">
+      <el-breadcrumb-item v-if="item.meta.title">{{item.meta.title}}</el-breadcrumb-item>
+    </template>
+
+  </el-breadcrumb>
+
   <el-dropdown class="ea-avatar">
       <div>
           <strong>管理员 </strong>
@@ -22,8 +31,9 @@
 </template>
 
 <script setup>
-defineProps(['collapse'])
+defineProps(['collapse', 'breadcrumb'])
 defineEmits(['update:collapse'])
+
 </script>
 
 <style lang="scss" scoped>
@@ -40,6 +50,10 @@ defineEmits(['update:collapse'])
   .ea-avatar{
     margin-left: auto;
   }
+  .ea-breadcrumb {
+    margin-left: 25px;
+  }
+
 }
 
 </style>

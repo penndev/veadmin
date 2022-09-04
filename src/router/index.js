@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { format } from '@/utils/route'
 
 import Layout from '@/views/layout/index.vue'
 
@@ -53,7 +54,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes: format(routes)
 })
 
 export default router
