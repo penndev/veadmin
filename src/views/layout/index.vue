@@ -15,7 +15,7 @@
         <el-header class="ea-header">
           <NavBar  v-model:collapse="layout.collapse" :breadcrumb="breadcrumb" />
         </el-header>
-        <HistoryBar class="ea-history" />
+        <HistoryBar class="ea-history" :active="routerActive" :history="history" :handleClicked="handleClicked" />
 
         <el-main class="ea-main">
           <router-view></router-view>
@@ -32,24 +32,39 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { watch, ref } from 'vue'
 
+const router = useRouter()
+const route = useRoute()
+watch(route, () => {
+  breadcrumb.value = route.matched
+  routerActive.value = route.path
+  history.value[route.path] = routeInfo(route)
+})
+
+// 处理历史标签页 解引用
+const routeInfo = (route) => {
+  return {
+    path: route.path,
+    name: route.name,
+    meta: route.meta
+  }
+}
+
 // 通用组件布局
 const layout = layoutStoe()
 
 // 处理监听路由的面包屑
-const route = useRoute()
 const breadcrumb = ref(route.matched)
-watch(route, () => {
-  breadcrumb.value = route.matched
-  routerActive.value = route.path
-})
 
 // 处理侧边栏路由列表
-const router = useRouter()
 const routelist = router.options.routes
 const routerActive = ref(route.path)
 
-// console.log(router.options)
-
+// 历史标签栏
+const history = ref({})
+history.value[route.path] = routeInfo(route)
+const handleClicked = (plan) => {
+  router.push(plan.paneName)
+}
 </script>
 
 <style lang="scss" scoped>

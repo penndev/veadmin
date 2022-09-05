@@ -1,18 +1,18 @@
 <template>
   <div class="ve-history">
-    <el-tabs type="card" closable>
-      <el-tab-pane>
-        <template #label>
-          <span> <i class="hot"></i> 仪表盘</span>
-        </template>
-      </el-tab-pane>
+    <el-tabs type="card" closable
+      v-model="selected"
+      @tab-click="handleClicked"
+    >
+      <template v-for="(item,key,index) in history" :key="index" >
 
-      <el-tab-pane>
-        <template #label>
-          <span> <i class="hot hot-active"></i> 仪表盘</span>
-        </template>
-      </el-tab-pane>
+        <el-tab-pane v-if="item.meta" :name="key">
+          <template #label>
+            <span> <i class="hot" /> {{item.meta.title}}</span>
+          </template>
+        </el-tab-pane>
 
+      </template>
     </el-tabs>
 
     <!--自定义右键菜单html代码-->
@@ -26,6 +26,13 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue'
+
+const props = defineProps(['active', 'history', 'handleClicked'])
+watch(props, () => {
+  selected.value = props.active
+})
+const selected = ref(props.active)
 
 </script>
 
