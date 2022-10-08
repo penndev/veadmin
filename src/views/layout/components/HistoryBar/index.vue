@@ -4,7 +4,7 @@
       v-model="selected"
       @tab-click="handleClicked"
     >
-      <template v-for="(item,key,index) in history" :key="index" >
+      <template v-for="(item,key,index) in layout.history" :key="index" >
 
         <el-tab-pane v-if="item.meta" :name="key">
           <template #label>
@@ -27,18 +27,48 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { layoutStoe } from '@/stores'
 
-const props = defineProps(['active', 'history', 'handleClicked'])
-watch(props, () => {
-  selected.value = props.active
+const layout = layoutStoe() // 通用组件布局
+const router = useRouter()
+const route = useRoute()
+
+watch(route, () => {
+  layout.history[route.path] = {
+    path: route.path,
+    name: route.name,
+    meta: route.meta
+  }
+  selected.value = route.path
 })
-const selected = ref(props.active)
+
+// 判断当前页面是否存在历史list里面 不存在则添加
+if (!(route.path in layout.history)) {
+  layout.history[route.path] = {
+    path: route.path,
+    name: route.name,
+    meta: route.meta
+  }
+}
+
+// 当前活动的plan
+const selected = ref(route.path)
+
+// 变更历史标签页。
+const handleClicked = (plan) => {
+  router.push(plan.paneName)
+}
 
 </script>
 
 <style lang="scss">
 
+@import '@/styles/variables.module.scss';
+
 .ve-history {
+  border-top: 1px solid $mainBgcolor;
+
   .el-tabs__header{
     margin: 0;
     .el-tabs__item.is-active {

@@ -15,8 +15,8 @@
         <el-header class="ea-header">
           <NavBar  v-model:collapse="layout.collapse" :breadcrumb="breadcrumb" />
         </el-header>
-        <HistoryBar class="ea-history" :active="routerActive" :history="history" :handleClicked="handleClicked" />
-
+        <!-- <HistoryBar class="ea-history" :active="routerActive" :history="history" :handleClicked="handleClicked" /> -->
+        <HistoryBar />
         <el-main class="ea-main">
           <router-view></router-view>
         </el-main>
@@ -62,9 +62,9 @@ const routerActive = ref(route.path)
 // 历史标签栏
 const history = ref({})
 history.value[route.path] = routeInfo(route)
-const handleClicked = (plan) => {
-  router.push(plan.paneName)
-}
+// const handleClicked = (plan) => {
+//   router.push(plan.paneName)
+// }
 </script>
 
 <style lang="scss" scoped>
