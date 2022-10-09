@@ -3,6 +3,7 @@
     <el-tabs type="card" closable
       v-model="selected"
       @tab-click="handleClicked"
+      @tab-remove="handleRemove"
     >
       <template v-for="(item,key,index) in layout.history" :key="index" >
 
@@ -14,14 +15,6 @@
 
       </template>
     </el-tabs>
-
-    <!--自定义右键菜单html代码-->
-    <!-- <ul v-show="true" class="contextmenu" >
-      <li> 关闭所有 </li>
-      <li> 关闭左侧 </li>
-      <li> 关闭右侧 </li>
-      <li> 关闭其他 </li>
-    </ul> -->
   </div>
 </template>
 
@@ -33,6 +26,7 @@ import { layoutStoe } from '@/stores'
 const layout = layoutStoe() // 通用组件布局
 const router = useRouter()
 const route = useRoute()
+const selected = ref(route.path) // 当前活动的plan select 会被watch捕获
 
 watch(route, () => {
   layout.history[route.path] = {
@@ -43,6 +37,17 @@ watch(route, () => {
   selected.value = route.path
 })
 
+// 点击跳转路由，
+const handleClicked = (plan) => {
+  router.push(plan.paneName)
+}
+
+// 点击移除某个历史
+const handleRemove = (TabPanelName) => {
+  // 从历史展示移除
+  delete layout.history[TabPanelName]
+}
+
 // 判断当前页面是否存在历史list里面 不存在则添加
 if (!(route.path in layout.history)) {
   layout.history[route.path] = {
@@ -50,14 +55,6 @@ if (!(route.path in layout.history)) {
     name: route.name,
     meta: route.meta
   }
-}
-
-// 当前活动的plan
-const selected = ref(route.path)
-
-// 变更历史标签页。
-const handleClicked = (plan) => {
-  router.push(plan.paneName)
 }
 
 </script>
