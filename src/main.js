@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
-
-// 引入组件
 import App from '@/App.vue'
-import router from '@/router'
-import stores from '@/stores'
-
-// 引入资源
+// import element icon source
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
+
+// import pania store
+import stores from '@/stores'
+
+// import router from '@/router' // import origin router
+import router from '@/router/permission' // import after permission router
 
 const app = createApp(App)
 

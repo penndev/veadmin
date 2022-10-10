@@ -22,7 +22,7 @@
         <el-dropdown-menu>
           <el-dropdown-item> 当前角色: Admin </el-dropdown-item>
           <el-dropdown-item icon="avatar" > 个人信息 </el-dropdown-item>
-          <el-dropdown-item icon="reading-lamp"> 登出 </el-dropdown-item>
+          <el-dropdown-item icon="reading-lamp" @click="handleLoginOut"> 登出 </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -31,18 +31,26 @@
 </template>
 
 <script setup>
-import { layoutStoe } from '@/stores'
-import { useRoute } from 'vue-router'
+import { permissionStoe, layoutStoe } from '@/stores'
+import { useRouter, useRoute } from 'vue-router'
+
 import { watch, ref } from 'vue'
 
 const layout = layoutStoe()
+const router = useRouter()
 const route = useRoute()
+const permission = permissionStoe()
 
 const breadcrumb = ref(route.matched)
 
 watch(route, () => {
   breadcrumb.value = route.matched
 })
+
+const handleLoginOut = () => {
+  permission.token = null
+  router.push({ name: 'login' })
+}
 
 </script>
 

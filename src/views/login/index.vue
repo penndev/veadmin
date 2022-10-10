@@ -74,8 +74,13 @@
 </template>
 
 <script setup>
-
+import { permissionStoe } from '@/stores'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+
+// 处理用户登录成功后的操作
+const permission = permissionStoe()
+const router = useRouter()
 
 // 密码
 const lock = ref('lock')
@@ -86,7 +91,7 @@ const handleChangeLock = () => {
 // 图片验证码
 const captcha = ref('https://img0.baidu.com/it/u=2973059902,1235913705&fm=253&fmt=auto?w=240&h=120')
 const handleChangeCaptcha = () => {
-  captcha.value = 'https://t7.baidu.com/it/u=3676218341,3686214618&fm=193&f=GIF'
+  captcha.value = ''
 }
 
 const formData = ref({
@@ -96,7 +101,10 @@ const formData = ref({
 })
 
 const formSubmit = (form) => {
-  console.log(form.value)
+  console.log(form)
+  // 登录成功后需要处理的操作。
+  permission.token = 'dev'
+  router.push('/')
 }
 
 </script>

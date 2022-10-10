@@ -4,6 +4,7 @@ import { format } from '@/utils/route'
 import Layout from '@/views/layout/index.vue'
 
 const routes = [
+
   {
     path: '/',
     component: Layout,
@@ -45,11 +46,14 @@ const routes = [
     name: 'Icon',
     meta: { title: '图标', icon: 'PictureRounded' }
   },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index.vue')
-  }
 
+  // 以下路由必须固定存在
+  {
+    name: 'login',
+    path: '/login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { white: true }
+  }
 ]
 
 const router = createRouter({
