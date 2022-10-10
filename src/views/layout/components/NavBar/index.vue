@@ -1,7 +1,7 @@
 <template>
 <el-main class="ea-nav">
-  <div class="ea-collapse" @click="$emit('update:collapse', !collapse)" >
-    <el-icon v-if="collapse" ><Expand /></el-icon>
+  <div class="ea-collapse" @click="$emit('update:collapse', !layout.collapse)" >
+    <el-icon v-if="layout.collapse" ><Expand /></el-icon>
     <el-icon v-else ><Fold /></el-icon>
   </div>
 
@@ -31,8 +31,18 @@
 </template>
 
 <script setup>
-defineProps(['collapse', 'breadcrumb'])
-defineEmits(['update:collapse'])
+import { layoutStoe } from '@/stores'
+import { useRoute } from 'vue-router'
+import { watch, ref } from 'vue'
+
+const layout = layoutStoe()
+const route = useRoute()
+
+const breadcrumb = ref(route.matched)
+
+watch(route, () => {
+  breadcrumb.value = route.matched
+})
 
 </script>
 

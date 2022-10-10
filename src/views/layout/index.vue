@@ -5,17 +5,12 @@
             <img class="logoimg" src="@/assets/logo.svg">
             <h2 v-if="!layout.collapse" class="logotitle" > {{$env.VE_NAME}} </h2>
           </div>
-          <AsideBar
-            :routes="routelist"
-            :collapse="layout.collapse"
-            :active="routerActive"
-           />
+          <AsideBar />
       </el-aside>
       <el-container>
         <el-header class="ea-header">
-          <NavBar  v-model:collapse="layout.collapse" :breadcrumb="breadcrumb" />
+          <NavBar   />
         </el-header>
-        <!-- <HistoryBar class="ea-history" :active="routerActive" :history="history" :handleClicked="handleClicked" /> -->
         <HistoryBar />
         <el-main class="ea-main">
           <router-view></router-view>
@@ -28,43 +23,10 @@
 <script setup>
 import { AsideBar, NavBar, HistoryBar } from './components'
 import { layoutStoe } from '@/stores'
-import { useRoute, useRouter } from 'vue-router'
-
-import { watch, ref } from 'vue'
-
-const router = useRouter()
-const route = useRoute()
-watch(route, () => {
-  breadcrumb.value = route.matched
-  routerActive.value = route.path
-  history.value[route.path] = routeInfo(route)
-})
-
-// 处理历史标签页 解引用
-const routeInfo = (route) => {
-  return {
-    path: route.path,
-    name: route.name,
-    meta: route.meta
-  }
-}
 
 // 通用组件布局
 const layout = layoutStoe()
 
-// 处理监听路由的面包屑
-const breadcrumb = ref(route.matched)
-
-// 处理侧边栏路由列表
-const routelist = router.options.routes
-const routerActive = ref(route.path)
-
-// 历史标签栏
-const history = ref({})
-history.value[route.path] = routeInfo(route)
-// const handleClicked = (plan) => {
-//   router.push(plan.paneName)
-// }
 </script>
 
 <style lang="scss" scoped>
