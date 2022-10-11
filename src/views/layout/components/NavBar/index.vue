@@ -1,6 +1,6 @@
 <template>
 <el-main class="ea-nav">
-  <div class="ea-collapse" @click="$emit('update:collapse', !layout.collapse)" >
+  <div class="ea-collapse" @click="handleCollapse" >
     <el-icon v-if="layout.collapse" ><Expand /></el-icon>
     <el-icon v-else ><Fold /></el-icon>
   </div>
@@ -50,6 +50,10 @@ watch(route, () => {
 const handleLoginOut = () => {
   permission.token = null
   router.push({ name: 'login' })
+}
+
+const handleCollapse = () => {
+  layout.collapse = !layout.collapse
 }
 
 </script>
