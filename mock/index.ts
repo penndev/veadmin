@@ -19,6 +19,16 @@ router.any("/captcha", (req,res,next)=>{
   res.end(result)
 })
 
+router.any("/login", (req,res,next)=>{
+
+  let result = JSON.stringify( Mock.mock({
+    "token":  /[a-zA-Z0-9]{18}/
+  }))
+  res.end(result)
+})
+
+
+
 
 // 导出mock路由组
 export const mockPlugin = () => ({

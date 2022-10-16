@@ -81,8 +81,8 @@
 import { permissionStoe } from '@/stores'
 import { useRouter } from 'vue-router'
 import { ref, reactive } from 'vue'
-
 import { getCaptcha } from '@/apis/captcha'
+import { postLogin } from '@/apis/login'
 import { ElMessage } from 'element-plus'
 
 // 密码展示效果
@@ -133,9 +133,10 @@ const router = useRouter()
 const formSubmit = () => {
   loginForm.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
-      console.log(validate, formData)
-      permission.token = 'dev'
-      router.push('/')
+      postLogin(formData).then((result) => {
+        permission.token = result.token
+        router.push('/')
+      })
     } else {
       ElMessage.error('请输入正确的数据！')
     }
