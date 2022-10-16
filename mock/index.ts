@@ -1,41 +1,23 @@
-import { ViteDevServer, Connect } from "vite"
-import * as http from 'node:http';
+import { ViteDevServer } from "vite"
+import { router } from './base'
+ 
+import mockJs from 'mockjs'
+const Mock = mockJs as any
 
-type Service = [req: Connect.IncomingMessage, res: http.ServerResponse, next: Connect.NextFunction]
 
-type CallRoute = (
-  // s :Service
-  req: Connect.IncomingMessage,
-  res: http.ServerResponse,
-  next: Connect.NextFunction
-) => void
-
-class Route {
-  service: Service
-  routerlist:CallRoute[] = []
-  any(route:string,func:CallRoute){
-    this.routerlist[route] = func
-  }
-  match(s:string){
-    let callback:CallRoute = this.routerlist[s]
-    if(callback == undefined){
-      this.service[1].end(s + " | 404")
-      return
-    }
-    callback(...this.service)
-  }
-  setService(s:Service){
-    this.service = s
-    this.match(s[0].url)
-  }
-}
-
-const router = new Route()
 router.any("/version", (req,res,next) =>{
   res.end("0.0.1")
 })
 
-
+router.any("/captcha", (req,res,next)=>{
+  let uuid = Mock.Random.guid()
+  let image = Mock.Random.dataImage('200x100',"1234")
+  let result = JSON.stringify({
+    "captchaID": uuid,
+    "captchaURL": image
+  })
+  res.end(result)
+})
 
 
 // 导出mock路由组

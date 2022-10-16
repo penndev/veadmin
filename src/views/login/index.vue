@@ -14,7 +14,11 @@
 
         </div>
 
-        <el-form ref="loginForm" v-model="formData" >
+        <el-form
+          ref="loginForm"
+          :rules="rules"
+          :model="formData"
+        >
           <el-form-item prop="username">
             <el-input v-model="formData.username" placeholder="请输入用户名" >
               <template #suffix>
@@ -60,7 +64,7 @@
           <el-form-item>
             <el-button
               type="primary" size="large" style="width: 46%;"
-              @click="formSubmit(formData)"
+              @click="formSubmit"
             >
               登 录
             </el-button>
@@ -76,49 +80,76 @@
 <script setup>
 import { permissionStoe } from '@/stores'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 
-// 处理用户登录成功后的操作
-const permission = permissionStoe()
-const router = useRouter()
+import { getCaptcha } from '@/apis/captcha'
+import { ElMessage } from 'element-plus'
 
-// 密码
+// 密码展示效果
 const lock = ref('lock')
 const handleChangeLock = () => {
   lock.value = lock.value === 'lock' ? 'unlock' : 'lock'
 }
 
 // 图片验证码
-const captcha = ref('https://img0.baidu.com/it/u=2973059902,1235913705&fm=253&fmt=auto?w=240&h=120')
+const captcha = ref('')
 const handleChangeCaptcha = () => {
-  captcha.value = ''
+  getCaptcha().then((result) => {
+    captcha.value = result.captchaURL
+    formData.captchaId = result.captchaId
+  })
 }
+handleChangeCaptcha()
 
-const formData = ref({
+// 用户登录验证相关
+
+const formData = reactive({
   username: '',
   password: '',
+  captchaId: '',
   captcha: ''
 })
 
-const formSubmit = (form) => {
-  console.log(form)
-  // 登录成功后需要处理的操作。
-  permission.token = 'dev'
-  router.push('/')
+const rules = reactive({
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '密码最少为6个字符', trigger: 'blur' }
+  ],
+  captcha: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { len: 4, message: '验证码长度为四位', trigger: 'change' }
+  ]
+})
+
+// 处理用户登录相关逻辑
+const loginForm = ref(null)
+const permission = permissionStoe()
+const router = useRouter()
+
+const formSubmit = () => {
+  loginForm.value.validate((validate) => {
+    if (validate) { // 判断表单是否验证通过。
+      console.log(validate, formData)
+      permission.token = 'dev'
+      router.push('/')
+    } else {
+      ElMessage.error('请输入正确的数据！')
+    }
+  })
 }
 
 </script>
 
 <style lang="scss" scoped>
 #userLayout {
-    // margin: 0;
-    // padding: 0;
     background-image: url("@/assets/login/login_background.jpg");
     background-size: cover;
     width: 100%;
     height: 100%;
-    // border: 3px solid red;
-    // position: relative;
     .input-icon{
         padding-right: 6px;
         padding-top: 4px;
@@ -175,23 +206,6 @@ const formSubmit = (form) => {
                 }
             }
         }
-        // .login_panle_foot {
-        //     position: absolute;
-        //     bottom: 20px;
-        //     .links {
-        //         display: flex;
-        //         align-items: center;
-        //         justify-content: space-between;
-        //         .link-icon {
-        //             width: 30px;
-        //             height: 30px;
-        //         }
-        //     }
-        //     .copyright {
-        //         color: #777777;
-        //         margin-top: 5px;
-        //     }
-        // }
     }
 }
 
