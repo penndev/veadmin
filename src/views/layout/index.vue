@@ -79,9 +79,7 @@ const layout = layoutStoe()
       width: auto !important;
       background-color: $mainBgcolor;
     }
-    .ea-container {
-      background-color: #fff;
-    }
+
 }
 
 </style>

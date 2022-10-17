@@ -18,8 +18,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      'path': 'path-browserify',
+      path: 'path-browserify'
     }
   },
-  envPrefix: ['VITE','VE']
+  envPrefix: ['VITE', 'VE']
 })
