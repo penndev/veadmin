@@ -1,7 +1,7 @@
 <template>
     <!-- <div v-if="item.children">{{item.children.length}}</div> -->
     <!-- 单个功能展示 -->
-    <el-menu-item v-if="item.meta && !item.children" :index="item.path">
+    <el-menu-item v-if="item.meta && !item.children && item.meta.hidden != true" :index="item.path">
       <el-icon v-if="item.meta.icon">
           <component :is="item.meta.icon" />
       </el-icon>

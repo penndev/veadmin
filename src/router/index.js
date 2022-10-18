@@ -52,7 +52,7 @@ const routes = [
     name: 'login',
     path: '/login',
     component: () => import('@/views/login/index.vue'),
-    meta: { white: true }
+    meta: { white: true, hidden: true }
   }
 ]
 

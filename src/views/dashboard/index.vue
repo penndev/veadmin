@@ -63,7 +63,7 @@
   </el-row>
 
   <el-container class="ea-container">
-    <h1>DashBoard -> 仪表盘欢迎你访问</h1>
+    <h1>图表分析</h1>
   </el-container>
 </template>
 
@@ -153,6 +153,11 @@
       }
     }
   }
+}
+
+.ea-container {
+  background-color: #fff;
+  padding: 0 8px;
 }
 
 </style>
