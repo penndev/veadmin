@@ -63,9 +63,13 @@
   </el-row>
 
   <el-container class="ea-container">
-    <h1>图表分析</h1>
+    <TableCharts></TableCharts>
   </el-container>
 </template>
+
+<script setup>
+import TableCharts from './components/TableCharts.vue'
+</script>
 
 <style lang="scss" scoped>
 .panel-group {
