@@ -62,9 +62,9 @@
     </el-col>
   </el-row>
 
-  <el-container class="ea-container">
+  <el-main class="main-charts">
     <TableCharts></TableCharts>
-  </el-container>
+  </el-main>
 </template>
 
 <script setup>
@@ -159,7 +159,7 @@ import TableCharts from './components/TableCharts.vue'
   }
 }
 
-.ea-container {
+.main-charts {
   background-color: #fff;
   padding: 0 8px;
 }
