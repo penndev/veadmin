@@ -1,5 +1,6 @@
 <template>
-  <el-row style="padding-top: 12px">
+  <!--  -->
+  <el-row style="margin-bottom: 12px;" :gutter="20">
     <el-col :span="12">
       <div ref="sharechart" class="chart"></div>
     </el-col>
@@ -23,7 +24,6 @@ import * as echarts from 'echarts'
 
 const sharechart = ref(null)
 const detailchart = ref(null)
-
 const trendchart = ref(null)
 
 onMounted(() => {
@@ -42,7 +42,6 @@ onMounted(() => {
     }
     ]
   })
-  mySharechart.resize()
 
   const myDetail = echarts.init(detailchart.value)
   myDetail.setOption({
@@ -52,7 +51,6 @@ onMounted(() => {
     yAxis: {},
     series: [{ name: '销量', type: 'bar', data: [5, 20, 36, 10, 10, 20] }]
   })
-  myDetail.resize()
 
   const myTrendchart = echarts.init(trendchart.value)
   myTrendchart.setOption({
@@ -61,12 +59,23 @@ onMounted(() => {
     yAxis: { type: 'value' },
     series: [{ data: [120, 200, 150, 175, 80, 256, 254], type: 'line' }]
   })
-  myTrendchart.resize()
+
+  window.onresize = function () {
+    mySharechart.resize()
+    myDetail.resize()
+    myTrendchart.resize()
+  }
 })
 </script>
 
 <style scoped lang="scss">
 .chart {
   min-height: 300px;
+  background-color: #fff;
 }
+
+.el-row{
+  // background-color: #fff;
+}
+
 </style>
