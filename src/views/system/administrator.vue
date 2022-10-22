@@ -16,6 +16,8 @@
             </el-table-column>
         </el-table>
 
+        <br>
+
         <el-pagination background layout="total, sizes, prev, pager, next" :total="1000" />
 
     </el-main>
