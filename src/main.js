@@ -1,18 +1,16 @@
 import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
 import App from '@/App.vue'
 // import element icon source
+import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-// import pania store
-import stores from '@/stores'
+import stores from '@/stores' // import pania store
 
-// import router from '@/router' // import origin router
 import router from '@/router/permission' // import after permission router
 
 const app = createApp(App)
-
 app.config.globalProperties.$env = import.meta.env
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -21,6 +19,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(router)
 app.use(stores)
-app.use(ElementPlus)
+app.use(ElementPlus, {
+  locale: zhCn
+})
 
 app.mount('#app')
