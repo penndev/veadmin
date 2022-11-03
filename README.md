@@ -24,6 +24,15 @@ var Canvas = require('canvas')
 canvas = new Canvas.createCanvas()
 ```
 
+## 发布到githu page
+
+
+git checkout -b gh-pages
+npm run build
+git add -f dist
+git commit -m 'update page'
+git subtree push --prefix dist origin gh-pages
+
 ### 开发过程感悟
 
 - 组件的功能回归于组件，组件方面的事情尽量组件内部完成，不要在父组件做太多事情。造成父组件文件过大，内容繁杂。

@@ -81,9 +81,10 @@
 import { permissionStoe } from '@/stores'
 import { useRouter } from 'vue-router'
 import { ref, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+// import 接口
 import { getCaptcha } from '@/apis/captcha'
 import { postLogin } from '@/apis/login'
-import { ElMessage } from 'element-plus'
 
 // 密码展示效果
 const lock = ref('lock')

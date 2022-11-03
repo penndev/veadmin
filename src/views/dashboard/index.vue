@@ -11,7 +11,7 @@
           <div class="card-panel-text">
             新增用户
           </div>
-          <span class="card-panel-num">102400</span>
+          <span class="card-panel-num">{{total1}}</span>
         </div>
       </div>
     </el-col>
@@ -26,7 +26,7 @@
           <div class="card-panel-text">
             未读消息
           </div>
-          <span class="card-panel-num">81212</span>
+          <span class="card-panel-num">{{total2}}</span>
         </div>
       </div>
     </el-col>
@@ -41,7 +41,7 @@
           <div class="card-panel-text">
             昨日营收
           </div>
-          <span class="card-panel-num">9280</span>
+          <span class="card-panel-num">{{total3}}</span>
         </div>
       </div>
     </el-col>
@@ -56,19 +56,33 @@
           <div class="card-panel-text">
             昨日销量
           </div>
-          <span class="card-panel-num">13600</span>
+          <span class="card-panel-num">{{total4}}</span>
         </div>
       </div>
     </el-col>
   </el-row>
 
-  <!-- <el-main class="main-charts"> -->
-    <TableCharts></TableCharts>
-  <!-- </el-main> -->
+  <TableCharts></TableCharts>
 </template>
 
 <script setup>
 import TableCharts from './components/TableCharts.vue'
+import { ref } from 'vue'
+
+// import 接口
+import { getDashboardTotal } from '@/apis/dashboard'
+
+const total1 = ref(0)
+const total2 = ref(0)
+const total3 = ref(0)
+const total4 = ref(0)
+getDashboardTotal().then((result) => {
+  total1.value = result.total1
+  total2.value = result.total2
+  total3.value = result.total3
+  total4.value = result.total4
+})
+
 </script>
 
 <style lang="scss" scoped>
@@ -158,10 +172,5 @@ import TableCharts from './components/TableCharts.vue'
     }
   }
 }
-
-// .main-charts {
-//   background-color: #fff;
-//   padding: 0 8px;
-// }
 
 </style>

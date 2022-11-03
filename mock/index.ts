@@ -1,33 +1,8 @@
 import { ViteDevServer } from "vite"
-import { router } from './base'
- 
-import mockJs from 'mockjs'
-const Mock = mockJs as any
+import "./login"
+import "./dashboard"
 
-
-router.any("/version", (req,res,next) =>{
-  res.end("0.0.1")
-})
-
-router.any("/captcha", (req,res,next)=>{
-  let uuid = Mock.Random.guid()
-  let image = Mock.Random.dataImage('200x100',"1234")
-  let result = JSON.stringify({
-    "captchaID": uuid,
-    "captchaURL": image
-  })
-  res.end(result)
-})
-
-router.any("/login", (req,res,next)=>{
-
-  let result = JSON.stringify( Mock.mock({
-    "token":  /[a-zA-Z0-9]{18}/
-  }))
-  res.end(result)
-})
-
-
+import { router } from "./base"
 
 
 // 导出mock路由组
