@@ -1,89 +1,166 @@
 <template>
 
-    <el-main style="background-color:#fff">
+  <div>
+    <el-form :inline="true">
+      <el-form-item label="管理员">
+        <el-input placeholder="管理员名称" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="search">查询</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 
-        <div>
-            <el-button type="primary" :icon="Edit" />
-            <el-button type="primary" :icon="Share" />
-            <el-button type="primary" :icon="Delete" />
-            <el-button type="primary" :icon="Search">Search</el-button>
-            <el-button type="primary">
-                Upload
-                <el-icon class="el-icon--right">
-                    <Upload />
-                </el-icon>
-            </el-button>
-        </div>
+  <el-main style="background-color:#fff">
 
-        <br>
+    <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
 
-        <el-table :data="tableData" style="width: 100%">
-            <el-table-column fixed prop="date" label="Date" width="150" />
-            <el-table-column prop="name" label="Name" width="120" />
-            <el-table-column prop="state" label="State" width="120" />
-            <el-table-column prop="city" label="City" width="120" />
-            <el-table-column prop="address" label="Address" width="600" />
-            <el-table-column prop="zip" label="Zip" width="120" />
-            <el-table-column fixed="right" label="Operations" width="120">
-                <template #default>
-                    <el-button link type="primary" size="small" @click="handleClick">Detail</el-button>
-                    <el-button link type="primary" size="small">Edit</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+    <br>
 
-        <br>
+    <el-table :data="table.data" style="width: 100%">
+      <el-table-column fixed prop="id" label="ID" width="50" />
+      <el-table-column prop="email" label="邮箱" width="240" />
+      <el-table-column prop="nickname" label="名称" width="160" />
+      <el-table-column prop="updated_at" label="最近更新" width="200" />
+      <el-table-column prop="created_at" label="创建日期" width="200" />
+      <el-table-column fixed="right" label="操作" width="120">
+        <template #default="scope">
+          <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
+          <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-        <el-pagination background layout="total, sizes, prev, pager, next" :total="1000" />
+    <br>
 
-    </el-main>
+    <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
+      @current-change="handleChangePage" @size-change="handleChangeLimit" />
+
+  </el-main>
+
+  <!-- 处理数据|新增编辑 -->
+  <el-dialog
+    :title="dialog.title"
+    :close-on-click-modal="false"
+    v-model="dialog.visible"
+    destroy-on-close close-on-press-escape
+    center
+  >
+
+    <el-form
+      ref="dialogRef"
+      label-width="80px"
+      :model="dialog.form"
+      :rules="dialog.formRule"
+    >
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="dialog.form.email" />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialog.visible = false">取消</el-button>
+        <el-button type="primary" @click="handleSubmitForm">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 
 </template>
 
-<script lang="ts" setup>
+<script setup>
+import { ref } from 'vue'
 
-import { Delete, Edit, Search, Share, Upload } from '@element-plus/icons-vue'
+// import api
+import { getSystemAdmin, postSystemAdmin, putSystemAdmin, deleteSystemAdmin } from '@/apis/system/administrator'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
-const handleClick = () => {
-  console.log('click')
+const table = ref({
+  total: 0,
+  query: {
+    limit: 20,
+    page: 1
+  },
+  data: []
+})
+const handleChangePage = (value) => {
+  table.value.query.page = value
+  handleTableData()
+}
+const handleChangeLimit = (value) => {
+  table.value.query.limit = value
+  handleTableData()
 }
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home'
+const handleTableData = () => {
+  getSystemAdmin(table.value.query).then((result) => {
+    table.value.data = result.list
+    table.value.total = result.total
+  })
+}
+
+// 新增编辑数据
+const dialogRef = ref(null)
+const dialog = ref({
+  visible: false,
+  title: 'dialog',
+  form: {},
+  formRule: {
+    email: [
+      { required: true, message: '邮箱', trigger: 'blur' },
+      { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    ]
   },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office'
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home'
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office'
-  }
-]
+  formAction: 'add' // add|edit
+})
+const handleDialogAdd = () => {
+  dialog.value.title = '创建数据'
+  dialog.value.visible = true
+  dialog.value.formAction = 'add'
+  dialog.value.form = {}
+}
+const handleDialogEdit = (row) => {
+  dialog.value.title = '创建数据'
+  dialog.value.visible = true
+  dialog.value.formAction = 'edit'
+  dialog.value.form = row
+}
+const handleDialogDelete = (id) => {
+  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteSystemAdmin({ id }).then((result) => {
+      ElMessage.warning(result)
+    })
+  })
+}
+
+const handleSubmitForm = () => {
+  // 提交数据
+  dialogRef.value.validate((validate) => {
+    if (validate) { // 判断表单是否验证通过。
+      if (dialog.value.formAction === 'add') {
+        postSystemAdmin(dialog.value.form).then((result) => {
+          dialog.value.visible = false
+          ElMessage.info(result)
+        })
+      } else if (dialog.value.formAction === 'edit') {
+        putSystemAdmin(dialog.value.form).then((result) => {
+          dialog.value.visible = false
+          ElMessage.info(result)
+        })
+        dialog.value.visible = false
+      } else {
+        ElMessage.info('提交错误')
+      }
+    } else {
+      ElMessage.error('请输入正确的数据！')
+    }
+  })
+}
+
+handleTableData()
+
 </script>

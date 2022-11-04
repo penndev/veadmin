@@ -1,6 +1,7 @@
 import { ViteDevServer } from "vite"
 import "./login"
 import "./dashboard"
+import "./system"
 
 import { router } from "./base"
 
