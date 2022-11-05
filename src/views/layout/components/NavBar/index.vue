@@ -10,10 +10,15 @@
     <template v-for="(item,index) in breadcrumb" :key="index">
       <el-breadcrumb-item v-if="item.meta.title">{{item.meta.title}}</el-breadcrumb-item>
     </template>
-
   </el-breadcrumb>
-
-  <el-dropdown class="ea-avatar">
+  <div class="ea-icon" @click="handleFullScreen">
+      <el-icon  v-if="!fullScreen"  title="打开全屏"><FullScreen/></el-icon>
+      <el-icon  v-else  title="关闭全屏">
+        <!-- <Crop /> -->
+        <FullScreen/>
+      </el-icon>
+  </div>
+  <el-dropdown>
       <div>
           <strong>管理员 </strong>
           <el-icon><arrow-down /></el-icon>
@@ -56,6 +61,17 @@ const handleCollapse = () => {
   layout.collapse = !layout.collapse
 }
 
+const fullScreen = ref(false)
+const handleFullScreen = () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen()
+    fullScreen.value = false
+  } else {
+    fullScreen.value = true
+    document.documentElement.requestFullscreen()
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -70,8 +86,11 @@ const handleCollapse = () => {
     font-size: 28px;
     line-height: 0;
   }
-  .ea-avatar{
+  .ea-icon{
     margin-left: auto;
+    font-size: 20px;
+    line-height: 0;
+    margin-right: 20px;
   }
   .ea-breadcrumb {
     margin-left: 25px;

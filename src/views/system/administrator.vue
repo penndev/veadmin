@@ -3,18 +3,17 @@
   <div>
     <el-form :inline="true">
       <el-form-item label="管理员">
-        <el-input placeholder="管理员名称" />
+        <el-input placeholder="管理员名称" v-model="table.query.name" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="search">查询</el-button>
+        <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
+        <el-button type="info" icon="Refresh" @click="handleTableRefresh">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 
   <el-main style="background-color:#fff">
-
     <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
-
     <br>
 
     <el-table :data="table.data" style="width: 100%">
@@ -79,10 +78,14 @@ const table = ref({
   total: 0,
   query: {
     limit: 20,
-    page: 1
+    page: 1,
+    name: null
   },
   data: []
 })
+const handleTableRefresh = (value) => {
+  table.value.query.name = null
+}
 const handleChangePage = (value) => {
   table.value.query.page = value
   handleTableData()
@@ -91,7 +94,6 @@ const handleChangeLimit = (value) => {
   table.value.query.limit = value
   handleTableData()
 }
-
 const handleTableData = () => {
   getSystemAdmin(table.value.query).then((result) => {
     table.value.data = result.list
@@ -136,7 +138,6 @@ const handleDialogDelete = (id) => {
     })
   })
 }
-
 const handleSubmitForm = () => {
   // 提交数据
   dialogRef.value.validate((validate) => {
