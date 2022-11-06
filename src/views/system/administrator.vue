@@ -16,8 +16,8 @@
     <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
     <br>
 
-    <el-table :data="table.data" style="width: 100%">
-      <el-table-column fixed prop="id" label="ID" width="50" />
+    <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
+      <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="email" label="邮箱" width="240" />
       <el-table-column prop="nickname" label="名称" width="160" />
       <el-table-column prop="updated_at" label="最近更新" width="200" />
@@ -79,6 +79,7 @@ const table = ref({
   query: {
     limit: 20,
     page: 1,
+    order: null,
     name: null
   },
   data: []
@@ -92,6 +93,16 @@ const handleChangePage = (value) => {
 }
 const handleChangeLimit = (value) => {
   table.value.query.limit = value
+  handleTableData()
+}
+const handleSortChange = ({ column, prop, order }) => {
+  let orderSymbol = ''
+  if (order === 'descending') {
+    orderSymbol = '-'
+  } else if (order === 'ascending') {
+    orderSymbol = '+'
+  }
+  table.value.query.order = orderSymbol + prop
   handleTableData()
 }
 const handleTableData = () => {
