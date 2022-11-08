@@ -4,7 +4,6 @@ import { format } from '@/utils/route'
 import Layout from '@/views/layout/index.vue'
 
 const routes = [
-
   {
     path: '/',
     component: Layout,
@@ -40,18 +39,27 @@ const routes = [
       }
     ]
   },
-  {
-    path: '/icon',
-    component: () => import('@/views/icon/index.vue'),
+  { // 处理外链
+    path: 'icon',
+    component: Layout,
     name: 'Icon',
-    meta: { title: '图标', icon: 'PictureRounded' }
+    meta: {
+      title: '图标',
+      icon: 'PictureRounded',
+      path: 'https://element-plus.org/zh-CN/component/icon.html#%E5%9B%BE%E6%A0%87%E9%9B%86%E5%90%88'
+    }
   },
-
   // 以下路由必须固定存在
   {
     name: 'login',
     path: '/login',
     component: () => import('@/views/login/index.vue'),
+    meta: { white: true, hidden: true }
+  },
+  {
+    name: 'notFound',
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/layout/404.vue'),
     meta: { white: true, hidden: true }
   }
 ]

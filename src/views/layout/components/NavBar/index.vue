@@ -13,10 +13,7 @@
   </el-breadcrumb>
   <div class="ea-icon" @click="handleFullScreen">
       <el-icon  v-if="!fullScreen"  title="打开全屏"><FullScreen/></el-icon>
-      <el-icon  v-else  title="关闭全屏">
-        <!-- <Crop /> -->
-        <FullScreen/>
-      </el-icon>
+      <el-icon  v-else  title="关闭全屏"><ArrowDown /></el-icon>
   </div>
   <el-dropdown>
       <div>

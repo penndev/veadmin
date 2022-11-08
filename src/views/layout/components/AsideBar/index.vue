@@ -36,7 +36,6 @@ const routes = router.options.routes
 watch(route, () => {
   active.value = route.path
 })
-
 </script>
 
 <style scoped>

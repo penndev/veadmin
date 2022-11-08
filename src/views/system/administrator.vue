@@ -14,8 +14,6 @@
 
   <el-main style="background-color:#fff">
     <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
-    <br>
-
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="email" label="邮箱" width="240" />

@@ -2,7 +2,6 @@ import router from '.'
 import { permissionStoe } from '@/stores'
 
 router.beforeEach(async (to, from, next) => {
-  // console.log(to, from)
   // 如果跳转路由是在白名单中则直接放行
   if (to.meta.white !== undefined && to.meta.white === true) {
     next()
@@ -16,7 +15,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 最后的结果则跳转到登录页面
-  console.log('未放行')
+  console.log('this router is not access [to],[from]', to, from)
   next({ name: 'login' })
 })
 
