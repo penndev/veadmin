@@ -39,6 +39,19 @@ const routes = [
       }
     ]
   },
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/example/index.vue'),
+        name: 'exampleIndex',
+        meta: { title: '示例列表', icon: 'Tickets' }
+      }
+    ]
+  },
   { // 处理外链
     path: 'icon',
     component: Layout,

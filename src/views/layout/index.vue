@@ -12,9 +12,18 @@
         <NavBar />
       </el-header>
       <HistoryBar />
-      <el-main class="ea-main">
-        <router-view></router-view>
-      </el-main>
+
+        <router-view
+          v-slot="{ Component }"
+        >
+          <el-main
+            class="ea-main"
+            v-loading="viewLoading.viewLoadingStatus"
+            :element-loading-text="viewLoading.viewLoadingText"
+          >
+            <component :is="Component" />
+          </el-main>
+        </router-view>
     </el-container>
 
   </el-container>
@@ -23,6 +32,8 @@
 <script setup>
 import { AsideBar, NavBar, HistoryBar } from './components'
 import { layoutStoe } from '@/stores'
+// 加载网络请求时要打开loading dialog 防止多操作
+import { viewLoading } from '@/stores/reactive'
 
 // 通用组件布局
 const layout = layoutStoe()
