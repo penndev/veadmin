@@ -24,7 +24,8 @@ canvas = new Canvas.createCanvas()
 ## 发布到githu page
 
 ```bash
-git checkout -b gh-pages
+git branch -d gh-pages 
+git checkout gh-pages
 npm run build
 git add -f dist
 git commit -m 'update page'
