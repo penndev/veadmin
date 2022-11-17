@@ -10,9 +10,6 @@
 1. 使用 基于vue3的element 的大框架
 
 2. 拥有后台管理的的基本功能
-    - 路由功能，验证路由权限
-    - 用户登录退出功能，结合路由验证
-    - mock 功能，进行前后端开发适配
 
 3. 是代码尽量简单与分离，适合个人开发者快速使用
 
@@ -26,12 +23,13 @@ canvas = new Canvas.createCanvas()
 
 ## 发布到githu page
 
-
+```bash
 git checkout -b gh-pages
 npm run build
 git add -f dist
 git commit -m 'update page'
 git subtree push --prefix dist origin gh-pages
+```
 
 ### 开发过程感悟
 

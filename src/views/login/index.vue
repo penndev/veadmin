@@ -97,7 +97,7 @@ const captcha = ref('')
 const handleChangeCaptcha = () => {
   getCaptcha().then((result) => {
     captcha.value = result.captchaURL
-    formData.captchaId = result.captchaId
+    formData.captchaID = result.captchaID
   })
 }
 handleChangeCaptcha()
@@ -107,7 +107,7 @@ handleChangeCaptcha()
 const formData = reactive({
   username: '',
   password: '',
-  captchaId: '',
+  captchaID: '',
   captcha: ''
 })
 
@@ -135,6 +135,10 @@ const formSubmit = () => {
   loginForm.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       postLogin(formData).then((result) => {
+        if (typeof result.token === 'undefined') {
+          ElMessage.error('登录失败，未获取到token！')
+          return
+        }
         permission.token = result.token
         router.push('/')
       })
