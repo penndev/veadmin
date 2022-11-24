@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { permissionStoe } from '@/stores'
 import { viewLoading } from '@/stores/reactive'
+import { ElMessage } from 'element-plus'
 
 const service = axios.create({
   baseURL: import.meta.env.VE_API_URL,
@@ -29,6 +30,21 @@ service.interceptors.response.use(
       viewLoading.viewLoadingStatus = false
     }
     return response.data
+  },
+  error => {
+    if (viewLoading.viewLoadingStatus === true) {
+      viewLoading.viewLoadingStatus = false
+    }
+    console.log('Request Error:', error)
+    switch (error.response.status) {
+      case 400:
+        ElMessage.error(error.response.data.message ?? error.response.data)
+        break
+      case 404:
+        ElMessage.error('接口未找到！ 404')
+        break
+    }
+    return Promise.reject(error)
   }
 )
 

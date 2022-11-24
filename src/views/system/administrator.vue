@@ -7,7 +7,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-        <el-button type="info" icon="Refresh" @click="handleTableRefresh">重置</el-button>
+        <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -82,7 +82,7 @@ const table = ref({
   },
   data: []
 })
-const handleTableRefresh = (value) => {
+const handleQueryRefresh = (value) => {
   table.value.query.name = null
 }
 const handleChangePage = (value) => {

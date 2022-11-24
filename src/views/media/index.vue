@@ -8,20 +8,23 @@
         <el-form-item>
           <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
           <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+          <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-main style="background-color:#fff">
-      <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
+      <upload/>
       <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
         <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
-        <el-table-column prop="email" label="邮箱" width="240" />
-        <el-table-column prop="nickname" label="名称" width="160" />
-        <el-table-column prop="updated_at" label="最近更新" width="200" />
-        <el-table-column prop="created_at" label="创建日期" width="200" />
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column prop="filename" label="文件名" width="240" />
+        <el-table-column prop="status" label="状态" width="60" />
+        <el-table-column prop="videoduration" label="视频时常" width="80" />
+        <el-table-column prop="createdAt" label="创建日期" width="240" />
+
+        <el-table-column fixed="right" label="操作" width="150">
           <template #default="scope">
+            <el-button link type="info" @click="handlePlay(scope.row.filepath)">播放</el-button>
             <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
             <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
           </template>
@@ -66,10 +69,11 @@
   </template>
 
 <script setup>
-import { ref } from 'vue'
+import upload from './components/upload.vue'
 
+import { ref } from 'vue'
 // import api
-import { getExample, postExample, putExample, deleteExample } from '@/apis/example'
+import { getMedia, postMedia, putMedia, deleteMedia } from '@/apis/media'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -106,11 +110,12 @@ const handleSortChange = ({ column, prop, order }) => {
   handleTableData()
 }
 const handleTableData = () => {
-  getExample(table.value.query).then((result) => {
-    table.value.data = result.list
+  getMedia(table.value.query).then((result) => {
+    table.value.data = result.data
     table.value.total = result.total
   })
 }
+handleTableData()
 
 // 新增编辑数据
 const dialogRef = ref(null)
@@ -144,7 +149,7 @@ const handleDialogDelete = (id) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteExample({ id }).then((result) => {
+    deleteMedia({ id }).then((result) => {
       ElMessage.warning(result)
     })
   })
@@ -154,12 +159,12 @@ const handleSubmitForm = () => {
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
-        postExample(dialog.value.form).then((result) => {
+        postMedia(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
         })
       } else if (dialog.value.formAction === 'edit') {
-        putExample(dialog.value.form).then((result) => {
+        putMedia(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
         })
@@ -173,6 +178,8 @@ const handleSubmitForm = () => {
   })
 }
 
-handleTableData()
+const handlePlay = () => {
+
+}
 
 </script>

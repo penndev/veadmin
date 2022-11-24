@@ -16,10 +16,12 @@
     "path-browserify": "^1.0.1",
     "pinia": "^2.0.21",
     "pinia-plugin-persistedstate": "^2.3.0",
+    "spark-md5": "^3.0.2",
     "vue": "^3.2.37",
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
+    "@types/video.js": "^7.3.49",
     "@vitejs/plugin-vue": "^3.0.3",
     "canvas": "^2.10.1",
     "eslint": "^8.23.0",
@@ -30,6 +32,7 @@
     "eslint-plugin-vue": "^9.4.0",
     "mockjs": "^1.1.0",
     "sass": "^1.54.7",
+    "video.js": "^7.20.3",
     "vite": "^3.0.7",
     "vite-plugin-eslint": "^1.8.1"
   }
