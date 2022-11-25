@@ -22,9 +22,17 @@
         <el-table-column prop="videoduration" label="视频时常" width="80" />
         <el-table-column prop="createdAt" label="创建日期" width="240" />
 
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">
-            <el-button link type="info" @click="handlePlay(scope.row.filepath)">播放</el-button>
+
+            <el-popover placement="top-start" title="Play" :width="200" trigger="hover" >
+              <el-button @click="handlePlay(scope.row.filepath)">源文件</el-button>
+              <el-button @click="handlePlay(scope.row.hlspath)">流文件</el-button>
+              <template #reference>
+                <el-button link type="info">播放</el-button>
+              </template>
+            </el-popover>
+            <el-button link type="warning" @click="handleJobsubmit(scope.row.id)">转码</el-button>
             <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
             <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
           </template>
@@ -66,14 +74,28 @@
       </template>
     </el-dialog>
 
+    <!-- 播放dialog -->
+    <el-dialog v-model="playDialogVisible" title="播放" width="40%" destroy-on-close center>
+      <play
+        :options="playOptions"
+      />
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="playDialogVisible = false">
+            关闭
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </template>
 
 <script setup>
 import upload from './components/upload.vue'
-
+import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { getMedia, postMedia, putMedia, deleteMedia } from '@/apis/media'
+import { getMedia, postMedia, putMedia, deleteMedia, submitMedia } from '@/apis/media'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -178,8 +200,26 @@ const handleSubmitForm = () => {
   })
 }
 
-const handlePlay = () => {
+const handleJobsubmit = (id) => {
+  submitMedia({ id }).then((result) => {
+    console.log(result)
+    ElMessage.info(result)
+  })
+}
 
+// 播放弹窗
+const playDialogVisible = ref(false)
+const playOptions = ref({})
+const handlePlay = (path) => {
+  console.log(path)
+  playDialogVisible.value = true
+  playOptions.value = {
+    autoplay: true,
+    controls: true,
+    sources: [
+      'http://127.0.0.1:8081/' + path
+    ]
+  }
 }
 
 </script>

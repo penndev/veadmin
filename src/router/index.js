@@ -55,12 +55,12 @@ const routes = [
   {
     path: '/media',
     component: Layout,
-    redirect: '/example/index',
+    redirect: '/media/index',
     children: [
       {
         path: 'index',
         component: () => import('@/views/media/index.vue'),
-        name: 'exampleIndex',
+        name: 'mediaIndex',
         meta: { title: '媒体管理', icon: 'Tickets' }
       }
     ]

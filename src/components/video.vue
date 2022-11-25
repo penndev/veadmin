@@ -1,27 +1,37 @@
 <template>
-    <div>
-        <video ref="videoPlayer" class="video-js"></video>
-    </div>
+        <video ref="videoPlayer" class="video-main video-js" />
 </template>
 
 <script setup>
-import videojs from 'video.js';
-import { ref } from 'vue';
+import videojs from 'video.js'
+import 'video.js/dist/video-js.css'
+
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
-    options: {
-        type: Object,
-        default() {
-            return {};
-        }
+  options: {
+    type: Object,
+    default () {
+      return {}
     }
+  }
 })
 
-const videoPlayer = ref()
+const videoPlayer = ref(null)
 
-// const player = 
-videojs(videoPlayer, props.options, () => {
-    console.log("播放器准备中...")
-})
+const main = () => {
+  videojs(videoPlayer.value, props.options, () => {
+    console.log('播放器准备中...')
+  })
+}
+
+onMounted(main)
 
 </script>
+
+<style lang="scss" scoped>
+.video-main{
+    max-width: 100%;
+    max-height: 400px;
+}
+</style>

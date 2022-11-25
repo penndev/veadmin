@@ -32,3 +32,11 @@ export const deleteMedia = (params) => {
     params
   })
 }
+
+export const submitMedia = (data) => {
+  return service({
+    url: '/job/submit',
+    method: 'post',
+    data
+  })
+}
