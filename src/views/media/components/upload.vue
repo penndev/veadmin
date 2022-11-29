@@ -14,7 +14,7 @@
     <br />
 </template>
 <script setup>
-import { uploadPart, uploadBefore } from '@/apis/upload'
+import { MediaUploadPart, MediaUploadBefore } from '@/apis/media'
 import { MD5LargeFile } from '@/utils/md5'
 
 const limitsize = 1024 * 1024 * 2 // 2m
@@ -23,7 +23,7 @@ const handleUpload = async (options) => {
   options.onProgress({ percent: 0 })
   // 获取文件的md5
   const filemd5 = await MD5LargeFile(options.file, (p) => { '进度->p' })
-  const upload = await uploadBefore({
+  const upload = await MediaUploadBefore({
     name: options.file.name,
     md5: filemd5
   })
@@ -39,7 +39,7 @@ const handleUpload = async (options) => {
     formData.append('countPart', countPart)
     formData.append('uploadID', upload.id)
     formData.append('uploadData', uploadData)
-    await uploadPart(formData)
+    await MediaUploadPart(formData)
     options.onProgress({ percent: currentPart / countPart })
   }
 }

@@ -56,12 +56,19 @@ const routes = [
     path: '/media',
     component: Layout,
     redirect: '/media/index',
+    meta: { title: '媒体管理', icon: 'Tickets' },
     children: [
       {
         path: 'index',
         component: () => import('@/views/media/index.vue'),
         name: 'mediaIndex',
-        meta: { title: '媒体管理', icon: 'Tickets' }
+        meta: { title: '媒体列表', icon: 'ScaleToOriginal' }
+      },
+      {
+        path: 'mpegts',
+        component: () => import('@/views/media/mpegts.vue'),
+        name: 'mediaMpegts',
+        meta: { title: '切片管理', icon: 'CopyDocument' }
       }
     ]
   },

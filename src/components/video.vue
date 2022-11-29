@@ -1,12 +1,12 @@
 <template>
-        <video ref="videoPlayer" class="video-main video-js" />
+        <video ref="videoTag" class="video-main video-js" />
 </template>
 
 <script setup>
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   options: {
@@ -17,15 +17,24 @@ const props = defineProps({
   }
 })
 
-const videoPlayer = ref(null)
+let player = null
+
+const videoTag = ref(null)
 
 const main = () => {
-  videojs(videoPlayer.value, props.options, () => {
+  player = videojs(videoTag.value, props.options, () => {
     console.log('播放器准备中...')
   })
 }
 
 onMounted(main)
+
+onBeforeUnmount(() => {
+  console.log('dispose=>', player)
+  if (player) {
+    player.dispose()
+  }
+})
 
 </script>
 
