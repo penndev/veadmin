@@ -48,7 +48,7 @@ const routes = [
         path: 'index',
         component: () => import('@/views/example/index.vue'),
         name: 'exampleIndex',
-        meta: { title: '示例列表', icon: 'Film' }
+        meta: { title: '示例列表', icon: 'Tickets' }
       }
     ]
   },
@@ -56,7 +56,7 @@ const routes = [
     path: '/media',
     component: Layout,
     redirect: '/media/index',
-    meta: { title: '媒体管理', icon: 'Tickets' },
+    meta: { title: '媒体管理', icon: 'Film' },
     children: [
       {
         path: 'index',
