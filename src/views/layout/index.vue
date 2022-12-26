@@ -38,10 +38,19 @@ import { viewLoading } from '@/stores/reactive'
 // 通用组件布局
 const layout = layoutStoe()
 
+// 判断是否是移动端
+
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.module.scss';
+
+@media screen and (max-width: 720px) {
+  .ea-aside {
+    display: none;
+    // border: 1px solid red;
+  }
+}
 
 .ea-layout {
   display: flex;
@@ -81,6 +90,7 @@ const layout = layoutStoe()
 
   .ea-aside-collapse {
     width: auto !important;
+    display: block;
   }
 
   .ea-select {
