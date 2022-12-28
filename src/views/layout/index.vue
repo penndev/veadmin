@@ -1,29 +1,30 @@
 <template>
   <el-container class="ea-layout">
-    <el-aside class="ea-aside" :class="{'ea-aside-collapse': layout.collapse }">
+
+    <div class="ea-aside-mask" v-if="!layout.collapse" @click="handleCollapse"></div>
+    <el-aside class="ea-aside" :class="{ 'ea-aside-collapse': layout.collapse }">
       <div class="logo ">
         <img class="logoimg" src="@/assets/logo.svg">
-        <h2 v-if="!layout.collapse" class="logotitle"> {{$env.VE_NAME}} </h2>
+        <h2 v-if="!layout.collapse" class="logotitle"> {{ $env.VE_NAME }} </h2>
       </div>
       <AsideBar />
     </el-aside>
+
     <el-container class="ea-select">
+
       <el-header>
         <NavBar />
       </el-header>
+
       <HistoryBar />
 
-        <router-view
-          v-slot="{ Component }"
-        >
-          <el-main
-            class="ea-main"
-            v-loading="viewLoading.viewLoadingStatus"
-            :element-loading-text="viewLoading.viewLoadingText"
-          >
-            <component :is="Component" />
-          </el-main>
-        </router-view>
+      <router-view v-slot="{ Component }">
+        <el-main class="ea-main" v-loading="viewLoading.viewLoadingStatus"
+          :element-loading-text="viewLoading.viewLoadingText">
+          <component :is="Component" />
+        </el-main>
+      </router-view>
+
     </el-container>
 
   </el-container>
@@ -38,7 +39,9 @@ import { viewLoading } from '@/stores/reactive'
 // 通用组件布局
 const layout = layoutStoe()
 
-// 判断是否是移动端
+const handleCollapse = () => {
+  layout.collapse = !layout.collapse
+}
 
 </script>
 
@@ -46,9 +49,26 @@ const layout = layoutStoe()
 @import '@/styles/variables.module.scss';
 
 @media screen and (max-width: 720px) {
-  .ea-aside {
+
+  .ea-aside-collapse {
     display: none;
-    // border: 1px solid red;
+  }
+
+  .ea-aside-mask {
+    background: #000;
+    width: 100%;
+    top: 0;
+    opacity: 0.3;
+    height: 100%;
+    position: absolute;
+    z-index: 999;
+  }
+
+  .ea-aside {
+    z-index: 1000;
+    position: absolute;
+    height: 100%;
+    top: 0;
   }
 }
 
@@ -90,7 +110,6 @@ const layout = layoutStoe()
 
   .ea-aside-collapse {
     width: auto !important;
-    display: block;
   }
 
   .ea-select {

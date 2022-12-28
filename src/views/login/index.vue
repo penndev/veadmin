@@ -54,7 +54,7 @@
                 style="width: 60%"
               />
               <div class="vPic">
-                <img alt="请输入验证码"
+                <img alt="验证码"
                   :src="captcha"
                   @click="handleChangeCaptcha"
                 >
