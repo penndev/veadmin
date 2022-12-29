@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { permissionStoe } from '@/stores'
 import { viewLoading } from '@/stores/reactive'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import router from '@/router'
 
 const service = axios.create({
   baseURL: import.meta.env.VE_API_URL,
@@ -32,17 +33,28 @@ service.interceptors.response.use(
     return response.data
   },
   error => {
-    if (viewLoading.viewLoadingStatus === true) {
-      viewLoading.viewLoadingStatus = false
-    }
-    console.log('Request Error:', error)
     switch (error.response.status) {
       case 400:
         ElMessage.error(error.response.data.message ?? error.response.data)
         break
+      case 401:
+        if (viewLoading.viewLoadingStatus === true) {
+          break
+        }
+        ElMessageBox.confirm(
+          '用户登录信息失效[ ' + error.response.data.message ?? error.response.data + ' ]，点击确定重新登录?',
+          '登录失效',
+          { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+        ).then(() => {
+          router.push({ name: 'login' })
+        })
+        break
       case 404:
         ElMessage.error('接口未找到！ 404')
         break
+    }
+    if (viewLoading.viewLoadingStatus === true) {
+      viewLoading.viewLoadingStatus = false
     }
     return Promise.reject(error)
   }

@@ -3,22 +3,13 @@
   <div id="userLayout">
     <div class="login_panle">
       <div class="login_panle_form">
-
         <div class="login_panle_form_title">
-
           <img class="login_panle_form_title_logo" src="@/assets/logo.svg" />
-
           <div class="login_panle_form_title_p" >
             用户登录
           </div>
-
         </div>
-
-        <el-form
-          ref="loginForm"
-          :rules="rules"
-          :model="formData"
-        >
+        <el-form ref="loginForm" :rules="rules" :model="formData">
           <el-form-item prop="username">
             <el-input v-model="formData.username" placeholder="请输入用户名" >
               <template #suffix>
@@ -31,9 +22,9 @@
           <el-form-item prop="password">
             <el-input
               placeholder="请输入密码"
-              v-model="formData.password"
+              v-model="formData.password" 
               :type="lock === 'lock' ? 'password' : 'text'"
-              >
+            >
               <template #suffix>
                 <a class="input-icon">
                   <el-icon>
