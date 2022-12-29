@@ -15,11 +15,24 @@
   <el-main style="background-color:#fff">
     <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-      <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="email" label="邮箱" width="240" />
       <el-table-column prop="nickname" label="名称" width="160" />
-      <el-table-column prop="updated_at" label="最近更新" width="200" />
-      <el-table-column prop="created_at" label="创建日期" width="200" />
+      <el-table-column prop="status" label="状态" width="120" >
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="1"
+            :inactive-value="0"
+            size="large"
+            inline-prompt
+            active-text="启用"
+            inactive-text="禁用"
+            :disabled="true"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="创建日期" width="200" />
       <el-table-column fixed="right" label="操作" width="120">
         <template #default="scope">
           <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
@@ -40,18 +53,33 @@
     :title="dialog.title"
     :close-on-click-modal="false"
     v-model="dialog.visible"
-    destroy-on-close close-on-press-escape
+    destroy-on-close
+    close-on-press-escape
     center
   >
 
     <el-form
       ref="dialogRef"
-      label-width="80px"
       :model="dialog.form"
       :rules="dialog.formRule"
     >
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dialog.form.email" />
+      </el-form-item>
+      <!-- <el-form-item label="密码" prop="passwd">
+        <el-input v-model="dialog.form.passwd" />
+      </el-form-item> -->
+      <el-form-item label="昵称" prop="email">
+        <el-input v-model="dialog.form.nickname" />
+      </el-form-item>
+      <el-form-item label="状态" prop="email">
+        <el-switch
+          v-model="dialog.form.status"
+          :active-value="1"
+          :inactive-value="0"
+          active-text="启用账号"
+          inactive-text="禁用账号"
+        />
       </el-form-item>
     </el-form>
 
@@ -105,7 +133,7 @@ const handleSortChange = ({ column, prop, order }) => {
 }
 const handleTableData = () => {
   getSystemAdmin(table.value.query).then((result) => {
-    table.value.data = result.list
+    table.value.data = result.data
     table.value.total = result.total
   })
 }

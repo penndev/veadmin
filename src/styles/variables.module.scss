@@ -1,11 +1,20 @@
+// 优化element-ui
+@media screen and (max-width: 720px) { 
+    .el-dialog {
+        width: 90%;
+    }
+}
+
+
+$mainBgcolor: #f0f2f5;
 
 // 侧边栏
 $sidebarBgcolor : #191a23;
 $sidebarColor: #ffffff;
 
-$mainBgcolor: #f0f2f5;
-
 :export {
     sidebarBgcolor: $sidebarBgcolor;
     sidebarColor: $sidebarColor;
 }
+
+

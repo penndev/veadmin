@@ -38,7 +38,7 @@ service.interceptors.response.use(
         ElMessage.error(error.response.data.message ?? error.response.data)
         break
       case 401:
-        if (viewLoading.viewLoadingStatus === true) {
+        if (viewLoading.viewLoadingStatus !== true) {
           break
         }
         ElMessageBox.confirm(
