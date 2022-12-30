@@ -132,6 +132,8 @@ const formSubmit = () => {
         }
         permission.token = result.token
         router.push('/')
+      }).catch(() => {
+        handleChangeCaptcha()
       })
     } else {
       ElMessage.error('请输入正确的数据！')

@@ -3,7 +3,7 @@
   <div>
     <el-form :inline="true">
       <el-form-item label="管理员">
-        <el-input placeholder="管理员名称" v-model="table.query.name" clearable />
+        <el-input placeholder="管理员邮箱" v-model="table.query.email" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
@@ -43,8 +43,14 @@
 
     <br>
 
-    <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
-      @current-change="handleChangePage" @size-change="handleChangeLimit" />
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :default-page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
 
   </el-main>
 
@@ -57,7 +63,6 @@
     close-on-press-escape
     center
   >
-
     <el-form
       ref="dialogRef"
       :model="dialog.form"
@@ -66,9 +71,9 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dialog.form.email" />
       </el-form-item>
-      <!-- <el-form-item label="密码" prop="passwd">
+      <el-form-item v-if="dialog.formAction == 'add'" label="密码" prop="passwd">
         <el-input v-model="dialog.form.passwd" />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="昵称" prop="email">
         <el-input v-model="dialog.form.nickname" />
       </el-form-item>
@@ -106,7 +111,7 @@ const table = ref({
     limit: 20,
     page: 1,
     order: null,
-    name: null
+    email: null
   },
   data: []
 })
@@ -172,6 +177,7 @@ const handleDialogDelete = (id) => {
   }).then(() => {
     deleteSystemAdmin({ id }).then((result) => {
       ElMessage.warning(result)
+      handleTableData()
     })
   })
 }
@@ -183,11 +189,13 @@ const handleSubmitForm = () => {
         postSystemAdmin(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
       } else if (dialog.value.formAction === 'edit') {
         putSystemAdmin(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
         dialog.value.visible = false
       } else {
