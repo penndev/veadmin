@@ -33,7 +33,11 @@ service.interceptors.response.use(
     return response.data
   },
   error => {
-    switch (error.response.status) {
+    let status = 0
+    if (error.response !== undefined && error.response.status !== undefined) {
+      status = error.response.status
+    }
+    switch (status) {
       case 400:
         ElMessage.error(error.response.data.message ?? error.response.data)
         break
@@ -42,7 +46,7 @@ service.interceptors.response.use(
           break
         }
         ElMessageBox.confirm(
-          '用户登录信息失效[ ' + error.response.data.message ?? error.response.data + ' ]，点击确定重新登录?',
+          '用户登录信息失效[ ' + (error.response.data.message ?? error.response.data) + ' ] 点击确定重新登录?',
           '登录失效',
           { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
         ).then(() => {
@@ -50,8 +54,13 @@ service.interceptors.response.use(
         })
         break
       case 404:
-        ElMessage.error('接口未找到！ 404')
+        ElMessage.error('请求的接口未找到，请联系系统管理员！')
         break
+      case 500:
+        ElMessage.error('后台接口请求失败，请联系系统管理员，或者稍后重试！')
+        break
+      default:
+        ElMessage.error('请求出现错误！，详细信息[' + error.message + ']')
     }
     if (viewLoading.viewLoadingStatus === true) {
       viewLoading.viewLoadingStatus = false

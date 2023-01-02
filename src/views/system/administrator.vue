@@ -115,8 +115,9 @@ const table = ref({
   },
   data: []
 })
-const handleQueryRefresh = (value) => {
-  table.value.query.name = null
+const handleQueryRefresh = () => {
+  table.value.query.email = null
+  handleTableData()
 }
 const handleChangePage = (value) => {
   table.value.query.page = value

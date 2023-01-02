@@ -1,6 +1,5 @@
 import service from '@/utils/request'
 
-// 获取系统验证码
 export const getSystemAdmin = (params) => {
   return service({
     url: '/system/admin',
