@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { permissionStoe, layoutStoe } from '@/stores'
+import { authStoe, layoutStoe } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 
 import { watch, ref } from 'vue'
@@ -49,7 +49,7 @@ import { watch, ref } from 'vue'
 const layout = layoutStoe()
 const router = useRouter()
 const route = useRoute()
-const permission = permissionStoe()
+const auth = authStoe()
 
 const breadcrumb = ref(route.matched)
 
@@ -58,7 +58,7 @@ watch(route, () => {
 })
 
 const handleLoginOut = () => {
-  permission.token = null
+  auth.token = null
   router.push({ name: 'login' })
 }
 

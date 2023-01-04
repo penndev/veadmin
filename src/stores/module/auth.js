@@ -1,7 +1,7 @@
 // @ts-check
 import { defineStore } from 'pinia'
 
-export default defineStore('permission', {
+export default defineStore('auth', {
   state: () => {
     return {
       token: null

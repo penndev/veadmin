@@ -8,7 +8,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 import stores from '@/stores' // import pania store
 
-import router from '@/router/permission' // import after permission router
+import router from '@/router/auth' // import after permission router
 
 const app = createApp(App)
 app.config.globalProperties.$env = import.meta.env

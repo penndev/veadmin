@@ -69,8 +69,8 @@
 </template>
 
 <script setup>
-import { permissionStoe } from '@/stores'
-import { useRouter } from 'vue-router'
+import { authStoe } from '@/stores'
+import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 // import 接口
@@ -119,8 +119,9 @@ const rules = reactive({
 
 // 处理用户登录相关逻辑
 const loginForm = ref(null)
-const permission = permissionStoe()
+const permission = authStoe()
 const router = useRouter()
+const route = useRoute()
 
 const formSubmit = () => {
   loginForm.value.validate((validate) => {
@@ -131,7 +132,7 @@ const formSubmit = () => {
           return
         }
         permission.token = result.token
-        router.push('/')
+        router.push(route.query.redirect ?? '/')
       }).catch(() => {
         handleChangeCaptcha()
       })
