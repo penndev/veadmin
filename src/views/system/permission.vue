@@ -93,12 +93,22 @@
         </el-form-item>
         <br/>
         <el-form-item label="路由组" prop="route">
-          <el-alert
+          <div
             v-for="(val,key) of dialog.form.route" :key="key"
-            closable type="info" style="margin-bottom: 8px;padding: 0;"
-            :title="'路由->' + val.path"
-            @close="handleRouteDel(key)"
-          />
+            style="margin-bottom: 8px;width: 100%;"
+          >
+              <el-link type="info">
+                路由-> {{ val.path }}
+              </el-link>
+              &nbsp;
+              <el-button
+                size="small"
+                type="info"
+                icon="Delete"
+                @click="handleRouteDel(key)"
+                circle
+              />
+          </div>
           <el-input v-model="dialog.tempvalue" >
             <template #append>
               <el-button icon="Plus" @click="handleRouteAdd(dialog.tempvalue)" />
@@ -179,8 +189,16 @@ const dialog = ref({
   tempvalue: null
 })
 
-const handleRouteDel = (val) => { // 清理路由json.
-  dialog.value.form.route.splice(val, 1)
+const handleRouteDel = (value) => { // 清理路由json.
+  dialog.value.form.route.splice(value, 1)
+  // value += ''
+  // const allowArr = []
+  // for (const i in dialog.value.form.route) {
+  //   if (i !== value) allowArr.push(dialog.value.form.route[i])
+  //   // console.log(dialog.value.form.route[i])
+  // }
+  // console.log(allowArr)
+  // dialog.value.form.route = allowArr
 }
 const handleRouteAdd = (path) => { // 增加路由到json.
   if (typeof dialog.value.form.route === 'undefined') {

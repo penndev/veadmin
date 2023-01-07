@@ -1,24 +1,23 @@
 <template>
 
-  <div>
-    <el-form :inline="true">
-      <el-form-item label="管理员">
-        <el-input placeholder="管理员邮箱" v-model="table.query.email" clearable />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-        <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+  <el-form :inline="true">
+    <el-form-item label="管理员">
+      <el-input placeholder="管理员邮箱" v-model="table.query.email" clearable />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
+      <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+    </el-form-item>
+  </el-form>
 
   <el-main style="background-color:#fff">
     <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column prop="id" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="email" label="邮箱" width="240" />
-      <el-table-column prop="nickname" label="名称" width="160" />
-      <el-table-column prop="status" label="状态" width="120" >
+      <el-table-column prop="email" label="邮箱" min-width="240" />
+      <el-table-column prop="nickname" label="名称" min-width="160" />
+      <el-table-column prop="roleName" label="权限" min-width="160" />
+      <el-table-column prop="status" label="状态" min-width="120" >
         <template #default="scope">
           <el-switch
             v-model="scope.row.status"
@@ -40,9 +39,7 @@
         </template>
       </el-table-column>
     </el-table>
-
     <br>
-
     <el-pagination
       background
       layout="total, sizes, prev, pager, next"
@@ -54,7 +51,6 @@
 
   </el-main>
 
-  <!-- 处理数据|新增编辑 -->
   <el-dialog
     :title="dialog.title"
     :close-on-click-modal="false"
@@ -74,10 +70,27 @@
       <el-form-item v-if="dialog.formAction == 'add'" label="密码" prop="passwd">
         <el-input v-model="dialog.form.passwd" />
       </el-form-item>
-      <el-form-item label="昵称" prop="email">
+      <el-form-item label="昵称" prop="nickname">
         <el-input v-model="dialog.form.nickname" />
       </el-form-item>
-      <el-form-item label="状态" prop="email">
+      <el-form-item label="权限" prop="roleId">
+        <el-link type="primary"> {{ dialog.form.roleName }} [{{ dialog.form.roleId }}] | </el-link> &nbsp;
+        <el-select
+          v-model="dialog.roleSelect.value"
+          filterable remote remote-show-suffix placeholder="输入权限名称"
+          :remote-method="handleRoleSelectSearch"
+          @change="handleRoleSelectChange"
+          :loading="dialog.roleSelect.loading"
+        >
+          <el-option
+            v-for="item in dialog.roleSelect.options"
+            :key="item.id"
+            :label="item.name"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
         <el-switch
           v-model="dialog.form.status"
           :active-value="1"
@@ -104,6 +117,7 @@ import { ref } from 'vue'
 // import api
 import { getSystemAdmin, postSystemAdmin, putSystemAdmin, deleteSystemAdmin } from '@/apis/system/administrator'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { getSystemRole } from '@/apis/system/rolepermission'
 
 const table = ref({
   total: 0,
@@ -156,7 +170,12 @@ const dialog = ref({
       { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
     ]
   },
-  formAction: 'add' // add|edit
+  formAction: 'add', // add|edit
+  roleSelect: {
+    value: null,
+    loading: false,
+    options: []
+  }
 })
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'
@@ -206,6 +225,14 @@ const handleSubmitForm = () => {
       ElMessage.error('请输入正确的数据！')
     }
   })
+}
+const handleRoleSelectSearch = async (query) => {
+  const roleList = await getSystemRole({ page: 1, limit: 20, name: query })
+  dialog.value.roleSelect.options = roleList.data
+}
+const handleRoleSelectChange = async (val) => {
+  dialog.value.form.roleId = val.id
+  dialog.value.form.roleName = val.name
 }
 
 handleTableData()
