@@ -27,7 +27,7 @@ export const putMedia = (data) => {
 
 export const deleteMedia = (params) => {
   return service({
-    url: '/system/admin',
+    url: '/media/list',
     method: 'delete',
     params
   })
@@ -60,14 +60,13 @@ export const putMediaTs = (data) => {
 
 export const deleteMediaTs = (params) => {
   return service({
-    url: '/system/admin',
+    url: '/mediats/list',
     method: 'delete',
     params
   })
 }
 
 //  提交任务
-
 export const submitMediaHls = (data) => {
   return service({
     url: '/job/hls/submit',
@@ -75,7 +74,6 @@ export const submitMediaHls = (data) => {
     data
   })
 }
-
 export const submitMediaTs = (data) => {
   return service({
     url: '/job/mpegts/submit',
@@ -85,15 +83,13 @@ export const submitMediaTs = (data) => {
 }
 
 // 上传文件
-
 export const MediaUploadBefore = (data) => {
   return service({
-    url: '/media/upload/before',
+    url: '/media/upload/part',
     method: 'post',
     data
   })
 }
-
 export const MediaUploadPart = (data) => {
   return service({
     url: '/media/upload/part',

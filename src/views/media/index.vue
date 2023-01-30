@@ -163,13 +163,14 @@ const handleDialogEdit = (row) => {
   dialog.value.form = row
 }
 const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+  ElMessageBox.confirm('请仔细确认是否删除 ' + id + ' ?', '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     deleteMedia({ id }).then((result) => {
       ElMessage.warning(result)
+      handleTableData()
     })
   })
 }
