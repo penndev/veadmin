@@ -4,7 +4,7 @@ import SparkMD5 from 'spark-md5'
 // progress callback(0.11) 进度11%
 function MD5LargeFile (file, progress) {
   return new Promise((resolve, reject) => {
-    const chunkSize = 20971520
+    const chunkSize = 10 * 1048576
     const chunks = Math.ceil(file.size / chunkSize)
 
     const blobSlice = File.prototype.slice

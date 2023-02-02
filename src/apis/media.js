@@ -90,6 +90,7 @@ export const MediaUploadBefore = (data) => {
     data
   })
 }
+
 export const MediaUploadPart = (data) => {
   return service({
     url: '/media/upload/part',
@@ -97,6 +98,7 @@ export const MediaUploadPart = (data) => {
     data,
     headers: {
       'Content-Type': 'multipart/form-data'
-    }
+    },
+    viewLoading: false
   })
 }

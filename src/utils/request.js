@@ -11,7 +11,8 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    if (viewLoading.viewLoadingStatus === false) {
+    // 展示加载中的弹窗
+    if (config.viewLoading !== false && viewLoading.viewLoadingStatus === false) {
       viewLoading.viewLoadingStatus = true
     }
     const permission = authStoe()
