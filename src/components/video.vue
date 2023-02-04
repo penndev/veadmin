@@ -1,5 +1,5 @@
 <template>
-        <video ref="videoTag" class="video-main video-js" />
+  <video ref="videoTag" class="video-main video-js" />
 </template>
 
 <script setup>
@@ -22,7 +22,7 @@ let player = null
 const videoTag = ref(null)
 
 const main = () => {
-  player = videojs(videoTag.value, props.options, () => {
+  player = videojs(videoTag.value, props.options, (video) => {
     console.log('播放器准备中...')
   })
 }

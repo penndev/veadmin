@@ -3,45 +3,54 @@
   <div>
     <el-form :inline="true">
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.name" clearable />
+        <el-input placeholder="名称" v-model="table.query.fileName" clearable />
+      </el-form-item>
+      <el-form-item label="校验码">
+        <el-input placeholder="MD5" v-model="table.query.fileMd5" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
         <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
-        <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
       </el-form-item>
     </el-form>
   </div>
 
   <el-main style="background-color:#fff">
     <upload />
-    <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
+    <el-table :data="table.data" @sort-change="handleSortChange" style="width: 100%;height: 100%;" >
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" align="center" />
-      <el-table-column prop="fileName" label="文件名" width="240" align="center" />
-      <el-table-column prop="fileMd5" label="文件MD5" width="120" align="center">
+      <el-table-column prop="fileName" label="文件名" min-width="240" align="center" />
+      <el-table-column prop="fileMd5" label="文件MD5" min-width="120" align="center">
         <template #default="scope">
           <el-tooltip class="box-item" effect="dark" :content="scope.row.fileMd5" placement="top-end">
-            <span>{{ scope.row.fileMd5.substring(0, 8) }}...</span>
+            <span>{{ scope.row.fileMd5.substring(0, 12) }}...</span>
           </el-tooltip>
         </template>
       </el-table-column>
-
-      <el-table-column prop="status" label="状态" width="60" align="center" />
-      <el-table-column prop="videoDuration" label="视频时常" width="80" align="center" />
-      <el-table-column prop="updatedAt" label="更新日期" width="240" align="center" />
-      <el-table-column prop="createdAt" label="创建日期" width="240" align="center" />
-
-      <el-table-column fixed="right" label="操作" width="250">
+      <el-table-column prop="status" label="状态" width="120" align="center" >
         <template #default="scope">
-          <el-popover placement="top-start" title="Play" :width="200" trigger="hover">
-            <el-button @click="handlePlay(scope.row.filePath)">源文件</el-button>
-            <el-button @click="handlePlay(scope.row.hlsPath)">流文件</el-button>
+          <el-link :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="视频信息" min-width="180" align="center">
+        <template #default="scope">
+          <el-tag class="ea-tag" type="success">时长 {{ scope.row.videoDuration }} </el-tag>
+          <el-tag class="ea-tag" type="info">帧率 {{ scope.row.videoFps }} </el-tag>
+          <el-tag class="ea-tag">分辨率 {{ scope.row.videoWidth }}×{{ scope.row.videoHeight }} </el-tag>
+          <el-tag class="ea-tag" type="info">码率 {{ scope.row.videoBitrate }} </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
+      <el-table-column fixed="right" label="操作" width="200">
+        <template #default="scope">
+          <el-popover placement="top-start" title="Play" :width="220" trigger="hover">
+            <el-button @click="handlePlay(scope.row.filePath)">VideoJS</el-button>
+            <el-button @click="handleDownload(scope.row.filePath)">Download</el-button>
             <template #reference>
-              <el-button link type="info">播放</el-button>
+              <el-button link type="info">预览</el-button>
             </template>
           </el-popover>
           <el-button link type="warning" @click="handleJobSubmitHls(scope.row.id)">转码</el-button>
-          <el-button link type="success" @click="handleJobSubmitTs(scope.row.id)">分析</el-button>
           <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
           <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
         </template>
@@ -60,8 +69,8 @@
     close-on-press-escape center>
 
     <el-form ref="dialogRef" label-width="80px" :model="dialog.form" :rules="dialog.formRule">
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="dialog.form.email" />
+      <el-form-item label="名称" prop="fileName">
+        <el-input v-model="dialog.form.fileName" />
       </el-form-item>
     </el-form>
 
@@ -92,21 +101,31 @@ import upload from './components/upload.vue'
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { getMedia, postMedia, putMedia, deleteMedia, submitMediaHls, submitMediaTs } from '@/apis/media'
+import { getMedia, putMedia, deleteMedia, submitMediaHls } from '@/apis/media'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
   total: 0,
+  data: [],
   query: {
     limit: 20,
     page: 1,
     order: null,
-    name: null
+    fileName: null,
+    fileMd5: null
   },
-  data: []
+  querySelect: {
+    status: {
+      '-2': '视频损坏',
+      '-1': '文件损坏',
+      0: '上传中',
+      1: '文件正常'
+    }
+  }
 })
 const handleQueryRefresh = (value) => {
-  table.value.query.name = null
+  table.value.query.fileName = null
+  table.value.query.fileMd5 = null
   table.value.query.order = null
   handleTableData()
 }
@@ -143,19 +162,13 @@ const dialog = ref({
   title: 'dialog',
   form: {},
   formRule: {
-    email: [
-      { required: true, message: '邮箱', trigger: 'blur' },
-      { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    fileName: [
+      { required: true, message: '文件名称', trigger: 'blur' },
+      { min: 5, message: '文件名最少为5个字符', trigger: 'blur' }
     ]
   },
-  formAction: 'add' // add|edit
+  formAction: 'edit' // add|edit
 })
-const handleDialogAdd = () => {
-  dialog.value.title = '创建数据'
-  dialog.value.visible = true
-  dialog.value.formAction = 'add'
-  dialog.value.form = {}
-}
 const handleDialogEdit = (row) => {
   dialog.value.title = '创建数据'
   dialog.value.visible = true
@@ -178,12 +191,13 @@ const handleSubmitForm = () => {
   // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
-      if (dialog.value.formAction === 'add') {
-        postMedia(dialog.value.form).then((result) => {
-          dialog.value.visible = false
-          ElMessage.info(result)
-        })
-      } else if (dialog.value.formAction === 'edit') {
+      // if (dialog.value.formAction === 'add') {
+      //   postMedia(dialog.value.form).then((result) => {
+      //     dialog.value.visible = false
+      //     ElMessage.info(result)
+      //   })
+      // } else
+      if (dialog.value.formAction === 'edit') {
         putMedia(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
@@ -205,19 +219,10 @@ const handleJobSubmitHls = (id) => {
   })
 }
 
-const handleJobSubmitTs = (id) => {
-  submitMediaTs({ id }).then((result) => {
-    console.log(result)
-    ElMessage.info(result.message)
-  })
-}
-
 // 播放弹窗
 const playDialogVisible = ref(false)
 const playOptions = ref({})
 const handlePlay = (path) => {
-  console.log(path)
-  playDialogVisible.value = true
   playOptions.value = {
     autoplay: true,
     controls: true,
@@ -230,5 +235,17 @@ const handlePlay = (path) => {
       }
     }
   }
+  playDialogVisible.value = true
+}
+const handleDownload = (path) => {
+  open('http://127.0.0.1:8081/' + path, '_bank')
 }
 </script>
+
+<style lang="scss" scoped>
+
+.ea-tag{
+  margin: 2px;
+}
+
+</style>

@@ -9,17 +9,18 @@ export const getMedia = (params) => {
   })
 }
 
-export const postMedia = (data) => {
-  return service({
-    url: '/system/admin',
-    method: 'post',
-    data
-  })
-}
+// 新增媒体通过文件上传
+// export const postMedia = (data) => {
+//   return service({
+//     url: '/system/admin',
+//     method: 'post',
+//     data
+//   })
+// }
 
 export const putMedia = (data) => {
   return service({
-    url: '/system/admin',
+    url: '/media/list',
     method: 'put',
     data
   })
