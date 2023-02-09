@@ -74,7 +74,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getMediaTs, postMediaTs, putMediaTs, deleteMediaTs } from '@/apis/media'
+import { getMediaTs, postMediaTs, putMediaTs, deleteMediaTs } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({

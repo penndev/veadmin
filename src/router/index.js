@@ -1,9 +1,16 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { format } from '@/router/route'
+import { formatRouteList } from '@/utils/comm'
 
 import Layout from '@/views/layout/index.vue'
 
 const routes = [
+  // 功能型路由
+  {
+    name: 'notFound',
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/layout/404.vue'),
+    meta: { white: true, hidden: true }
+  },
   {
     path: '/',
     component: Layout,
@@ -53,23 +60,29 @@ const routes = [
     ]
   },
   {
-    path: '/media',
+    path: '/video',
     component: Layout,
-    redirect: '/media/index',
-    meta: { title: '媒体管理', icon: 'Film' },
+    redirect: '/video/index',
+    meta: { title: '视频管理', icon: 'Film' },
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/media/index.vue'),
-        name: 'mediaIndex',
-        meta: { title: '媒体列表', icon: 'ScaleToOriginal' }
+        path: 'file',
+        component: () => import('@/views/video/file.vue'),
+        name: 'videoFile',
+        meta: { title: '视频文件', icon: 'Files' }
       },
       {
-        path: 'mpegts',
-        component: () => import('@/views/media/mpegts.vue'),
-        name: 'mediaMpegts',
-        meta: { title: '切片管理', icon: 'CopyDocument' }
+        path: 'transcode',
+        component: () => import('@/views/video/transcode.vue'),
+        name: 'videoTranscode',
+        meta: { title: '编码配置', icon: 'Memo' }
       }
+      // {
+      //   path: 'mpegts',
+      //   component: () => import('@/views/media/mpegts.vue'),
+      //   name: 'mediaMpegts',
+      //   meta: { title: '切片管理', icon: 'CopyDocument' }
+      // }
     ]
   },
   {
@@ -87,18 +100,12 @@ const routes = [
     path: '/login',
     component: () => import('@/views/login/index.vue'),
     meta: { white: true, hidden: true }
-  },
-  {
-    name: 'notFound',
-    path: '/:pathMatch(.*)*',
-    component: () => import('@/views/layout/404.vue'),
-    meta: { white: true, hidden: true }
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes: format(routes)
+  routes: formatRouteList(routes)
 })
 
 export default router

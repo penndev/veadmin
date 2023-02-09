@@ -14,7 +14,7 @@
     <br />
 </template>
 <script setup>
-import { MediaUploadPart, MediaUploadBefore } from '@/apis/media'
+import { fileUploadPart, fileUploadBefore } from '@/apis/video'
 import { MD5LargeFile } from '@/utils/md5'
 
 // const limitsize = 1024 * 1024 * 2 // 2m
@@ -26,7 +26,7 @@ const handleUpload = async (options) => {
     const progress = parseInt(p * 100)
     options.onProgress({ percent: (100 - progress) })
   })
-  const upload = await MediaUploadBefore({
+  const upload = await fileUploadBefore({
     name: options.file.name,
     md5: filemd5,
     size: options.file.size
@@ -42,7 +42,7 @@ const handleUpload = async (options) => {
     formData.append('currentPart', currentPart)
     formData.append('uploadID', filemd5)
     formData.append('uploadData', uploadData)
-    await MediaUploadPart(formData)
+    await fileUploadPart(formData)
     options.onProgress({ percent: parseInt((currentPart / countPart) * 100) })
   }
 }

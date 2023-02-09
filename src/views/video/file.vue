@@ -38,6 +38,7 @@
           <el-tag class="ea-tag" type="info">帧率 {{ scope.row.videoFps }} </el-tag>
           <el-tag class="ea-tag">分辨率 {{ scope.row.videoWidth }}×{{ scope.row.videoHeight }} </el-tag>
           <el-tag class="ea-tag" type="info">码率 {{ scope.row.videoBitrate }} </el-tag>
+          <el-tag class="ea-tag" type="success">大小 {{ scope.row.fileSize }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
@@ -52,7 +53,7 @@
           </el-popover>
           <el-button link type="warning" @click="handleJobSubmitHls(scope.row.id)">转码</el-button>
           <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-          <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
+          <el-button link type="danger" @click="handleDialogDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +65,7 @@
 
   </el-main>
 
-  <!-- 处理数据|新增编辑 -->
+  <!-- 处理数据|编辑 -->
   <el-dialog :title="dialog.title" :close-on-click-modal="false" v-model="dialog.visible" destroy-on-close
     close-on-press-escape center>
 
@@ -101,7 +102,7 @@ import upload from './components/upload.vue'
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { getMedia, putMedia, deleteMedia, submitMediaHls } from '@/apis/media'
+import { listFile, updateFile, deleteFile, addTask } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -148,7 +149,7 @@ const handleSortChange = ({ column, prop, order }) => {
   handleTableData()
 }
 const handleTableData = () => {
-  getMedia(table.value.query).then((result) => {
+  listFile(table.value.query).then((result) => {
     table.value.data = result.data
     table.value.total = result.total
   })
@@ -175,13 +176,13 @@ const handleDialogEdit = (row) => {
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除 ' + id + ' ?', '警告', {
+const handleDialogDelete = (row) => {
+  ElMessageBox.confirm('请仔细确认是否删除 ' + row.name + ' ?', '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteMedia({ id }).then((result) => {
+    deleteFile({ id: row.id }).then((result) => {
       ElMessage.warning(result)
       handleTableData()
     })
@@ -190,15 +191,9 @@ const handleDialogDelete = (id) => {
 const handleSubmitForm = () => {
   // 提交数据
   dialogRef.value.validate((validate) => {
-    if (validate) { // 判断表单是否验证通过。
-      // if (dialog.value.formAction === 'add') {
-      //   postMedia(dialog.value.form).then((result) => {
-      //     dialog.value.visible = false
-      //     ElMessage.info(result)
-      //   })
-      // } else
+    if (validate) {
       if (dialog.value.formAction === 'edit') {
-        putMedia(dialog.value.form).then((result) => {
+        updateFile(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
         })
@@ -213,9 +208,9 @@ const handleSubmitForm = () => {
 }
 
 const handleJobSubmitHls = (id) => {
-  submitMediaHls({ id }).then((result) => {
-    console.log(result)
-    ElMessage.info(result.message)
+  addTask({ id }).then((result) => {
+    // console.log(result)
+    ElMessage.info('提交了转码任务')
   })
 }
 
