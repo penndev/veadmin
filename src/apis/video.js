@@ -43,12 +43,33 @@ export const deleteFile = (params) => {
   })
 }
 
-// 转码配置
+// 新增转码配置
 export const addTranscode = (data) => {
   return service({
-    url: '/media/admin',
+    url: '/video/transcode',
     method: 'post',
     data
+  })
+}
+export const listTranscode = (params) => {
+  return service({
+    url: '/video/transcode',
+    method: 'get',
+    params
+  })
+}
+export const updateTranscode = (data) => {
+  return service({
+    url: '/video/transcode',
+    method: 'put',
+    data
+  })
+}
+export const deleteTranscode = (params) => {
+  return service({
+    url: '/video/transcode',
+    method: 'delete',
+    params
   })
 }
 

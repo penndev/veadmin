@@ -46,7 +46,7 @@
 
       <el-form
         ref="dialogRef"
-        label-width="80px"
+        label-position="left"
         :model="dialog.form"
         :rules="dialog.formRule"
       >
@@ -107,7 +107,7 @@ const handleSortChange = ({ column, prop, order }) => {
 }
 const handleTableData = () => {
   getExample(table.value.query).then((result) => {
-    table.value.data = result.list
+    table.value.data = result.data
     table.value.total = result.total
   })
 }
@@ -139,13 +139,14 @@ const handleDialogEdit = (row) => {
   dialog.value.form = row
 }
 const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     deleteExample({ id }).then((result) => {
       ElMessage.warning(result)
+      handleTableData()
     })
   })
 }

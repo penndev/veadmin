@@ -16,16 +16,31 @@
       <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
       <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
         <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
-        <el-table-column prop="name" label="编码名称" width="160" />
-        <el-table-column prop="format" label="目标格式" width="160" />
-        <el-table-column prop="vcodec" label="视频编码器" width="160" />
-        <el-table-column prop="vfps" label="视频帧率" width="160" />
-        <el-table-column prop="vwidth" label="视频宽" width="160" />
-        <el-table-column prop="vheight" label="视频高" width="160" />
-        <el-table-column prop="acodec" label="音频编码器" width="160" />
+        <el-table-column prop="name" label="编码名称" width="140" />
+        <el-table-column prop="format" label="编码格式" width="140" />
+        <el-table-column label="视频配置" width="160">
+          <template #default="scope">
+            <el-link class="ea-tag" type="primary">编码器: {{ scope.row.vcodec }} </el-link>
+            <br/><el-link class="ea-tag" type="success">帧率: {{ scope.row.vfps > 0 ? scope.row.vfps : '默认' }} </el-link>
+            <br/><el-link class="ea-tag" type="info">分辨率: {{ scope.row.vwidth > 0 ? scope.row.vwidth : '适应' }}×{{ scope.row.vheight > 0 ? scope.row.vheight : '适应'  }} </el-link>
+            <br/><el-link class="ea-tag" type="warning">码率/kbps: {{ scope.row.vbitrate > 0 ? scope.row.vbitrate : '默认' }} </el-link>
+            <br/><el-link class="ea-tag" type="danger">质量: {{ scope.row.vcrf > 0 ? scope.row.vcrf : '默认'}}</el-link>
+          </template>
+        </el-table-column>
 
-        <el-table-column prop="updated_at" label="最近更新" width="200" />
-        <el-table-column prop="created_at" label="创建日期" width="200" />
+        <el-table-column prop="acodec" label="音频配置" width="160">
+          <template #default="scope">
+            <el-link class="ea-tag" type="primary">编码器: {{ scope.row.acodec }} </el-link>
+            <br/><el-link class="ea-tag" type="success">采样率/Hz: {{ scope.row.asamplerate > 0 ? scope.row.asamplerate : '适应' }} </el-link>
+            <br/><el-link class="ea-tag" type="info">比特率/kbps: {{ scope.row.abitrate > 0 ? scope.row.abitrate : '默认' }} </el-link>
+            <br/><el-link class="ea-tag" type="warning">声道: {{ scope.row.achannel > 0 ? scope.row.achannel : '默认' }} </el-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="command" label="附加配置" width="180" />
+
+        <el-table-column prop="updatedAt" label="最近更新" width="200" />
+        <el-table-column prop="createdAt" label="创建日期" width="200" />
         <el-table-column fixed="right" label="操作" width="120">
           <template #default="scope">
             <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
@@ -52,31 +67,99 @@
 
       <el-form
         ref="dialogRef"
-        label-width="160px"
+        label-position="left"
         :model="dialog.form"
         :rules="dialog.formRule"
       >
         <el-form-item label="编码名称" prop="name">
           <el-input v-model="dialog.form.name" />
         </el-form-item>
-        <el-form-item label="编码名称" prop="format">
-          <el-input v-model="dialog.form.format" />
+        <el-form-item label="编码格式" prop="format">
+          <el-input v-model="dialog.form.format"  placeholder="文件后缀 m3u8 mpd mp4 等"/>
         </el-form-item>
         <el-form-item label="视频编码器" prop="vcodec">
-          <el-input v-model="dialog.form.vcodec" />
-        </el-form-item>
-        <el-form-item label="视频帧率" prop="vfps">
-          <el-input v-model="dialog.form.vfps" />
+          <el-input v-model="dialog.form.vcodec" placeholder="ffmpeg -encoders 查看支持的编码器"/>
         </el-form-item>
         <el-form-item label="视频宽" prop="vwidth">
-          <el-input v-model="dialog.form.vwidth" />
+          <el-input-number
+            min="0" max="7680" v-model="dialog.form.vwidth"
+            controls-position="right"
+            placeholder="“0”或者“空”为源文件宽 或根据高自适应"
+            style="width:100%"
+          />
         </el-form-item>
         <el-form-item label="视频高" prop="vheight">
-          <el-input v-model="dialog.form.vheight" />
+          <el-input-number
+            min="0" max="4320" v-model="dialog.form.vheight"
+            controls-position="right"
+            placeholder="“0”或者“空”为源文件高 或根据宽自适应"
+            style="width:100%"
+          />
         </el-form-item>
+        <el-form-item label="质量控制" prop="vcrf">
+          <el-input-number
+            min="0" max="51"  v-model="dialog.form.vcrf"
+            controls-position="right"
+            placeholder="数值越小，视频质量越高 默认为23"
+            style="width:100%"
+          />
+        </el-form-item>
+        <el-form-item label="视频帧率" prop="vfps">
+          <el-input-number
+            min="0" max="60" v-model="dialog.form.vfps"
+            controls-position="right"
+            placeholder="“0”或者“空”为源文件帧率"
+            style="width:100%"
+          />
+        </el-form-item>
+        <el-form-item label="视频码率" prop="vbitrate">
+          <el-input-number
+            min="0" v-model="dialog.form.vbitrate"
+            controls-position="right"
+            placeholder="kbps 不输入则使用ffmpeg内置码率"
+            style="width:100%"
+          />
+        </el-form-item>
+
         <el-form-item label="音频编码器" prop="acodec">
-          <el-input v-model="dialog.form.acodec" />
+          <el-input v-model="dialog.form.acodec"  placeholder="ffmpeg -encoders 查看支持的编码器"/>
         </el-form-item>
+
+        <el-form-item label="音频比特率" prop="abitrate">
+          <el-input-number
+            v-model="dialog.form.abitrate" min="0" max="1000"
+            placeholder="kbps 不输入则使用ffmpeg内置码率"
+            controls-position="right" style="width:100%"
+          />
+        </el-form-item>
+
+        <el-form-item label="音频采样率" prop="asamplerate">
+          <el-input-number
+            v-model="dialog.form.asamplerate"
+            min="0"
+            placeholder="(44100  48000)Hz 不输入则使用ffmpeg内置采样率"
+            controls-position="right" style="width:100%"
+          />
+        </el-form-item>
+
+        <el-form-item label="音频通道" prop="achannel">
+          <el-input-number
+            v-model="dialog.form.achannel"
+            min="0" max="8"
+            placeholder="不输入则使用ffmpeg内置采样率"
+            controls-position="right" style="width:100%"
+          />
+        </el-form-item>
+
+        <el-form-item label="FFMPEG参数" prop="command">
+          <el-input
+            v-model="dialog.form.command"
+            rows="3"
+            type="textarea"
+            placeholder="FFMPEG自定义的参数用英文“;”分割"
+          />
+        </el-form-item>
+
       </el-form>
 
       <template #footer>
@@ -93,7 +176,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getExample, postExample, putExample, deleteExample } from '@/apis/example'
+import { addTranscode, listTranscode, updateTranscode, deleteTranscode } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -130,8 +213,8 @@ const handleSortChange = ({ column, prop, order }) => {
   handleTableData()
 }
 const handleTableData = () => {
-  getExample(table.value.query).then((result) => {
-    table.value.data = result.list
+  listTranscode(table.value.query).then((result) => {
+    table.value.data = result.data
     table.value.total = result.total
   })
 }
@@ -143,15 +226,27 @@ const dialog = ref({
   title: 'dialog',
   form: {},
   formRule: {
-    email: [
-      { required: true, message: '邮箱', trigger: 'blur' },
-      { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    name: [
+      { required: true, message: '名称', trigger: 'blur' },
+      { min: 2, message: '用户名最少为2个字符', trigger: 'blur' }
+    ],
+    format: [
+      { required: true, message: '转码格式', trigger: 'blur' },
+      { min: 2, message: '转码格式最少为2个字符', trigger: 'blur' }
+    ],
+    vcodec: [
+      { required: true, message: '视频编码器', trigger: 'blur' },
+      { min: 2, message: '编码器最少为2个字符', trigger: 'blur' }
+    ],
+    acodec: [
+      { required: true, message: '音频编码器', trigger: 'blur' },
+      { min: 2, message: '编码器最少为2个字符', trigger: 'blur' }
     ]
   },
   formAction: 'add' // add|edit
 })
 const handleDialogAdd = () => {
-  dialog.value.title = '创建数据'
+  dialog.value.title = '新增编码器'
   dialog.value.visible = true
   dialog.value.formAction = 'add'
   dialog.value.form = {}
@@ -163,12 +258,12 @@ const handleDialogEdit = (row) => {
   dialog.value.form = row
 }
 const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteExample({ id }).then((result) => {
+    deleteTranscode({ id }).then((result) => {
       ElMessage.warning(result)
     })
   })
@@ -178,14 +273,16 @@ const handleSubmitForm = () => {
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
-        postExample(dialog.value.form).then((result) => {
+        addTranscode(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
       } else if (dialog.value.formAction === 'edit') {
-        putExample(dialog.value.form).then((result) => {
+        updateTranscode(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
         dialog.value.visible = false
       } else {
