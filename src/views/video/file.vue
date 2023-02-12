@@ -51,7 +51,7 @@
               <el-button link type="info">预览</el-button>
             </template>
           </el-popover>
-          <el-button link type="warning" @click="handleJobSubmitHls(scope.row.id)">转码</el-button>
+          <el-button link type="warning" @click="handleTranscode(scope.row)">转码</el-button>
           <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
           <el-button link type="danger" @click="handleDialogDelete(scope.row)">删除</el-button>
         </template>
@@ -95,6 +95,44 @@
     </template>
   </el-dialog>
 
+  <!-- 选择转码编辑dialog -->
+  <el-dialog v-model="transcodeDialog.visible" :title="transcodeDialog.title" destroy-on-close center>
+    <el-form ref="dialogTranscodeRef" :model="transcodeDialog.form" :rules="transcodeDialog.formRule">
+      <el-form-item label="源文件" prop="id">
+        <el-input-number v-model="transcodeDialog.form.id" disabled style="display:none" />
+        <span>{{ transcodeDialog.form.fileName }}</span>
+      </el-form-item>
+
+      <el-form-item label="编码器" prop="transcodeId">
+        <el-select v-model="transcodeDialog.form.transcodeId" filterable placeholder="输入编码器名称">
+          <el-option
+            v-for="item in transcodeDialog.transcodeSelect"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="FFMPEG参数" prop="command">
+          <el-input
+            v-model="transcodeDialog.form.command"
+            rows="3"
+            type="textarea"
+            placeholder="FFMPEG自定义的参数用英文“;”分割"
+          />
+      </el-form-item>
+
+    </el-form>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="info" @click="transcodeDialog.visible = false">关闭 </el-button>
+        <el-button type="primary" @click="handleSubmitTask">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script setup>
@@ -102,7 +140,7 @@ import upload from './components/upload.vue'
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { listFile, updateFile, deleteFile, addTask } from '@/apis/video'
+import { listFile, updateFile, deleteFile, addTask, listTranscode } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -207,13 +245,6 @@ const handleSubmitForm = () => {
   })
 }
 
-const handleJobSubmitHls = (id) => {
-  addTask({ id }).then((result) => {
-    // console.log(result)
-    ElMessage.info('提交了转码任务')
-  })
-}
-
 // 播放弹窗
 const playDialogVisible = ref(false)
 const playOptions = ref({})
@@ -235,6 +266,52 @@ const handlePlay = (path) => {
 const handleDownload = (path) => {
   open('http://127.0.0.1:8081/' + path, '_bank')
 }
+
+// 转码任务弹窗
+const transcodeDialog = ref({
+  visible: false,
+  title: '',
+  form: {},
+  formRule: {
+    id: [
+      { required: true, message: '选择文件', trigger: 'blur' }
+    ],
+    transcodeId: [
+      { required: true, message: '选择编码器', trigger: 'blur' }
+    ]
+  },
+  transcodeSelect: null
+})
+const getTranscodeSelect = async () => {
+  if (!transcodeDialog.value.transcodeSelect) {
+    const resdata = await listTranscode({ page: 1, limit: 999 })
+    transcodeDialog.value.transcodeSelect = resdata.data
+  }
+}
+getTranscodeSelect() // 初始化select数据
+const handleTranscode = (row) => {
+  transcodeDialog.value.title = row.fileName
+  transcodeDialog.value.visible = true
+  transcodeDialog.value.form = row
+}
+const dialogTranscodeRef = ref(null)
+const handleSubmitTask = () => {
+  dialogTranscodeRef.value.validate((validate) => {
+    if (validate) {
+      console.log(transcodeDialog.value.form.id, transcodeDialog.value.form.transcodeId)
+      addTask({
+        fileId: transcodeDialog.value.form.id,
+        transcodeId: transcodeDialog.value.form.transcodeId,
+        command: transcodeDialog.value.form.command
+      }).then(resp => {
+        ElMessage.info(resp.message)
+      })
+    } else {
+      ElMessage.error('请输入正确的数据！')
+    }
+  })
+}
+
 </script>
 
 <style lang="scss" scoped>

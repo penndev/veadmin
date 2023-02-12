@@ -73,6 +73,27 @@ export const deleteTranscode = (params) => {
   })
 }
 
-export const addTask = () => {
+export const addTask = (data) => {
+  return service({
+    url: '/video/task',
+    method: 'post',
+    data
+  })
+}
 
+// 获取媒体列表
+export const listTask = (params) => {
+  return service({
+    url: '/video/task',
+    method: 'get',
+    params
+  })
+}
+
+export const deleteTask = (params) => {
+  return service({
+    url: '/video/task',
+    method: 'delete',
+    params
+  })
 }

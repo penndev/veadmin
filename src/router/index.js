@@ -76,13 +76,13 @@ const routes = [
         component: () => import('@/views/video/transcode.vue'),
         name: 'videoTranscode',
         meta: { title: '编码配置', icon: 'Memo' }
+      },
+      {
+        path: 'task',
+        component: () => import('@/views/video/task.vue'),
+        name: 'videoTask',
+        meta: { title: '任务管理', icon: 'DocumentCopy' }
       }
-      // {
-      //   path: 'mpegts',
-      //   component: () => import('@/views/media/mpegts.vue'),
-      //   name: 'mediaMpegts',
-      //   meta: { title: '切片管理', icon: 'CopyDocument' }
-      // }
     ]
   },
   {
