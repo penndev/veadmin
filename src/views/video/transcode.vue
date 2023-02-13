@@ -275,7 +275,7 @@ const handleSubmitForm = () => {
       if (dialog.value.formAction === 'add') {
         addTranscode(dialog.value.form).then((result) => {
           dialog.value.visible = false
-          ElMessage.info(result)
+          ElMessage.success(result)
           handleTableData()
         })
       } else if (dialog.value.formAction === 'edit') {
@@ -286,7 +286,7 @@ const handleSubmitForm = () => {
         })
         dialog.value.visible = false
       } else {
-        ElMessage.info('提交错误')
+        ElMessage.warning('提交错误')
       }
     } else {
       ElMessage.error('请输入正确的数据！')

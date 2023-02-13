@@ -19,15 +19,15 @@
     <upload />
     <el-table :data="table.data" @sort-change="handleSortChange" style="width: 100%;height: 100%;" >
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" align="center" />
-      <el-table-column prop="fileName" label="文件名" min-width="240" align="center" />
-      <el-table-column prop="fileMd5" label="文件MD5" min-width="120" align="center">
+      <el-table-column prop="fileName" label="文件名" min-width="160"  align="center" />
+      <el-table-column prop="fileMd5" label="文件MD5" min-width="110" align="center">
         <template #default="scope">
           <el-tooltip class="box-item" effect="dark" :content="scope.row.fileMd5" placement="top-end">
             <span>{{ scope.row.fileMd5.substring(0, 12) }}...</span>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="120" align="center" >
+      <el-table-column prop="status" label="状态" align="center" >
         <template #default="scope">
           <el-link :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
         </template>
@@ -304,7 +304,8 @@ const handleSubmitTask = () => {
         transcodeId: transcodeDialog.value.form.transcodeId,
         command: transcodeDialog.value.form.command
       }).then(resp => {
-        ElMessage.info(resp.message)
+        ElMessage.success(resp.message)
+        transcodeDialog.value.visible = false
       })
     } else {
       ElMessage.error('请输入正确的数据！')
