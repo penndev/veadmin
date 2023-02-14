@@ -29,7 +29,7 @@
           <el-link :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="输出选项" min-width="140" align="left" header-align="center">
+      <el-table-column label="输出选项" min-width="180"  header-align="center">
         <template #default="scope">
           <pre>{{ scope.row.options }}</pre>
         </template>
@@ -162,6 +162,11 @@ const handlePlay = (path) => {
 </script>
 
 <style lang="scss" scoped>
+
+pre{
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 
 .ea-tag{
   margin: 2px;
