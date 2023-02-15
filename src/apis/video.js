@@ -97,3 +97,11 @@ export const deleteTask = (params) => {
     params
   })
 }
+
+export const progressTask = (params) => {
+  return service({
+    url: '/video/task/progress',
+    method: 'get',
+    params
+  })
+}

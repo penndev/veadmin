@@ -26,18 +26,18 @@
       </el-table-column>
       <el-table-column prop="status" label="状态" width="120" align="center" >
         <template #default="scope">
-          <el-link :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
+          <el-link @click="handleStatus(scope.row)" :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
+          <el-progress v-if="scope.row.status==0 && scope.row.progress" type="circle" :percentage="scope.row.progress" :width="60" />
         </template>
       </el-table-column>
-      <el-table-column label="输出选项" min-width="180"  header-align="center">
+      <el-table-column label="执行参数" min-width="180"  header-align="center">
         <template #default="scope">
           <pre>{{ scope.row.options }}</pre>
         </template>
       </el-table-column>
       <el-table-column label="输出文件路径" min-width="200" align="center">
         <template #default="scope">
-          <el-link v-if="scope.row.status > 0" @click="handlePlay(scope.row.outFile)" type="primary">{{ scope.row.outFile }}</el-link>
-          <el-link v-else type="warning" >{{ scope.row.outFile }}</el-link>
+          <el-link @click="scope.row.status > 0 ? handlePlay(scope.row.outFile): '' " :type="scope.row.status > 0 ? 'primary' :'warning'" >{{ scope.row.outFile }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
@@ -73,7 +73,7 @@
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { listTask, deleteTask } from '@/apis/video'
+import { listTask, deleteTask, progressTask } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -157,6 +157,17 @@ const handlePlay = (path) => {
     }
   }
   playDialogVisible.value = true
+}
+
+// 处理状态点击框
+const handleStatus = (row) => {
+  if (row.status === 0) {
+    progressTask({ id: row.id }).then(resp => {
+      row.progress = Math.floor(resp.progress)
+    })
+  } else if (row.status >= 0) {
+    handlePlay(row.outFile)
+  }
 }
 
 </script>
