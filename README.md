@@ -11,15 +11,7 @@
 
 2. 拥有后台管理的的基本功能
 
-3. 是代码尽量简单与分离，适合个人开发者快速使用
-
-## mock报错处理
-node_modules\mockjs\dist\mock.js:1480
-替换如下内容
-```
-var Canvas = require('canvas')
-canvas = new Canvas.createCanvas()
-```
+3. 是代码尽量简单与分离，适合个人开发者快速使用，减少繁重的配置
 
 ## 发布到githu page
 
@@ -27,6 +19,14 @@ canvas = new Canvas.createCanvas()
 git subtree push --prefix=dist origin gh-pages
 git push origin "$(git subtree split --prefix=dist gh-pages)":gh-pages --force
 ```
+
+### 计划任务
+
+- 增加文件批量上传 ×
+- 顶部Tab框可以关闭左侧，右侧，其他选项 ×
+- 增加搜索功能框 ×
+- 增加全局事件功能，更换路由后台任务可以继续执行如监控后台任务进度，下载上传文件不中断等功能  ×
+
 
 ### 开发过程感悟
 
