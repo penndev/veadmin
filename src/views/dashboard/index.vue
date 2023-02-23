@@ -4,14 +4,14 @@
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-people">
           <el-icon class="card-panel-icon">
-            <User />
+            <FolderOpened />
           </el-icon>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            新增用户
+            源文件总计
           </div>
-          <span class="card-panel-num">{{total1}}</span>
+          <span class="card-panel-num">{{fileSizeFormat(total1)}}</span>
         </div>
       </div>
     </el-col>
@@ -19,12 +19,12 @@
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-message">
           <el-icon class="card-panel-icon">
-            <Message />
+            <Files />
           </el-icon>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            未读消息
+            文件数量
           </div>
           <span class="card-panel-num">{{total2}}</span>
         </div>
@@ -34,12 +34,12 @@
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-money">
           <el-icon class="card-panel-icon">
-            <Money />
+            <SetUp />
           </el-icon>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            昨日营收
+            编码器数量
           </div>
           <span class="card-panel-num">{{total3}}</span>
         </div>
@@ -49,12 +49,12 @@
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-shopping">
           <el-icon class="card-panel-icon">
-            <ShoppingCart />
+            <DocumentCopy />
           </el-icon>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            昨日销量
+            任务数量
           </div>
           <span class="card-panel-num">{{total4}}</span>
         </div>
@@ -71,6 +71,7 @@ import { ref } from 'vue'
 
 // import 接口
 import { getDashboardTotal } from '@/apis/dashboard'
+import { fileSizeFormat } from '@/utils/comm'
 
 const total1 = ref(0)
 const total2 = ref(0)

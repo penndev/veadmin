@@ -15,9 +15,7 @@
 </template>
 <script setup>
 import { fileUploadPart, fileUploadBefore } from '@/apis/video'
-import { MD5LargeFile } from '@/utils/md5'
-
-// const limitsize = 1024 * 1024 * 2 // 2m
+import { MD5LargeFile } from '@/utils/comm'
 
 const handleUpload = async (options) => {
   options.onProgress({ percent: 0 })
