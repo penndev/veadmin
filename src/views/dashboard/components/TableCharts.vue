@@ -72,8 +72,4 @@ onMounted(() => {
   background-color: #fff;
 }
 
-.el-row{
-  // background-color: #fff;
-}
-
 </style>
