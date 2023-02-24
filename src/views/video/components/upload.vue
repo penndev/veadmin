@@ -3,11 +3,14 @@
         class="upload-demo"
         action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
         :http-request="handleUpload"
+        :limit="100"
+        :multiple="true"
+        accept="video/*"
     >
         <el-button type="primary"  icon="Upload" >点击上传</el-button>
         <template #tip>
             <div class="el-upload__tip">
-                文件上传提示符
+                仅允许上传视频媒体文件
             </div>
         </template>
     </el-upload>
