@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { formatRouteList } from '@/utils/comm'
+import { formatRouteList } from '@/router/format'
 
 import Layout from '@/views/layout/index.vue'
 

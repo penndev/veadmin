@@ -15,6 +15,14 @@
         <el-breadcrumb-item v-if="item.meta.title">{{ item.meta.title }}</el-breadcrumb-item>
       </template>
     </el-breadcrumb>
+    <div style="flex:1"></div>
+    <div class="ea-icon" style="max-width: 160px;">
+      <el-select filterable placeholder="搜索菜单">
+        <template v-for="item,index in routeListItem">
+          <el-option v-if="item.meta.title" :key="index" :label="item.meta.title" :value="item.path ?? '/'" />
+        </template>
+      </el-select>
+    </div>
     <div class="ea-icon" @click="handleFullScreen">
       <el-icon v-if="!fullScreen" title="打开全屏">
         <FullScreen />
@@ -37,12 +45,12 @@
       </template>
     </el-dropdown>
   </el-main>
-
 </template>
 
 <script setup>
 import { authStoe, layoutStoe } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
+import { routeListItem } from '@/router/format'
 
 import { watch, ref } from 'vue'
 
@@ -77,6 +85,9 @@ const handleFullScreen = () => {
   }
 }
 
+// 搜索框
+// const menuOptions = routeListItem
+
 </script>
 
 <style lang="scss" scoped>
@@ -84,9 +95,11 @@ const handleFullScreen = () => {
   .ea-icon {
     display: none;
   }
+
   .ea-dropdown {
     margin-left: auto;
   }
+
   .ea-dropdown-name {
     display: none;
   }
