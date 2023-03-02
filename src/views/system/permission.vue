@@ -31,7 +31,13 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="menu" label="菜单组" />
+        <el-table-column prop="menu" label="菜单组">
+          <template #default="scope">
+            <el-tag v-for="(val,key) of scope.row.menu.split(',')" :key="key" style="margin:1px">
+              {{ val }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="route" label="路由组">
           <template #default="scope">
             <el-tag v-for="(val,key) of scope.row.route" :key="key" type="success" style="margin:1px">
@@ -90,6 +96,7 @@
         </el-form-item>
         <el-form-item label="菜单" prop="menu">
           <el-input v-model="dialog.form.menu" />
+          <small>输入前端开发预留的[route.name]用英文逗号分割！</small>
         </el-form-item>
         <br/>
         <el-form-item label="路由组" prop="route">
@@ -111,9 +118,10 @@
           </div>
           <el-input v-model="dialog.tempvalue" >
             <template #append>
-              <el-button icon="Plus" @click="handleRouteAdd(dialog.tempvalue)" />
+              <el-button icon="Plus" @click="handleRouteAdd" />
             </template>
           </el-input>
+          <small>输入后端开发预留的接口地址，支持正则表达式匹配！</small>
         </el-form-item>
       </el-form>
 
@@ -182,7 +190,7 @@ const dialog = ref({
   formRule: {
     name: [
       { required: true, message: '管理员名称', trigger: 'blur' },
-      { min: 2, message: '用户名最少为2个字符', trigger: 'blur' }
+      { min: 2, message: '名称最少为2个字符', trigger: 'blur' }
     ]
   },
   formAction: 'add', // add|edit
@@ -191,20 +199,13 @@ const dialog = ref({
 
 const handleRouteDel = (value) => { // 清理路由json.
   dialog.value.form.route.splice(value, 1)
-  // value += ''
-  // const allowArr = []
-  // for (const i in dialog.value.form.route) {
-  //   if (i !== value) allowArr.push(dialog.value.form.route[i])
-  //   // console.log(dialog.value.form.route[i])
-  // }
-  // console.log(allowArr)
-  // dialog.value.form.route = allowArr
 }
-const handleRouteAdd = (path) => { // 增加路由到json.
+const handleRouteAdd = () => { // 增加路由到json.
   if (typeof dialog.value.form.route === 'undefined') {
     dialog.value.form.route = []
   }
-  dialog.value.form.route.push({ path })
+  dialog.value.form.route.push({ path: dialog.value.tempvalue })
+  dialog.value.tempvalue = ''
 }
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'

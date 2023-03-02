@@ -16,7 +16,7 @@
       <el-table-column prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="email" label="邮箱" min-width="240" />
       <el-table-column prop="nickname" label="名称" min-width="160" />
-      <el-table-column prop="roleName" label="权限" min-width="160" />
+      <el-table-column prop="AdminRole.name" label="权限" min-width="160" />
       <el-table-column prop="status" label="状态" min-width="120" >
         <template #default="scope">
           <el-switch
@@ -73,8 +73,8 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="dialog.form.nickname" />
       </el-form-item>
-      <el-form-item label="权限" prop="roleId">
-        <el-link type="primary"> {{ dialog.form.roleName }} [{{ dialog.form.roleId }}] | </el-link> &nbsp;
+      <el-form-item label="权限" prop="adminRoleId">
+        <el-link type="primary"> {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] | </el-link> &nbsp;
         <el-select
           v-model="dialog.roleSelect.value"
           filterable remote remote-show-suffix placeholder="输入权限名称"
@@ -168,6 +168,9 @@ const dialog = ref({
     email: [
       { required: true, message: '邮箱', trigger: 'blur' },
       { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    ],
+    adminRoleId: [
+      { required: true, message: '角色', trigger: 'blur' }
     ]
   },
   formAction: 'add', // add|edit
@@ -184,6 +187,7 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
 }
 const handleDialogEdit = (row) => {
+  if (row.adminRoleId < 1) return
   dialog.value.title = '创建数据'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
