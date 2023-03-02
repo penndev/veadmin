@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import SparkMD5 from 'spark-md5'
 
 // file File文件类型
@@ -36,6 +37,8 @@ export function MD5LargeFile (file, progress) {
   })
 }
 
+// 格式化文件大小
+// 从字节开始格式化
 export const fileSizeFormat = (b) => {
   if (b >= 1099511627776) {
     return (b / 1099511627776).toFixed(2) + 'T'
@@ -46,4 +49,23 @@ export const fileSizeFormat = (b) => {
   if (b >= 1048576) {
     return (b / 1048576).toFixed(2) + 'M'
   }
+}
+
+export const formatRouteList = (routes) => {
+  // 原始路由列表
+  const routelist = []
+  const formatRouteChildren = (children, basePath) => {
+    children.path = resolve(basePath, children.path)
+    if (children.children) {
+      for (const item of children.children) {
+        formatRouteChildren(item, children.path)
+      }
+    }
+  }
+  for (const item of routes) {
+    formatRouteChildren(item, '/')
+    // 进行角色权限验证
+    routelist.push(item)
+  }
+  return routelist
 }

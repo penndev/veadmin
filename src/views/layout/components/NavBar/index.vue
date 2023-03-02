@@ -50,9 +50,10 @@
 <script setup>
 import { authStoe, layoutStoe } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
-import { routeListItem } from '@/router/format'
-
+// import { routeListItem } from '@/router/format'
 import { watch, ref } from 'vue'
+
+const routeListItem = []
 
 const layout = layoutStoe()
 const router = useRouter()

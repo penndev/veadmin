@@ -5,33 +5,28 @@
       <div class="login_panle_form">
         <div class="login_panle_form_title">
           <img class="login_panle_form_title_logo" src="@/assets/logo.svg" />
-          <div class="login_panle_form_title_p" >
+          <div class="login_panle_form_title_p">
             用户登录
           </div>
         </div>
         <el-form ref="loginForm" :rules="rules" :model="formData">
           <el-form-item prop="username">
-            <el-input v-model="formData.username" placeholder="请输入用户名" >
+            <el-input v-model="formData.username" placeholder="请输入用户名">
               <template #suffix>
                 <span class="input-icon">
-                  <el-icon><User /></el-icon>
+                  <el-icon>
+                    <User />
+                  </el-icon>
                 </span>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input
-              placeholder="请输入密码"
-              v-model="formData.password"
-              :type="lock === 'lock' ? 'password' : 'text'"
-            >
+            <el-input placeholder="请输入密码" v-model="formData.password" :type="lock === 'lock' ? 'password' : 'text'">
               <template #suffix>
                 <a class="input-icon">
                   <el-icon>
-                    <component
-                      :is="lock"
-                      @click="handleChangeLock"
-                    />
+                    <component :is="lock" @click="handleChangeLock" />
                   </el-icon>
                 </a>
               </template>
@@ -39,24 +34,14 @@
           </el-form-item>
           <el-form-item prop="captcha">
             <div class="vPicBox">
-              <el-input
-                v-model="formData.captcha"
-                placeholder="请输入验证码"
-                style="width: 60%"
-              />
+              <el-input v-model="formData.captcha" placeholder="请输入验证码" style="width: 60%" />
               <div class="vPic">
-                <img alt="验证码"
-                  :src="captcha"
-                  @click="handleChangeCaptcha"
-                >
+                <img alt="验证码" :src="captcha" @click="handleChangeCaptcha">
               </div>
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button
-              type="primary" size="large" style="width: 46%;"
-              @click="formSubmit"
-            >
+            <el-button type="primary" size="large" style="width: 46%;" @click="formSubmit">
               登 录
             </el-button>
           </el-form-item>
@@ -132,6 +117,7 @@ const formSubmit = () => {
           return
         }
         permission.token = result.token
+        permission.routes = result.routes
         router.push(route.query.redirect ?? '/')
       }).catch(() => {
         handleChangeCaptcha()
@@ -146,80 +132,91 @@ const formSubmit = () => {
 
 <style lang="scss" scoped>
 #userLayout {
-    background-image: url("@/assets/login/login_background.jpg");
-    background-size: cover;
-    width: 100%;
-    height: 100%;
-    .input-icon{
-        padding-right: 6px;
-        padding-top: 4px;
+  background-image: url("@/assets/login/login_background.jpg");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+
+  .input-icon {
+    padding-right: 6px;
+    padding-top: 4px;
+  }
+
+  .login_panle {
+    width: 96vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, .8);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .login_panle_right {
+      // background-image: url("@/assets/vue.svg");
+      background-image: url("@/assets/logo-with-shadow.png");
+      background-size: cover;
+      width: 40%;
+      height: 60%;
+      float: right !important;
     }
-    .login_panle {
-        width: 96vw;
-        height: 100vh;
-        background-color: rgba(255, 255, 255, .8);
-        backdrop-filter: blur(5px);
-        border-radius: 10px;
+
+    .login_panle_form {
+      width: 420px;
+      background-color: #fff;
+      padding: 40px 40px 40px 40px;
+      border-radius: 10px;
+      box-shadow: 2px 3px 7px rgba(0, 0, 0, .2);
+
+      .login_panle_form_title {
         display: flex;
         align-items: center;
-        justify-content: center;
-        .login_panle_right {
-            // background-image: url("@/assets/vue.svg");
-            background-image: url("@/assets/logo-with-shadow.png");
-            background-size: cover;
-            width: 40%;
-            height: 60%;
-            float: right !important;
+        margin: 30px 0;
+
+        .login_panle_form_title_logo {
+          width: 90px;
+          height: 72px;
         }
-        .login_panle_form {
-            width: 420px;
-            background-color: #fff;
-            padding: 40px 40px 40px 40px;
-            border-radius: 10px;
-            box-shadow: 2px 3px 7px rgba(0, 0, 0, .2);
-            .login_panle_form_title {
-                display: flex;
-                align-items: center;
-                margin: 30px 0;
-                .login_panle_form_title_logo {
-                    width: 90px;
-                    height: 72px;
-                }
-                .login_panle_form_title_p {
-                    font-size: 40px;
-                    padding-left: 20px;
-                }
-            }
-            .vPicBox{
-                display:flex;
-                justify-content:space-between;
-                width:100%;
-            }
-            .vPic {
-                width: 33%;
-                height: 38px;
-                background: #ccc;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    vertical-align: middle;
-                }
-            }
+
+        .login_panle_form_title_p {
+          font-size: 40px;
+          padding-left: 20px;
         }
+      }
+
+      .vPicBox {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .vPic {
+        width: 33%;
+        height: 38px;
+        background: #ccc;
+
+        img {
+          width: 100%;
+          height: 100%;
+          vertical-align: middle;
+        }
+      }
     }
+  }
 }
 
 //小屏幕不显示右侧，将登陆框居中
 @media (max-width: 750px) {
-    .login_panle_right {
-        display: none;
-    }
-    .login_panle {
-        margin-left: 2vw;
-    }
-    .login_panle_form {
-        width: 100%;
-    }
-}
+  .login_panle_right {
+    display: none;
+  }
 
+  .login_panle {
+    margin-left: 2vw;
+  }
+
+  .login_panle_form {
+    width: 100%;
+  }
+}
 </style>

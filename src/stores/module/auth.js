@@ -4,8 +4,8 @@ import { defineStore } from 'pinia'
 export default defineStore('auth', {
   state: () => {
     return {
-      token: null
-      // routes: {} //如果用户需要配置路由权限则配置在这里
+      token: null, // 用户token数据
+      routes: null // 用户授权的 router
     }
   },
   persist: true // 配置持久化

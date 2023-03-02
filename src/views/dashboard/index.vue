@@ -71,7 +71,7 @@ import { ref } from 'vue'
 
 // import 接口
 import { getDashboardTotal } from '@/apis/dashboard'
-import { fileSizeFormat } from '@/utils/comm'
+import { fileSizeFormat } from '@/utils'
 
 const total1 = ref(0)
 const total2 = ref(0)

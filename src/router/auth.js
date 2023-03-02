@@ -1,5 +1,5 @@
-import router from '.'
 import { authStoe } from '@/stores'
+import router from '@/router'
 
 router.beforeEach(async (to, from, next) => {
   // 如果跳转路由是在白名单中则直接放行

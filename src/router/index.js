@@ -1,10 +1,14 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { formatRouteList } from '@/router/format'
-
+import { formatRouteList } from '@/utils'
 import Layout from '@/views/layout/index.vue'
 
-const routes = [
-  // 功能型路由
+/**
+ * 动态路由不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
+ * 所以最有效率的解决办法是通过hide + beforeEach 来控制权限问题
+ * formatRouteList route.meta.white 不做任何校验。 否则会进行权限判断是否hidden.
+ */
+const routes = formatRouteList([
+  // default route
   {
     name: 'notFound',
     path: '/:pathMatch(.*)*',
@@ -20,10 +24,17 @@ const routes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index.vue'),
         name: 'Dashboard',
-        meta: { title: '仪表盘', icon: 'Odometer' }
+        meta: { white: true, title: '仪表盘', icon: 'Odometer' }
       }
     ]
   },
+  {
+    name: 'login',
+    path: '/login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { white: true, hidden: true }
+  },
+  // dynamic route
   {
     path: '/system',
     component: Layout,
@@ -94,18 +105,12 @@ const routes = [
       icon: 'PictureRounded',
       path: 'https://element-plus.org/zh-CN/component/icon.html#%E5%9B%BE%E6%A0%87%E9%9B%86%E5%90%88'
     }
-  },
-  {
-    name: 'login',
-    path: '/login',
-    component: () => import('@/views/login/index.vue'),
-    meta: { white: true, hidden: true }
   }
-]
+])
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes: formatRouteList(routes)
+  routes
 })
 
 export default router
