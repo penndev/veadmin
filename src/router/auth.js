@@ -1,16 +1,34 @@
 import { authStoe } from '@/stores'
 import router from '@/router'
+import { ElMessage } from 'element-plus'
+
+// 路由挂载比store挂载早。不能直接初始化
+let auth = null
+const getToken = () => {
+  if (auth === null) {
+    auth = authStoe()
+  }
+  return !!auth.token
+}
+const getRole = (name) => {
+  if (auth === null) {
+    auth = authStoe()
+  }
+  if (auth.routes === '*') return true
+  return auth.routes.indexOf(name) !== -1
+}
 
 router.beforeEach(async (to, from, next) => {
-  // 如果跳转路由是在白名单中则直接放行
-  if (to.meta.white !== undefined && to.meta.white === true) {
+  if (to.meta && to.meta.white === true) { // 放行白名单
     next()
     return
   }
-  // 如果用户登录过的 则直接放行
-  const auth = authStoe()
-  if (auth.token != null) {
-    next()
+  if (getToken()) { // 用户登陆过
+    if (getRole(to.name)) { // 验证权限
+      next()
+    } else { // 提示权限不足
+      ElMessage.error(`当前用户暂时无权访问，请联系管理员添加[${to.name}]权限。`)
+    }
     return
   }
 

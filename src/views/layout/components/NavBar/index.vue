@@ -17,9 +17,17 @@
     </el-breadcrumb>
     <div style="flex:1"></div>
     <div class="ea-icon" style="max-width: 160px;">
-      <el-select filterable placeholder="搜索菜单">
-        <template v-for="item,index in routeListItem">
-          <el-option v-if="item.meta.title" :key="index" :label="item.meta.title" :value="item.path ?? '/'" />
+      <el-select filterable placeholder="搜索菜单" @change="selectMenu">
+        <template v-for="item,index in routes">
+          <template v-if="item.meta">
+            <el-option v-if="item.meta.title && item.meta.hidden != true" :key="index" :label="item.meta.title" :value="item.meta.path ?? item.path" />
+          </template>
+          <!-- 组 -->
+          <template v-if="item.children">
+            <template v-for="citem,cindex in item.children">
+              <el-option v-if="citem.meta && citem.meta.title && citem.meta.hidden != true" :key="index + '-' + cindex" :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title" :value="citem.path" />
+            </template>
+          </template>
         </template>
       </el-select>
     </div>
@@ -50,10 +58,8 @@
 <script setup>
 import { authStoe, layoutStoe } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
-// import { routeListItem } from '@/router/format'
-import { watch, ref } from 'vue'
 
-const routeListItem = []
+import { watch, ref } from 'vue'
 
 const layout = layoutStoe()
 const router = useRouter()
@@ -86,8 +92,15 @@ const handleFullScreen = () => {
   }
 }
 
-// 搜索框
-// const menuOptions = routeListItem
+// 菜单列表
+const routes = router.options.routes
+const selectMenu = (value) => {
+  if (value.startsWith('http')) {
+    window.open(value, '_bank')
+  } else {
+    router.push({ path: value })
+  }
+}
 
 </script>
 
