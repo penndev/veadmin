@@ -8,7 +8,7 @@
         <el-icon v-if="item.meta.icon">
           <component :is="item.meta.icon" />
         </el-icon>
-        <span>{{ item.meta.title }}{{ allow }}</span>
+        <span>{{ item.meta.title }}</span>
       </li>
     </template>
 
