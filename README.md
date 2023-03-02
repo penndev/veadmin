@@ -26,9 +26,6 @@
 - 增加i18n国际化支持?
 
 
-## 发布到githu page
+## 接口支持
 
-```
-git subtree push --prefix=dist origin gh-pages
-git push origin "$(git subtree split --prefix=dist gh-pages)":gh-pages --force
-```
+后端已经使用 nodejs 集成了本项目 参阅本人另外一个项目 vod
