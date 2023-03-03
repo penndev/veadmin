@@ -2,9 +2,10 @@
     <router-view></router-view>
 </template>
 <style lang="scss">
-html, body {
+html, body, #app{
   margin: 0;
   border: 0;
   padding: 0;
+  height: 100%;
 }
 </style>

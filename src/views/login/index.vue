@@ -131,6 +131,7 @@ const formSubmit = () => {
 </script>
 
 <style lang="scss" scoped>
+
 #userLayout {
   background-image: url("@/assets/login/login_background.jpg");
   background-size: cover;
@@ -144,7 +145,7 @@ const formSubmit = () => {
 
   .login_panle {
     width: 96vw;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(255, 255, 255, .8);
     backdrop-filter: blur(5px);
     border-radius: 10px;

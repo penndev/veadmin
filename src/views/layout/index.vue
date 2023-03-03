@@ -1,15 +1,15 @@
 <template>
   <el-container class="ea-layout">
-
+    <!-- 菜单栏 -->
     <div class="ea-aside-mask" v-if="!layout.collapse" @click="handleCollapse"></div>
     <el-aside class="ea-aside" :class="{ 'ea-aside-collapse': layout.collapse }">
-      <div class="logo ">
+      <div class="logo">
         <img class="logoimg" src="@/assets/logo.svg">
         <h2 v-if="!layout.collapse" class="logotitle"> {{ $env.VE_NAME }} </h2>
       </div>
       <AsideBar />
     </el-aside>
-
+    <!-- 功能栏 -->
     <el-container class="ea-select">
 
       <el-header>
@@ -61,11 +61,11 @@ const handleCollapse = () => {
     opacity: 0.3;
     height: 100%;
     position: absolute;
-    z-index: 999;
+    z-index: 9999;
   }
 
   .ea-aside {
-    z-index: 1000;
+    z-index: 10000;
     position: absolute;
     height: 100%;
     top: 0;

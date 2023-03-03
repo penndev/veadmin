@@ -24,6 +24,13 @@ const routes = formatRouteList([
     meta: { white: true, hidden: true }
   },
   {
+    name: 'login',
+    path: '/login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { white: true, hidden: true }
+  },
+  // menu route
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -32,17 +39,10 @@ const routes = formatRouteList([
         path: 'dashboard',
         component: () => import('@/views/dashboard/index.vue'),
         name: 'Dashboard',
-        meta: { white: true, title: '仪表盘', icon: 'Odometer' }
+        meta: { title: '仪表盘', icon: 'Odometer' }
       }
     ]
   },
-  {
-    name: 'login',
-    path: '/login',
-    component: () => import('@/views/login/index.vue'),
-    meta: { white: true, hidden: true }
-  },
-  // dynamic route
   {
     path: '/system',
     component: Layout,

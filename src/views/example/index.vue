@@ -15,12 +15,16 @@
     <el-main style="background-color:#fff">
       <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
       <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-        <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
-        <el-table-column prop="email" label="邮箱" width="240" />
+        <el-table-column prop="id" label="ID" width="80" sortable="custom" />
         <el-table-column prop="nickname" label="名称" width="160" />
-        <el-table-column prop="updated_at" label="最近更新" width="200" />
-        <el-table-column prop="created_at" label="创建日期" width="200" />
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column prop="email" label="邮箱" width="240">
+          <template #default="scope">
+            <a target="_blank">{{ scope.row.email }}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="updatedAt" label="最近更新" width="200" />
+        <el-table-column prop="createdAt" label="创建日期" width="200" />
+        <el-table-column fixed="right" label="操作" width="105">
           <template #default="scope">
             <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
             <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>

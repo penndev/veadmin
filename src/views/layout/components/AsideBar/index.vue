@@ -37,6 +37,10 @@ const routes = router.options.routes
 const active = ref(route.path)
 watch(route, () => {
   active.value = route.path
+  // 如果小于720px则菜单变动关闭侧边栏
+  if (document.body.scrollWidth <= 720) {
+    layout.collapse = true
+  }
 })
 </script>
 
