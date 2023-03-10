@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column label="输出文件路径" min-width="200" align="center">
         <template #default="scope">
-          <el-link @click="scope.row.status > 0 ? handlePlay(scope.row.outFile): '' " :type="scope.row.status > 0 ? 'primary' :'warning'" >{{ scope.row.outFile }}</el-link>
+          <el-link @click="copyPath(scope.row)" :type="scope.row.status > 0 ? 'primary' :'warning'" >{{ scope.row.outFile }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
@@ -73,7 +73,7 @@
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { listTask, deleteTask, progressTask } from '@/apis/video'
+import { listTask, deleteTask, progressTask, fileNodes } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -92,8 +92,14 @@ const table = ref({
       0: '转码中',
       1: '转码成功'
     }
-  }
+  },
+  fileNodes: {}
 })
+const handleFileNodes = (value) => {
+  fileNodes().then(result => {
+    table.value.fileNodes = result
+  })
+}
 const handleQueryRefresh = (value) => {
   table.value.query.fileName = null
   table.value.query.fileMd5 = null
@@ -124,7 +130,6 @@ const handleTableData = () => {
     table.value.total = result.total
   })
 }
-handleTableData()
 
 // 删除数据
 const handleDialogDelete = (row) => {
@@ -143,12 +148,17 @@ const handleDialogDelete = (row) => {
 // 播放弹窗
 const playDialogVisible = ref(false)
 const playOptions = ref({})
-const handlePlay = (path) => {
+const handlePlay = (row) => {
+  if (!(row.VideoFile.node in table.value.fileNodes)) {
+    ElMessage.error('文件节点错误')
+    return
+  }
+  const path = `${table.value.fileNodes[row.VideoFile.node]}/${row.outFile}`
   playOptions.value = {
     autoplay: true,
     controls: true,
     sources: [
-      'http://127.0.0.1:8081/' + path
+      path
     ],
     html5: {
       vhs: {
@@ -158,6 +168,20 @@ const handlePlay = (path) => {
   }
   playDialogVisible.value = true
 }
+const copyPath = (row) => {
+  if (!(row.VideoFile.node in table.value.fileNodes)) {
+    ElMessage.error('文件节点错误')
+    return
+  }
+  const path = `${table.value.fileNodes[row.VideoFile.node]}/${row.outFile}`
+  const textarea = document.createElement('textarea')
+  textarea.value = path
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
+  ElMessage.info('复制成功')
+}
 
 // 处理状态点击框
 const handleStatus = (row) => {
@@ -166,9 +190,12 @@ const handleStatus = (row) => {
       row.progress = Math.floor(resp.progress)
     })
   } else if (row.status >= 0) {
-    handlePlay(row.outFile)
+    handlePlay(row)
   }
 }
+
+handleFileNodes()
+handleTableData()
 
 </script>
 

@@ -45,8 +45,8 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template #default="scope">
           <el-popover placement="top-start" title="Play" :width="220" trigger="hover">
-            <el-button @click="handlePlay(scope.row.filePath)">VideoJS</el-button>
-            <el-button @click="handleDownload(scope.row.filePath)">Download</el-button>
+            <el-button @click="handlePlay(scope.row.node,scope.row.filePath)">VideoJS</el-button>
+            <el-button @click="handleDownload(scope.row.node,scope.row.filePath)">Download</el-button>
             <template #reference>
               <el-button link type="info">预览</el-button>
             </template>
@@ -140,7 +140,7 @@ import upload from './components/upload.vue'
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { listFile, updateFile, deleteFile, addTask, listTranscode } from '@/apis/video'
+import { listFile, updateFile, deleteFile, addTask, listTranscode, fileNodes } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -160,8 +160,14 @@ const table = ref({
       0: '上传中',
       1: '文件正常'
     }
-  }
+  },
+  fileNodes: {}
 })
+const handleFileNodes = (value) => {
+  fileNodes().then(result => {
+    table.value.fileNodes = result
+  })
+}
 const handleQueryRefresh = (value) => {
   table.value.query.fileName = null
   table.value.query.fileMd5 = null
@@ -192,7 +198,6 @@ const handleTableData = () => {
     table.value.total = result.total
   })
 }
-handleTableData()
 
 // 新增编辑数据
 const dialogRef = ref(null)
@@ -226,8 +231,10 @@ const handleDialogDelete = (row) => {
     })
   })
 }
+/**
+ * 提交表单数据
+ */
 const handleSubmitForm = () => {
-  // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) {
       if (dialog.value.formAction === 'edit') {
@@ -248,12 +255,17 @@ const handleSubmitForm = () => {
 // 播放弹窗
 const playDialogVisible = ref(false)
 const playOptions = ref({})
-const handlePlay = (path) => {
+const handlePlay = (node, path) => {
+  if (!(node in table.value.fileNodes)) {
+    ElMessage.error('文件节点错误')
+    return
+  }
+  path = `${table.value.fileNodes[node]}/${path}`
   playOptions.value = {
     autoplay: true,
     controls: true,
     sources: [
-      'http://127.0.0.1:8081/' + path
+      path
     ],
     html5: {
       vhs: {
@@ -263,8 +275,13 @@ const handlePlay = (path) => {
   }
   playDialogVisible.value = true
 }
-const handleDownload = (path) => {
-  open('http://127.0.0.1:8081/' + path, '_bank')
+const handleDownload = (node, path) => {
+  if (!(node in table.value.fileNodes)) {
+    ElMessage.error('文件节点错误')
+    return
+  }
+  path = `${table.value.fileNodes[node]}/${path}`
+  open(path, '_bank')
 }
 
 // 转码任务弹窗
@@ -288,7 +305,6 @@ const getTranscodeSelect = async () => {
     transcodeDialog.value.transcodeSelect = resdata.data
   }
 }
-getTranscodeSelect() // 初始化select数据
 const handleTranscode = (row) => {
   transcodeDialog.value.title = row.fileName
   transcodeDialog.value.visible = true
@@ -298,7 +314,6 @@ const dialogTranscodeRef = ref(null)
 const handleSubmitTask = () => {
   dialogTranscodeRef.value.validate((validate) => {
     if (validate) {
-      console.log(transcodeDialog.value.form.id, transcodeDialog.value.form.transcodeId)
       addTask({
         fileId: transcodeDialog.value.form.id,
         transcodeId: transcodeDialog.value.form.transcodeId,
@@ -307,12 +322,16 @@ const handleSubmitTask = () => {
         ElMessage.success(resp.message)
         transcodeDialog.value.visible = false
       })
+      transcodeDialog.value.visible = false
     } else {
       ElMessage.error('请输入正确的数据！')
     }
   })
 }
 
+handleTableData()
+handleFileNodes()
+getTranscodeSelect()
 </script>
 
 <style lang="scss" scoped>
