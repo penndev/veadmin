@@ -14,7 +14,7 @@ const getRole = (name) => {
   if (auth === null) {
     auth = authStoe()
   }
-  if (!auth.router) return false
+  if (!auth.routes) return false
   if (auth.routes === '*') return true
   return auth.routes.indexOf(name) !== -1
 }
