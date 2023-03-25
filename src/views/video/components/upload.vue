@@ -2,7 +2,7 @@
     <el-upload
         class="upload-demo"
         action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-        :http-request="handleUpload"
+        :http-request="handleUploadCatch"
         :limit="100"
         :multiple="true"
         accept="video/*"
@@ -45,6 +45,21 @@ const handleUpload = async (options) => {
     formData.append('uploadData', uploadData)
     await fileUploadPart(formData)
     options.onProgress({ percent: parseInt((currentPart / countPart) * 100) })
+  }
+}
+
+
+const handleUploadCatch = async (options) => {
+  try {
+    await handleUpload(options)
+  } catch (error) {
+    ElNotification({
+      title: options.file.name,
+      message: String(error),
+      type: 'error',
+      duration: 0
+    })
+    throw error
   }
 }
 
