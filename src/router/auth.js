@@ -47,8 +47,6 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  // 最后的结果则跳转到登录页面
-  // console.log('this router is not access [to],[from]', to, from)
   next({
     name: 'login',
     query: {
