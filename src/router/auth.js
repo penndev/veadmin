@@ -27,6 +27,7 @@ router.beforeEach(async (to, from, next) => {
   // 用户登陆过
   if (getToken()) {
     if (getRole(to.name)) { // 验证权限
+      document.title = to.meta.title ?? '后台管理系统'
       next()
     } else { // 提示权限不足
       try {

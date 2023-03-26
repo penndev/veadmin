@@ -19,6 +19,7 @@
 <script setup>
 import { fileUploadPart, fileUploadBefore } from '@/apis/video'
 import { MD5LargeFile } from '@/utils'
+import { ElNotification } from 'element-plus'
 
 const handleUpload = async (options) => {
   options.onProgress({ percent: 0 })
