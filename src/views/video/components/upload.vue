@@ -54,6 +54,7 @@ const handleUploadCatch = async (options) => {
   try {
     await handleUpload(options)
   } catch (error) {
+    console.log(error)
     ElNotification({
       title: options.file.name,
       message: error.response.data,
