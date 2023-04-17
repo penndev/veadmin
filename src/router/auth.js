@@ -1,6 +1,6 @@
 import { authStoe } from '@/stores'
 import router from '@/router'
-import { ElMessage } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 // 路由挂载比store挂载早。不能直接初始化
 let auth = null
@@ -14,6 +14,7 @@ const getRole = (name) => {
   if (auth === null) {
     auth = authStoe()
   }
+  if (!auth.routes) return false
   if (auth.routes === '*') return true
   return auth.routes.indexOf(name) !== -1
 }
@@ -23,17 +24,30 @@ router.beforeEach(async (to, from, next) => {
     next()
     return
   }
-  if (getToken()) { // 用户登陆过
+  // 用户登陆过
+  if (getToken()) {
     if (getRole(to.name)) { // 验证权限
+      document.title = to.meta.title ?? '后台管理系统'
       next()
     } else { // 提示权限不足
-      ElMessage.error(`当前用户暂时无权访问，请联系管理员添加[${to.name}]权限。`)
+      try {
+        await ElMessageBox.confirm(
+            `当前用户暂时无权访问，请联系管理员添加[${to.name}]权限。或尝试重新登录获取权限`,
+            '访问失败',
+            {
+              confirmButtonText: '返回',
+              cancelButtonText: '重新登录',
+              type: 'error'
+            }
+        )
+        next(Error('没有访问权限'))
+      } catch (error) {
+        next({ name: 'login' })
+      }
     }
     return
   }
 
-  // 最后的结果则跳转到登录页面
-  // console.log('this router is not access [to],[from]', to, from)
   next({
     name: 'login',
     query: {
