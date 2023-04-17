@@ -1,12 +1,12 @@
 <template>
-  <video ref="videoTag" class="video-main video-js" />
+  <video ref="videoTag" class="video-main video-js  vjs-16-9" />
 </template>
 
 <script setup>
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-import { onMounted, ref, onBeforeUnmount } from 'vue'
+import { onMounted, ref, onBeforeUnmount, watch } from 'vue'
 
 const props = defineProps({
   options: {
@@ -21,13 +21,11 @@ let player = null
 
 const videoTag = ref(null)
 
-const main = () => {
-  player = videojs(videoTag.value, props.options, (video) => {
-    console.log('播放器准备中...')
+onMounted(() => {
+  player = videojs(videoTag.value, props.options, (p) => {
+    console.log('播放器准备中...', p)
   })
-}
-
-onMounted(main)
+})
 
 onBeforeUnmount(() => {
   console.log('dispose=>', player)
@@ -36,11 +34,17 @@ onBeforeUnmount(() => {
   }
 })
 
+watch(props, () => {
+  if (player) {
+    player.src(props.options.sources)
+  }
+})
+
 </script>
 
 <style lang="scss" scoped>
 .video-main{
-    max-width: 100%;
-    max-height: 400px;
+    width: 100%;
+    max-height: auto;
 }
 </style>
