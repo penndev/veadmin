@@ -46,8 +46,17 @@ export const fileSizeFormat = (b) => {
   if (b >= 1073741824) {
     return (b / 1073741824).toFixed(2) + 'G'
   }
-  if (b >= 1048576) {
-    return (b / 1048576).toFixed(2) + 'M'
+  return (b / 1048576).toFixed(2) + 'M'
+}
+
+// 格式化时间 秒对文字
+export const timeFormat = (sec) => {
+  if (sec >= 3600) {
+    return (sec / 3600).toFixed(2) + '小时'
+  } else if (sec >= 60) {
+    return (sec / 60).toFixed(2) + '分钟'
+  } else {
+    return sec + '秒'
   }
 }
 
