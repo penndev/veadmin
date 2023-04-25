@@ -121,7 +121,7 @@
               <el-button icon="Plus" @click="handleRouteAdd" />
             </template>
           </el-input>
-          <small>输入后端开发预留的接口地址，支持正则表达式匹配！</small>
+          <small>输入后端开发预留的接口地址，/ 表示所有，否则需要粘贴全路径部分 例: /admin/add </small>
         </el-form-item>
       </el-form>
 
@@ -201,7 +201,7 @@ const handleRouteDel = (value) => { // 清理路由json.
   dialog.value.form.route.splice(value, 1)
 }
 const handleRouteAdd = () => { // 增加路由到json.
-  if (typeof dialog.value.form.route === 'undefined') {
+  if (!dialog.value.form.route) {
     dialog.value.form.route = []
   }
   dialog.value.form.route.push({ path: dialog.value.tempvalue })

@@ -49,7 +49,6 @@ const handleUpload = async (options) => {
   }
 }
 
-
 const handleUploadCatch = async (options) => {
   try {
     await handleUpload(options)
