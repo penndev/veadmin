@@ -1,7 +1,7 @@
 <template>
   <div class="ve-history">
     <el-tabs type="card" closable v-model="selected" @tab-click="handleClicked" @tab-remove="handleRemove">
-      <template v-for="(item, key, index) in layout.history" :key="index">
+      <template v-for="(item, key, index) in layoutHistory" :key="index">
         <el-tab-pane v-if="item.meta" :name="key">
           <template #label>
             <span @contextmenu.prevent="openMenu(key, $event)"><i class="hot" />{{ item.meta.title }}</span>
@@ -19,17 +19,22 @@
 </template>
 
 <script setup>
+import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { layoutStoe } from '@/stores'
 
-const layout = layoutStoe() // 通用组件布局
 const router = useRouter()
 const route = useRoute()
 const selected = ref(route.path) // 当前活动的plan select 会被watch捕获
+const layoutHistory = ref({})
+layoutHistory.value[route.path] = {
+  path: route.path,
+  name: route.name,
+  meta: route.meta
+}
 
 watch(route, () => {
-  layout.history[route.path] = {
+  layoutHistory.value[route.path] = {
     path: route.path,
     name: route.name,
     meta: route.meta
@@ -44,17 +49,11 @@ const handleClicked = (plan) => {
 
 // 点击移除某个历史
 const handleRemove = (TabPanelName) => {
-  // 从历史展示移除
-  delete layout.history[TabPanelName]
-}
-
-// 判断当前页面是否存在历史list里面 不存在则添加
-if (!(route.path in layout.history)) {
-  layout.history[route.path] = {
-    path: route.path,
-    name: route.name,
-    meta: route.meta
+  if (TabPanelName === route.path) {
+    ElMessage.warning('当前的菜单不可关闭！')
+    return
   }
+  delete layoutHistory.value[TabPanelName]
 }
 
 // 处理右键关闭按钮
@@ -70,30 +69,35 @@ const closeMenu = () => {
   veContextMenu.value.style.display = 'none'
 }
 const closeOther = () => {
-  for (const item in layout.history) {
+  for (const item in layoutHistory.value) {
     if (item !== veContextMenuSelect.value) {
-      delete layout.history[item]
+      delete layoutHistory.value[item]
     }
   }
   closeMenu()
 }
 const closeAll = () => {
-  layout.history = {}
+  layoutHistory.value = {}
+  layoutHistory.value[route.path] = {
+    path: route.path,
+    name: route.name,
+    meta: route.meta
+  }
   closeMenu()
 }
 const closeRight = () => {
   let d = false
-  for (const item in layout.history) {
-    if (d) delete layout.history[item]
+  for (const item in layoutHistory.value) {
+    if (d && item !== selected.value) delete layoutHistory.value[item]
     if (item === veContextMenuSelect.value) d = true
   }
   closeMenu()
 }
 const closeLeft = () => {
   let d = false
-  for (const item in layout.history) {
+  for (const item in layoutHistory.value) {
     if (item === veContextMenuSelect.value) d = true
-    if (d === false) delete layout.history[item]
+    if (d === false && item !== selected.value) delete layoutHistory.value[item]
   }
   closeMenu()
 }
