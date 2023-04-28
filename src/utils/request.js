@@ -40,6 +40,7 @@ service.interceptors.response.use(
     }
     switch (status) {
       case 400:
+      case 403:
         ElMessage.error(error.response.data.message ?? error.response.data)
         break
       case 401:

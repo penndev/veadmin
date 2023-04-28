@@ -74,10 +74,10 @@
         <el-input v-model="dialog.form.nickname" />
       </el-form-item>
       <el-form-item label="权限" prop="adminRoleId">
-        <el-link type="primary"> {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] | </el-link> &nbsp;
+        <el-link type="primary" v-if="dialog.form.AdminRole"> {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] | </el-link> &nbsp;
         <el-select
           v-model="dialog.roleSelect.value"
-          filterable remote remote-show-suffix placeholder="输入权限名称"
+          filterable remote remote-show-suffix placeholder="输入权限名称来搜索权限列表"
           :remote-method="handleRoleSelectSearch"
           @change="handleRoleSelectChange"
           :loading="dialog.roleSelect.loading"
@@ -235,8 +235,8 @@ const handleRoleSelectSearch = async (query) => {
   dialog.value.roleSelect.options = roleList.data
 }
 const handleRoleSelectChange = async (val) => {
-  dialog.value.form.roleId = val.id
-  dialog.value.form.roleName = val.name
+  dialog.value.form.adminRoleId = val.id
+  dialog.value.form.AdminRole = val
 }
 
 handleTableData()

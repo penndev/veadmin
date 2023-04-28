@@ -96,7 +96,7 @@
         </el-form-item>
         <el-form-item label="菜单" prop="menu">
           <el-input v-model="dialog.form.menu" />
-          <small>输入前端开发预留的[route.name]用英文逗号分割！</small>
+          <small>输入前端开发中的路由名称用英文逗号分割！例 `Dashboard,SystemAdministrator | *` </small>
         </el-form-item>
         <br/>
         <el-form-item label="路由组" prop="route">
@@ -121,7 +121,7 @@
               <el-button icon="Plus" @click="handleRouteAdd" />
             </template>
           </el-input>
-          <small>输入后端开发预留的接口地址，/ 表示所有，否则需要粘贴全路径部分 例: /admin/add </small>
+          <small>输入后端开发预留的全路径部分接口地址！例 `/admin/add | *` </small>
         </el-form-item>
       </el-form>
 
