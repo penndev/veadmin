@@ -1,11 +1,11 @@
 <template>
     <el-upload
         class="upload-demo"
-        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
         :http-request="handleUploadCatch"
         :limit="100"
         :multiple="true"
         accept="video/*"
+        v-bind="$attrs"
     >
         <el-button type="primary"  icon="Upload" >点击上传</el-button>
         <template #tip>

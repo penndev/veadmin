@@ -16,7 +16,7 @@
   </div>
 
   <el-main style="background-color:#fff">
-    <upload />
+    <upload :on-success="handleUploadSuccess" />
     <el-table :data="table.data" @sort-change="handleSortChange" style="width: 100%;height: 100%;" >
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" align="center" />
       <el-table-column prop="fileName" label="文件名" min-width="160"  align="center" />
@@ -220,7 +220,7 @@ const handleDialogEdit = (row) => {
   dialog.value.form = row
 }
 const handleDialogDelete = (row) => {
-  ElMessageBox.confirm('请仔细确认是否删除 ' + row.name + ' ?', '警告', {
+  ElMessageBox.confirm('请仔细确认是否删除 ' + row.fileName + ' ?', '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
@@ -282,6 +282,11 @@ const handleDownload = (node, path) => {
   }
   path = `${table.value.fileNodes[node]}/${path}`
   open(path, '_bank')
+}
+
+const handleUploadSuccess = () => {
+  ElMessage.success('上传成功！')
+  handleTableData()
 }
 
 // 转码任务弹窗

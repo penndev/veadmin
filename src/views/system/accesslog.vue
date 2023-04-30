@@ -16,6 +16,7 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="AdminUser.nickname" label="管理员" width="80" />
+      <el-table-column prop="AdminUser.id" label="管理ID" width="80" />
       <el-table-column prop="ip" label="来源IP地址" width="120" />
       <el-table-column prop="path" label="请求地址" />
       <el-table-column prop="method" label="请求方法" width="100" />
