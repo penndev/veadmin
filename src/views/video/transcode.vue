@@ -37,7 +37,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="command" label="附加配置" width="180" />
+        <el-table-column prop="command" label="附加配置" width="180">
+          <template #default="scope">
+            <span style="white-space: pre-wrap;" >{{ scope.row.command }}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column prop="updatedAt" label="最近更新" width="200" />
         <el-table-column prop="createdAt" label="创建日期" width="200" />
@@ -82,7 +86,7 @@
         </el-form-item>
         <el-form-item label="视频宽" prop="vwidth">
           <el-input-number
-            min="0" max="7680" v-model="dialog.form.vwidth"
+            :min="0" :max="7680" v-model="dialog.form.vwidth"
             controls-position="right"
             placeholder="“0”或者“空”为源文件宽 或根据高自适应"
             style="width:100%"
@@ -90,7 +94,7 @@
         </el-form-item>
         <el-form-item label="视频高" prop="vheight">
           <el-input-number
-            min="0" max="4320" v-model="dialog.form.vheight"
+            :min="0" :max="4320" v-model="dialog.form.vheight"
             controls-position="right"
             placeholder="“0”或者“空”为源文件高 或根据宽自适应"
             style="width:100%"
@@ -98,7 +102,7 @@
         </el-form-item>
         <el-form-item label="质量控制" prop="vcrf">
           <el-input-number
-            min="0" max="51"  v-model="dialog.form.vcrf"
+            :min="0" :max="51"  v-model="dialog.form.vcrf"
             controls-position="right"
             placeholder="数值越小，视频质量越高 默认为23"
             style="width:100%"
@@ -106,7 +110,7 @@
         </el-form-item>
         <el-form-item label="视频帧率" prop="vfps">
           <el-input-number
-            min="0" max="60" v-model="dialog.form.vfps"
+            :min="0" :max="60" v-model="dialog.form.vfps"
             controls-position="right"
             placeholder="“0”或者“空”为源文件帧率"
             style="width:100%"
@@ -114,7 +118,7 @@
         </el-form-item>
         <el-form-item label="视频码率" prop="vbitrate">
           <el-input-number
-            min="0" v-model="dialog.form.vbitrate"
+            :min="0" v-model="dialog.form.vbitrate"
             controls-position="right"
             placeholder="kbps 不输入则使用ffmpeg内置码率"
             style="width:100%"
@@ -127,7 +131,7 @@
 
         <el-form-item label="音频比特率" prop="abitrate">
           <el-input-number
-            v-model="dialog.form.abitrate" min="0" max="1000"
+            v-model="dialog.form.abitrate" :min="0" :max="1000"
             placeholder="kbps 不输入则使用ffmpeg内置码率"
             controls-position="right" style="width:100%"
           />
@@ -136,7 +140,7 @@
         <el-form-item label="音频采样率" prop="asamplerate">
           <el-input-number
             v-model="dialog.form.asamplerate"
-            min="0"
+            :min="0"
             placeholder="(44100  48000)Hz 不输入则使用ffmpeg内置采样率"
             controls-position="right" style="width:100%"
           />
@@ -145,7 +149,7 @@
         <el-form-item label="音频通道" prop="achannel">
           <el-input-number
             v-model="dialog.form.achannel"
-            min="0" max="8"
+            :min="0" :max="8"
             placeholder="不输入则使用ffmpeg内置采样率"
             controls-position="right" style="width:100%"
           />
@@ -156,7 +160,7 @@
             v-model="dialog.form.command"
             rows="3"
             type="textarea"
-            placeholder="FFMPEG自定义的参数用英文“;”分割"
+            placeholder="FFMPEG自定义的参数 按行分割"
           />
         </el-form-item>
 

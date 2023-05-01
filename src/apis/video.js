@@ -1,20 +1,9 @@
 import service from '@/utils/request'
 
-/**
- * 获取文件节点服务器
- */
-export const fileNodes = (params) => {
-  return service({
-    url: '/video/nodes',
-    method: 'get',
-    params
-  })
-}
-
 // 上传文件
 export const fileUploadBefore = (data) => {
   return service({
-    url: '/video/upload/part',
+    url: '/video/upload/before',
     method: 'post',
     data
   })

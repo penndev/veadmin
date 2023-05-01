@@ -45,8 +45,8 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template #default="scope">
           <el-popover placement="top-start" title="Play" :width="220" trigger="hover">
-            <el-button @click="handlePlay(scope.row.node,scope.row.filePath)">VideoJS</el-button>
-            <el-button @click="handleDownload(scope.row.node,scope.row.filePath)">Download</el-button>
+            <el-button @click="handlePlay(scope.row.FilePath)">VideoJS</el-button>
+            <el-button @click="handleDownload(scope.row.FilePath)">Download</el-button>
             <template #reference>
               <el-button link type="info">预览</el-button>
             </template>
@@ -119,7 +119,7 @@
             v-model="transcodeDialog.form.command"
             rows="3"
             type="textarea"
-            placeholder="FFMPEG自定义的参数用英文“;”分割"
+            placeholder="FFMPEG自定义的参数 按行分割"
           />
       </el-form-item>
 
@@ -140,7 +140,7 @@ import upload from './components/upload.vue'
 import play from '@/components/video.vue'
 import { ref } from 'vue'
 // import api
-import { listFile, updateFile, deleteFile, addTask, listTranscode, fileNodes } from '@/apis/video'
+import { listFile, updateFile, deleteFile, addTask, listTranscode } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -160,14 +160,8 @@ const table = ref({
       0: '上传中',
       1: '文件正常'
     }
-  },
-  fileNodes: {}
+  }
 })
-const handleFileNodes = (value) => {
-  fileNodes().then(result => {
-    table.value.fileNodes = result
-  })
-}
 const handleQueryRefresh = (value) => {
   table.value.query.fileName = null
   table.value.query.fileMd5 = null
@@ -255,12 +249,7 @@ const handleSubmitForm = () => {
 // 播放弹窗
 const playDialogVisible = ref(false)
 const playOptions = ref({})
-const handlePlay = (node, path) => {
-  if (!(node in table.value.fileNodes)) {
-    ElMessage.error('文件节点错误')
-    return
-  }
-  path = `${table.value.fileNodes[node]}/${path}`
+const handlePlay = (path) => {
   playOptions.value = {
     autoplay: true,
     controls: true,
@@ -275,12 +264,7 @@ const handlePlay = (node, path) => {
   }
   playDialogVisible.value = true
 }
-const handleDownload = (node, path) => {
-  if (!(node in table.value.fileNodes)) {
-    ElMessage.error('文件节点错误')
-    return
-  }
-  path = `${table.value.fileNodes[node]}/${path}`
+const handleDownload = (path) => {
   open(path, '_bank')
 }
 
@@ -335,7 +319,6 @@ const handleSubmitTask = () => {
 }
 
 handleTableData()
-handleFileNodes()
 getTranscodeSelect()
 </script>
 
