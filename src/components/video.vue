@@ -22,13 +22,10 @@ let player = null
 const videoTag = ref(null)
 
 onMounted(() => {
-  player = videojs(videoTag.value, props.options, (p) => {
-    console.log('播放器准备中...', p)
-  })
+  player = videojs(videoTag.value, props.options, (p) => {})
 })
 
 onBeforeUnmount(() => {
-  console.log('dispose=>', player)
   if (player) {
     player.dispose()
   }

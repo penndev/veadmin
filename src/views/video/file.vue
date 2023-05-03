@@ -34,11 +34,11 @@
       </el-table-column>
       <el-table-column label="视频信息" min-width="180" align="center">
         <template #default="scope">
-          <el-tag class="ea-tag" type="success">时长 {{ scope.row.videoDuration }} </el-tag>
+          <el-tag class="ea-tag" type="success">时长 {{ timeFormat(scope.row.videoDuration) }} </el-tag>
           <el-tag class="ea-tag" type="info">帧率 {{ scope.row.videoFps }} </el-tag>
           <el-tag class="ea-tag">分辨率 {{ scope.row.videoWidth }}×{{ scope.row.videoHeight }} </el-tag>
           <el-tag class="ea-tag" type="info">码率 {{ scope.row.videoBitrate }} </el-tag>
-          <el-tag class="ea-tag" type="success">大小 {{ scope.row.fileSize }}</el-tag>
+          <el-tag class="ea-tag" type="success">大小 {{ fileSizeFormat(scope.row.fileSize) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
@@ -142,6 +142,7 @@ import { ref } from 'vue'
 // import api
 import { listFile, updateFile, deleteFile, addTask, listTranscode } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { fileSizeFormat, timeFormat } from '@/utils'
 
 const table = ref({
   total: 0,

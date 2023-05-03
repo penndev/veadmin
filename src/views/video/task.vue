@@ -24,7 +24,7 @@
       <el-table-column prop="transcodeId" label="编码器" min-width="80" align="center" >
         <template #default="scope">{{ scope.row.VideoTranscode.name }}</template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="120" align="center" >
+      <el-table-column prop="status" label="状态" width="80" align="center" >
         <template #default="scope">
           <el-link @click="handleStatus(scope.row)" :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
           <el-progress v-if="scope.row.status==0 && scope.row.progress" type="circle" :percentage="scope.row.progress" :width="60" />
@@ -35,9 +35,9 @@
           <pre>{{ scope.row.options }}</pre>
         </template>
       </el-table-column>
-      <el-table-column label="输出文件路径" min-width="200" align="center">
+      <el-table-column label="输出文件路径" min-width="260" align="center">
         <template #default="scope">
-          <el-link @click="copyPath(scope.row.outFile)">{{ scope.row.outFile }}</el-link>
+          <el-link @click="copyPath(scope.row.outFile)">{{ scope.row.outFile }} [{{ fileSizeFormat(scope.row.outSize) }}]</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
@@ -75,6 +75,7 @@ import { ref } from 'vue'
 // import api
 import { listTask, deleteTask, progressTask } from '@/apis/video'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { fileSizeFormat } from '@/utils'
 
 const table = ref({
   total: 0,
