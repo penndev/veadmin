@@ -19,9 +19,10 @@
       <HistoryBar />
 
       <router-view v-slot="{ Component }">
-        <el-main class="ea-main" v-loading="viewLoading.viewLoadingStatus"
-          :element-loading-text="viewLoading.viewLoadingText">
-          <component :is="Component" />
+        <el-main class="ea-main">
+          <div v-loading="viewLoading.status" :element-loading-text="viewLoading.text">
+            <component :is="Component"/>
+          </div>
         </el-main>
       </router-view>
 

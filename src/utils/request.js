@@ -12,8 +12,8 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 展示加载中的弹窗
-    if (config.viewLoading !== false && viewLoading.viewLoadingStatus === false) {
-      viewLoading.viewLoadingStatus = true
+    if (config.viewLoading !== false && viewLoading.status === false) {
+      viewLoading.status = true
     }
     const permission = authStoe()
     // 获取token
@@ -28,8 +28,8 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   // 返回正常的数据
   response => {
-    if (viewLoading.viewLoadingStatus === true) {
-      viewLoading.viewLoadingStatus = false
+    if (viewLoading.status === true) {
+      viewLoading.status = false
     }
     return response.data
   },
@@ -44,7 +44,7 @@ service.interceptors.response.use(
         ElMessage.error(error.response.data.message ?? error.response.data)
         break
       case 401:
-        if (viewLoading.viewLoadingStatus !== true) {
+        if (viewLoading.status !== true) {
           break
         }
         ElMessageBox.confirm(
@@ -64,8 +64,8 @@ service.interceptors.response.use(
       default:
         ElMessage.error('请求出现错误！，详细信息[' + error.message + ']')
     }
-    if (viewLoading.viewLoadingStatus === true) {
-      viewLoading.viewLoadingStatus = false
+    if (viewLoading.status === true) {
+      viewLoading.status = false
     }
     return Promise.reject(error)
   }
