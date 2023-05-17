@@ -9,9 +9,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            源文件总计
+            文件大小
           </div>
-          <span class="card-panel-num">{{fileSizeFormat(total1)}}</span>
+          <span class="card-panel-num">{{fileSizeFormat(panelGroup.fileSize ?? 0)}}</span>
         </div>
       </div>
     </el-col>
@@ -26,28 +26,13 @@
           <div class="card-panel-text">
             文件数量
           </div>
-          <span class="card-panel-num">{{total2}}</span>
+          <span class="card-panel-num">{{panelGroup.fileTotal ?? 0}}</span>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-money">
-          <el-icon class="card-panel-icon">
-            <SetUp />
-          </el-icon>
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            编码器数量
-          </div>
-          <span class="card-panel-num">{{total3}}</span>
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
-        <div class="card-panel-icon-wrapper icon-shopping">
           <el-icon class="card-panel-icon">
             <DocumentCopy />
           </el-icon>
@@ -56,7 +41,22 @@
           <div class="card-panel-text">
             任务数量
           </div>
-          <span class="card-panel-num">{{total4}}</span>
+          <span class="card-panel-num">{{panelGroup.taskTotal ?? 0}}</span>
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel">
+        <div class="card-panel-icon-wrapper icon-shopping">
+          <el-icon class="card-panel-icon">
+            <SetUp />
+          </el-icon>
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            编码器数量
+          </div>
+          <span class="card-panel-num">{{panelGroup.transcodeTotal ?? 0}}</span>
         </div>
       </div>
     </el-col>
@@ -73,15 +73,9 @@ import { ref } from 'vue'
 import { getDashboardTotal } from '@/apis/dashboard'
 import { fileSizeFormat } from '@/utils'
 
-const total1 = ref(0)
-const total2 = ref(0)
-const total3 = ref(0)
-const total4 = ref(0)
+const panelGroup = ref({})
 getDashboardTotal().then((result) => {
-  total1.value = result.total1
-  total2.value = result.total2
-  total3.value = result.total3
-  total4.value = result.total4
+  panelGroup.value = result
 })
 
 </script>
