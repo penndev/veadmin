@@ -109,6 +109,32 @@ const routes = formatRouteList([
     ]
   },
   {
+    path: '/archive',
+    component: Layout,
+    redirect: '/archive/index',
+    meta: { title: '资料档案', icon: 'Postcard' },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/archive/list.vue'),
+        name: 'archiveList',
+        meta: { title: '资料列表', icon: 'Memo' }
+      },
+      {
+        path: 'category',
+        component: () => import('@/views/archive/category.vue'),
+        name: 'archiveCategory',
+        meta: { title: '分类列表', icon: 'Grid' }
+      },
+      {
+        path: 'tag',
+        component: () => import('@/views/archive/tag.vue'),
+        name: 'archiveTag',
+        meta: { title: '标签列表', icon: 'PriceTag' }
+      }
+    ]
+  },
+  {
     path: 'icon',
     component: Layout,
     name: 'Icon',
