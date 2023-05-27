@@ -6,9 +6,6 @@ export const addArchive = (data) => {
     url: '/archive/list',
     method: 'post',
     data
-    // headers: {
-    //   'Content-Type': 'multipart/form-data'
-    // }
   })
 }
 
@@ -18,9 +15,6 @@ export const updateArchive = (data) => {
     url: '/archive/list',
     method: 'put',
     data
-    // headers: {
-    //   'Content-Type': 'multipart/form-data'
-    // }
   })
 }
 
@@ -36,6 +30,45 @@ export const getArchive = (params) => {
 export const deleteArchive = (params) => {
   return service({
     url: '/archive/list',
+    method: 'delete',
+    params
+  })
+}
+
+/**
+ * 视频分类
+ */
+
+// 新建资料
+export const addCategory = (data) => {
+  return service({
+    url: '/archive/category',
+    method: 'post',
+    data
+  })
+}
+
+// 修改资料
+export const updateCategory = (data) => {
+  return service({
+    url: '/archive/category',
+    method: 'put',
+    data
+  })
+}
+
+// 获取媒体列表
+export const getCategory = (params) => {
+  return service({
+    url: '/archive/category',
+    method: 'get',
+    params
+  })
+}
+
+export const deleteCategory = (params) => {
+  return service({
+    url: '/archive/category',
     method: 'delete',
     params
   })

@@ -142,18 +142,6 @@ const handleDialogEdit = (row) => {
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
-    confirmButtonText: '删除',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    deleteExample({ id }).then((result) => {
-      ElMessage.warning(result)
-      handleTableData()
-    })
-  })
-}
 const handleSubmitForm = () => {
   // 提交数据
   dialogRef.value.validate((validate) => {
@@ -175,6 +163,19 @@ const handleSubmitForm = () => {
     } else {
       ElMessage.error('请输入正确的数据！')
     }
+  })
+}
+
+const handleDialogDelete = (id) => {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteExample({ id }).then((result) => {
+      ElMessage.warning(result)
+      handleTableData()
+    })
   })
 }
 
