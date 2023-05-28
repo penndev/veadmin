@@ -36,10 +36,12 @@ export const deleteArchive = (params) => {
 }
 
 /**
- * 视频分类
+ * +++++++++++++++++++++++++++++
+ * +    资料分类
+ * +++++++++++++++++++++++++++++
  */
 
-// 新建资料
+// 新建分类
 export const addCategory = (data) => {
   return service({
     url: '/archive/category',
@@ -48,7 +50,7 @@ export const addCategory = (data) => {
   })
 }
 
-// 修改资料
+// 修改分类
 export const updateCategory = (data) => {
   return service({
     url: '/archive/category',
@@ -57,7 +59,7 @@ export const updateCategory = (data) => {
   })
 }
 
-// 获取媒体列表
+// 获取分类
 export const getCategory = (params) => {
   return service({
     url: '/archive/category',
@@ -69,6 +71,47 @@ export const getCategory = (params) => {
 export const deleteCategory = (params) => {
   return service({
     url: '/archive/category',
+    method: 'delete',
+    params
+  })
+}
+
+/**
+ * +++++++++++++++++++++++++++++
+ * +    资料标签
+ * +++++++++++++++++++++++++++++
+ */
+
+// 新建分类
+export const addTag = (data) => {
+  return service({
+    url: '/archive/tag',
+    method: 'post',
+    data
+  })
+}
+
+// 修改分类
+export const updateTag = (data) => {
+  return service({
+    url: '/archive/tag',
+    method: 'put',
+    data
+  })
+}
+
+// 获取分类
+export const getTag = (params) => {
+  return service({
+    url: '/archive/tag',
+    method: 'get',
+    params
+  })
+}
+
+export const deleteTag = (params) => {
+  return service({
+    url: '/archive/tag',
     method: 'delete',
     params
   })

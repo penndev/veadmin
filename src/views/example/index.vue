@@ -118,6 +118,7 @@ const handleTableData = () => {
 
 // 新增编辑数据
 const dialogRef = ref(null)
+
 const dialog = ref({
   visible: false,
   title: 'dialog',
@@ -130,31 +131,34 @@ const dialog = ref({
   },
   formAction: 'add' // add|edit
 })
+
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'
   dialog.value.visible = true
   dialog.value.formAction = 'add'
   dialog.value.form = {}
 }
+
 const handleDialogEdit = (row) => {
   dialog.value.title = '创建数据'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
-const handleSubmitForm = () => {
-  // 提交数据
+const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
         postExample(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
       } else if (dialog.value.formAction === 'edit') {
         putExample(dialog.value.form).then((result) => {
           dialog.value.visible = false
           ElMessage.info(result)
+          handleTableData()
         })
         dialog.value.visible = false
       } else {
