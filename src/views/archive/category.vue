@@ -6,6 +6,7 @@
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" width="140" />
       <el-table-column prop="parent" label="父级" width="180" />
+      <el-table-column prop="status" label="状态" width="180" />
       <el-table-column prop="order" label="排序" width="180" />
       <el-table-column prop="updatedAt" label="最近更新" width="200" />
       <el-table-column prop="createdAt" label="创建日期" width="200" />
@@ -36,8 +37,8 @@
         <el-switch
           v-model="dialog.form.status"
           size="large"
-          active-text="开启"
-          inactive-text="关闭"
+          active-text="开启" inactive-text="关闭"
+          :active-value="1" :inactive-value="0"
         />
       </el-form-item>
       <el-form-item label="父级" prop="parent">

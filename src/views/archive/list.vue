@@ -30,7 +30,12 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" />
-      <el-table-column prop="status" label="上架状态" >
+      <el-table-column prop="archiveCategoryId" label="分类" >
+        <template #default="scope">
+        {{ dialog.vodTypeDict[scope.row.archiveCategoryId] ?? '未知' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="上架状态">
         <template #default="scope">
           <el-link :type="scope.row.status > 0 ? 'success' : 'danger'">
             {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '上架' : '下架' }}
@@ -39,13 +44,8 @@
       </el-table-column>
       <el-table-column prop="Pic" label="封面" align="center">
         <template #default="scope">
-          <el-image
-            style="width: 60px;min-height: 90px;"
-            :src="scope.row.Pic"
-            :zoom-rate="1.2"
-            :preview-src-list="[scope.row.Pic]"
-            fit="cover"
-          />
+          <el-image style="width: 60px;min-height: 90px;" :src="scope.row.Pic" :zoom-rate="1.2"
+            :preview-src-list="[scope.row.Pic]" fit="cover" />
         </template>
       </el-table-column>
       <el-table-column prop="updatedAt" label="最近更新" width="200" />
@@ -68,38 +68,35 @@
     close-on-press-escape center @close="dialog.formTempSelectType = null">
 
     <el-form ref="dialogRef" label-position="left" :model="dialog.form" :rules="dialog.formRule">
+
+      <el-form-item label="状态" prop="status">
+        <el-switch v-model="dialog.form.status" :active-value="1" :inactive-value="0" active-text="上架"
+          inactive-text="下架" />
+      </el-form-item>
+
+      <el-form-item label="视频分类" prop="videoTypeId">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-select v-model="dialog.formTempSelectType" placeholder="选一级分类">
+              <template v-for="item in dialog.vodTypeList">
+                <el-option v-if="item.parent == 0" :key="item.id" :label="item.name" :value="item.id" />
+              </template>
+            </el-select>
+          </el-col>
+          <el-col :span="12">
+            <el-select v-if="dialog.formTempSelectType || dialog.form.archiveCategoryId" v-model="dialog.form.archiveCategoryId"
+              placeholder="选二级分类" clearable>
+              <template v-for="item in dialog.vodTypeList">
+                <el-option
+                  v-if="dialog.form.archiveCategoryId || dialog.formTempSelectType == item.parent || dialog.formTempSelectType == item.id"
+                  :key="item.id" :label="item.name" :value="item.id" />
+              </template>
+            </el-select>
+          </el-col>
+        </el-row>
+      </el-form-item>
+
       <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-switch v-model="dialog.form.status" :active-value="1" :inactive-value="0" active-text="上架"
-              inactive-text="下架" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <!-- <el-col :span="16">
-          <el-form-item label="视频分类" prop="videoTypeId">
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-select v-model="dialog.formTempSelectType" placeholder="选一级分类">
-                  <template v-for="item in dialog.vodTypeList">
-                    <el-option v-if="item.parent == 0" :key="item.id" :label="item.name" :value="item.id" />
-                  </template>
-                </el-select>
-              </el-col>
-              <el-col :span="12">
-                <el-select v-if="dialog.formTempSelectType || dialog.form.videoTypeId" v-model="dialog.form.videoTypeId"
-                  placeholder="选二级分类" clearable>
-                  <template v-for="item in dialog.vodTypeList">
-                    <el-option
-                      v-if="dialog.form.videoTypeId || dialog.formTempSelectType == item.parent || dialog.formTempSelectType == item.id"
-                      :key="item.id" :label="item.name" :value="item.id" />
-                  </template>
-                </el-select>
-              </el-col>
-            </el-row>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="8">
           <el-form-item label="总集数" prop="total">
             <el-input v-model="dialog.form.total" />
@@ -140,36 +137,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="标签" prop="vodTag">
-            <el-input v-model="dialog.form.vodTag" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="时长" prop="duration">
-            <el-input v-model="dialog.form.duration" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="主演" prop="vodActor">
-            <el-input v-model="dialog.form.vodActor" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="导演" prop="vodDirector">
-            <el-input v-model="dialog.form.vodDirector" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="上映日期" prop="vodPubdate">
-            <el-input v-model="dialog.form.vodPubdate" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <br /><br /> -->
+
       <el-form-item label="内容简介" prop="content" width="100">
         <el-input v-model="dialog.form.content" :rows="3" type="textarea" />
       </el-form-item>
@@ -189,7 +157,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getArchive, addArchive, updateArchive, deleteArchive } from '@/apis/archive'
+import { getArchive, addArchive, updateArchive, deleteArchive, getCategory } from '@/apis/archive'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -209,10 +177,12 @@ const handleChangePage = (value) => {
   table.value.query.page = value
   handleTableData()
 }
+
 const handleChangeLimit = (value) => {
   table.value.query.limit = value
   handleTableData()
 }
+
 const handleSortChange = ({ column, prop, order }) => {
   let orderSymbol = ''
   if (order === 'descending') {
@@ -223,6 +193,7 @@ const handleSortChange = ({ column, prop, order }) => {
   table.value.query.order = orderSymbol + prop
   handleTableData()
 }
+
 const handleTableData = () => {
   getArchive(table.value.query).then((result) => {
     table.value.data = result.data
@@ -237,6 +208,7 @@ const dialog = ref({
   title: 'dialog',
   doubanLoadingTitle: '点击获取',
   vodTypeList: [],
+  vodTypeDict: {},
   formTempSelectType: null,
   form: {},
   formRule: {
@@ -301,6 +273,16 @@ const handleDialogDelete = (row) => {
     })
   })
 }
+
+const handleSelectType = () => {
+  getCategory({ limit: 9999 }).then((result) => {
+    dialog.value.vodTypeList = result.data
+    for (const item of result.data) {
+      dialog.value.vodTypeDict[item.id] = item.name
+    }
+  })
+}
+handleSelectType()
 
 handleTableData()
 
