@@ -2,10 +2,10 @@
   <div>
     <el-form :inline="true">
       <el-form-item label="ID">
-        <el-input placeholder="ID" v-model="table.query.id" clearable />
+        <el-input placeholder="ID" v-model="table.query.id" />
       </el-form-item>
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.name" clearable />
+        <el-input placeholder="名称" v-model="table.query.name" />
       </el-form-item>
       <el-form-item label="上架状态">
         <el-select v-model="table.query.status" placeholder="上架状态" clearable>
@@ -168,7 +168,9 @@ const table = ref({
     order: '-id',
     id: null,
     name: null,
-    status: null
+    status: null,
+    updateStart: null,
+    updateEnd: null
   },
   data: []
 })
