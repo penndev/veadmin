@@ -30,9 +30,15 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" />
-      <el-table-column prop="archiveCategoryId" label="分类" >
+      <el-table-column prop="archiveCategoryId" label="分类">
         <template #default="scope">
-        {{ dialog.vodTypeDict[scope.row.archiveCategoryId] ?? '未知' }}
+          {{ dialog.vodTypeDict[scope.row.archiveCategoryId] ?? '未知' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="Pic" label="封面" align="center">
+        <template #default="scope">
+          <el-image style="width: 60px;min-height: 90px;" :src="scope.row.Pic" :zoom-rate="1.2"
+            :preview-src-list="[scope.row.Pic]" fit="cover" />
         </template>
       </el-table-column>
       <el-table-column prop="status" label="上架状态">
@@ -42,10 +48,11 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="Pic" label="封面" align="center">
+      <el-table-column label="标签">
         <template #default="scope">
-          <el-image style="width: 60px;min-height: 90px;" :src="scope.row.Pic" :zoom-rate="1.2"
-            :preview-src-list="[scope.row.Pic]" fit="cover" />
+          <el-tag v-for="tag in scope.row.Tags" :key="tag" closable @close="handleDeleteTagMap(tag.id)" style="margin: 6px;">
+            {{ tag.ArchiveTag.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="updatedAt" label="最近更新" width="200" />
@@ -84,8 +91,8 @@
             </el-select>
           </el-col>
           <el-col :span="12">
-            <el-select v-if="dialog.formTempSelectType || dialog.form.archiveCategoryId" v-model="dialog.form.archiveCategoryId"
-              placeholder="选二级分类" clearable>
+            <el-select v-if="dialog.formTempSelectType || dialog.form.archiveCategoryId"
+              v-model="dialog.form.archiveCategoryId" placeholder="选二级分类" clearable>
               <template v-for="item in dialog.vodTypeList">
                 <el-option
                   v-if="dialog.form.archiveCategoryId || dialog.formTempSelectType == item.parent || dialog.formTempSelectType == item.id"
@@ -96,6 +103,16 @@
         </el-row>
       </el-form-item>
 
+      <el-form-item label="标签栏" prop="status">
+        <el-tag v-for="tag in dialog.form.Tags" :key="tag" closable @close="handleDeleteTagMap(tag.id)" style="margin: 6px;">
+          {{ tag.ArchiveTag.name }}
+        </el-tag>
+        <el-select v-model="dialog.formTempSelectTag" filterable remote reserve-keyword placeholder="搜索标签名称"
+          :remote-method="handleRemoteTagList" @change="handleRemoteTagSelect" size="small">
+          <el-option v-for="item in dialog.vodTagList" :key="item.id" :label="item.name" :value="item" />
+        </el-select>
+      </el-form-item>
+      <br>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="总集数" prop="total">
@@ -157,7 +174,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getArchive, addArchive, updateArchive, deleteArchive, getCategory } from '@/apis/archive'
+import { getArchive, addArchive, updateArchive, deleteArchive, getCategory, getTag, addArchiveTag, deleteArchiveTag } from '@/apis/archive'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -209,9 +226,11 @@ const dialog = ref({
   visible: false,
   title: 'dialog',
   doubanLoadingTitle: '点击获取',
-  vodTypeList: [],
-  vodTypeDict: {},
-  formTempSelectType: null,
+  vodTypeList: [], // 分类的原始数据
+  vodTypeDict: {}, // 分类的字典类型
+  formTempSelectType: null, // 筛选选择的分类临时数据
+  vodTagList: [], // 远程搜索标签的数据
+  formTempSelectTag: null,
   form: {},
   formRule: {
     name: [
@@ -225,6 +244,31 @@ const dialog = ref({
   },
   formAction: 'add'
 })
+
+// 远程搜索标签名称
+const handleRemoteTagList = () => {
+  getTag({ name: dialog.value.formTempSelectTag, page: 1, limit: 20 }).then(result => {
+    dialog.value.vodTagList = result.data
+  })
+}
+
+const handleRemoteTagSelect = (value) => {
+  dialog.value.formTempSelectTag = null
+  addArchiveTag({ archiveTagId: value.id, archiveListId: dialog.value.form.id }).then(result => {
+    const data = {
+      id: result.data.id,
+      ArchiveTag: value
+    }
+    dialog.value.form.Tags.push(data)
+    ElMessage.info(result.message)
+  })
+}
+
+const handleDeleteTagMap = (id) => {
+  deleteArchiveTag(id).then((result) => {
+    ElMessage.warning(result)
+  })
+}
 
 const handleDialogAdd = () => {
   dialog.value.title = '新增资料'

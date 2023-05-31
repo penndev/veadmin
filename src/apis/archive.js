@@ -35,6 +35,22 @@ export const deleteArchive = (params) => {
   })
 }
 
+export const addArchiveTag = (data) => {
+  return service({
+    url: '/archive/list/tag',
+    method: 'post',
+    data
+  })
+}
+
+export const deleteArchiveTag = (params) => {
+  return service({
+    url: '/archive/list/tag',
+    method: 'delete',
+    params
+  })
+}
+
 /**
  * +++++++++++++++++++++++++++++
  * +    资料分类
