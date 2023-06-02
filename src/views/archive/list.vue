@@ -30,7 +30,7 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" />
-      <el-table-column prop="archiveCategoryId" label="分类">
+      <el-table-column prop="archiveCategoryId" label="分类" align="center">
         <template #default="scope">
           {{ dialog.vodTypeDict[scope.row.archiveCategoryId] ?? '未知' }}
         </template>
@@ -41,21 +41,21 @@
             :preview-src-list="[scope.row.Pic]" fit="cover" />
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="上架状态">
+      <el-table-column prop="status" label="上架状态" align="center">
         <template #default="scope">
           <el-link :type="scope.row.status > 0 ? 'success' : 'danger'">
             {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '上架' : '下架' }}
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="标签">
+      <el-table-column label="标签" width="250" align="center">
         <template #default="scope">
-          <el-tag v-for="tag in scope.row.Tags" :key="tag" closable @close="handleDeleteTagMap(tag.id)" style="margin: 6px;">
-            {{ tag.ArchiveTag.name }}
+          <el-tag v-for="tag in scope.row.Tags" :key="tag" closable @close="handleDeleteTagMap(tag.id, scope.row.Tags)" style="margin:2px 3px;">
+            {{ tag?.ArchiveTag.name }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="updatedAt" label="最近更新" width="200" />
+      <el-table-column prop="updatedAt" label="最近更新" width="200" align="center" />
       <el-table-column fixed="right" label="操作" width="120">
         <template #default="scope">
           <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
@@ -264,9 +264,13 @@ const handleRemoteTagSelect = (value) => {
   })
 }
 
-const handleDeleteTagMap = (id) => {
-  deleteArchiveTag(id).then((result) => {
+const handleDeleteTagMap = (id, tags) => {
+  deleteArchiveTag({ id }).then((result) => {
     ElMessage.warning(result)
+    const index = tags.findIndex(tag => tag.id === id)
+    if (index !== -1) {
+      tags.splice(index, 1)
+    }
   })
 }
 
