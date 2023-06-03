@@ -1,41 +1,101 @@
 <template>
-
+    <!-- 顶部筛选框 -->
     <div>
-      <el-form :inline="true">
+
+      <el-form :inline="true" >
+
         <el-form-item label="名称">
-          <el-input placeholder="名称" v-model="table.query.name" clearable />
+          <el-input
+            placeholder="名称"
+            v-model="table.query.name"
+            clearable
+          />
         </el-form-item>
+
         <el-form-item>
-          <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-          <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+          <el-button
+            type="primary"
+            icon="search"
+            @click="handleTableData"
+          >
+            查询
+          </el-button>
+          <el-button
+            type="info"
+            icon="Refresh"
+            @click="handleQueryRefresh"
+          >
+            重置
+          </el-button>
         </el-form-item>
+
       </el-form>
+
     </div>
 
+    <!-- 数据展示框 -->
     <el-main style="background-color:#fff">
-      <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
-      <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-        <el-table-column prop="id" label="ID" width="80" sortable="custom" />
-        <el-table-column prop="nickname" label="名称" width="160" />
-        <el-table-column prop="email" label="邮箱" width="240">
+      <!-- 数据操作按钮 -->
+      <el-button
+        type="primary"
+        icon="Plus"
+        @click="handleDialogAdd"
+      >
+        新增
+      </el-button>
+
+      <!-- 数据table -->
+      <el-table
+        :data="table.data"
+        style="width: 100%"
+        @sort-change="handleSortChange"
+      >
+
+        <el-table-column label="ID" prop="id" width="80" sortable="custom" />
+
+        <el-table-column label="名称" prop="nickname" width="160" />
+
+        <el-table-column label="邮箱" width="240">
           <template #default="scope">
             <a target="_blank">{{ scope.row.email }}</a>
           </template>
         </el-table-column>
+
         <el-table-column prop="updatedAt" label="最近更新" width="200" />
+
         <el-table-column prop="createdAt" label="创建日期" width="200" />
+
         <el-table-column fixed="right" label="操作" width="105">
           <template #default="scope">
-            <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-            <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
+            <el-button
+              link
+              type="primary"
+              @click="handleDialogEdit(scope.row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleDialogDelete(scope.row.id)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
+
       </el-table>
 
       <br>
 
-      <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
-      :page-size="table.query.limit" @current-change="handleChangePage" @size-change="handleChangeLimit" />
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next"
+        :total="table.total"
+        :page-size="table.query.limit"
+        @current-change="handleChangePage"
+        @size-change="handleChangeLimit"
+      />
 
     </el-main>
 
