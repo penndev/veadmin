@@ -5,11 +5,11 @@
     <el-form :inline="true">
 
       <el-form-item label="ID">
-        <el-input placeholder="ID" v-model="table.query.id" />
+        <el-input placeholder="ID" v-model="table.query.id" style="max-width: 120px;" />
       </el-form-item>
 
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.name" />
+        <el-input placeholder="名称" v-model="table.query.name" style="max-width: 180px;" />
       </el-form-item>
 
       <el-form-item label="上架状态">
@@ -17,25 +17,26 @@
           v-model="table.query.status"
           placeholder="上架状态"
           clearable
+          style="max-width: 150px;"
         >
           <el-option key="0" label="下架" value="0" />
           <el-option key="1" label="上架" value="1" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="开始日期">
+      <el-form-item label="日期">
         <el-date-picker
           v-model="table.query.updateStart"
           type="datetime"
           placeholder="选择开始时间"
+          style="max-width: 180px;"
         />
-      </el-form-item>
-
-      <el-form-item label="结束日期">
+        &nbsp;
         <el-date-picker
           v-model="table.query.updateEnd"
           type="datetime"
-          placeholder="选择开始时间"
+          placeholder="选择结束时间"
+          style="max-width: 180px;"
         />
       </el-form-item>
 
@@ -69,7 +70,7 @@
     >
       <el-table-column label="ID" prop="id" fixed width="80" sortable="custom" />
 
-      <el-table-column label="名称" prop="name" />
+      <el-table-column label="名称" prop="name" align="center" />
 
       <el-table-column label="分类" align="center">
         <template #default="scope">
