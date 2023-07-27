@@ -212,7 +212,7 @@
         </el-row>
       </el-form-item>
 
-      <el-form-item label="标签栏" prop="status">
+      <el-form-item label="标签栏" prop="status" v-if="dialog.formAction == 'edit'" >
         <el-tag
           v-for="tag in dialog.form.Tags"
           :key="tag.id"
