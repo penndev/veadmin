@@ -6,7 +6,15 @@
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" width="140" />
       <el-table-column prop="parent" label="父级" width="180" />
-      <el-table-column prop="status" label="状态" width="180" />
+      <el-table-column prop="status" label="状态" width="180">
+        <template #default="scope">
+          <el-link
+            :type="scope.row.status > 0 ? 'success' : 'danger'"
+          >
+            {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '开启' : '关闭' }}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column prop="order" label="排序" width="180" />
       <el-table-column prop="updatedAt" label="最近更新" width="200" />
       <el-table-column prop="createdAt" label="创建日期" width="200" />

@@ -17,7 +17,15 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" width="160" />
-      <el-table-column prop="status" label="状态" width="160" />
+      <el-table-column prop="status" label="状态" width="160">
+        <template #default="scope">
+          <el-link
+            :type="scope.row.status > 0 ? 'success' : 'danger'"
+          >
+            {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '开启' : '关闭' }}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column prop="hits" label="热度" width="160" />
       <el-table-column prop="content" label="描述" width="160" />
       <el-table-column prop="updatedAt" label="最近更新" width="200" />
