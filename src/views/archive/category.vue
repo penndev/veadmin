@@ -5,7 +5,11 @@
     <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" />
       <el-table-column prop="name" label="名称" width="140" />
-      <el-table-column prop="parent" label="父级" width="180" />
+      <el-table-column prop="parent" label="父级" width="180">
+        <template #default="scope">
+            {{ scope.row.parent != 0 ? scope.row.parent : '父级分类' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="180">
         <template #default="scope">
           <el-link
