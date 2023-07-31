@@ -18,5 +18,5 @@ export default defineConfig({
     }
   },
   envPrefix: ['VITE', 'VE'],
-  base:"",
+  base: ''
 })
