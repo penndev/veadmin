@@ -1,4 +1,3 @@
-
 <template>
   <div id="userLayout">
     <div class="login_panle">
@@ -74,6 +73,7 @@ const handleChangeCaptcha = () => {
   getCaptcha().then((result) => {
     captcha.value = result.captchaURL
     formData.captchaID = result.captchaID
+    formData.captcha = null
   })
 }
 handleChangeCaptcha()

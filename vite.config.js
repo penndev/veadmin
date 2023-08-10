@@ -17,6 +17,5 @@ export default defineConfig({
       path: 'path-browserify'
     }
   },
-  envPrefix: ['VITE', 'VE'],
-  base: ''
+  envPrefix: ['VITE', 'VE']
 })
