@@ -1,23 +1,69 @@
 <template>
-
   <el-form :inline="true">
     <el-form-item label="管理员">
-      <el-input placeholder="管理员邮箱" v-model="table.query.email" clearable />
+      <el-input
+        v-model="table.query.email"
+        placeholder="管理员邮箱"
+        clearable
+      />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-      <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+      <el-button
+        type="primary"
+        icon="search"
+        @click="handleTableData"
+      >
+        查询
+      </el-button>
+      <el-button
+        type="info"
+        icon="Refresh"
+        @click="handleQueryRefresh"
+      >
+        重置
+      </el-button>
     </el-form-item>
   </el-form>
 
   <el-main style="background-color:#fff">
-    <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
-    <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-      <el-table-column prop="id" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="email" label="邮箱" min-width="240" />
-      <el-table-column prop="nickname" label="名称" min-width="160" />
-      <el-table-column prop="AdminRole.name" label="权限" min-width="160" />
-      <el-table-column prop="status" label="状态" min-width="120" >
+    <el-button
+      type="primary"
+      icon="Plus"
+      @click="handleDialogAdd"
+    >
+      新增
+    </el-button>
+    <el-table
+      :data="table.data"
+      style="width: 100%"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="email"
+        label="邮箱"
+        min-width="240"
+      />
+      <el-table-column
+        prop="nickname"
+        label="名称"
+        min-width="160"
+      />
+      <el-table-column
+        prop="AdminRole.name"
+        label="权限"
+        min-width="160"
+      />
+      <el-table-column
+        prop="status"
+        label="状态"
+        min-width="120"
+      >
         <template #default="scope">
           <el-switch
             v-model="scope.row.status"
@@ -31,11 +77,31 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="创建日期" width="200" />
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        width="200"
+      />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="120"
+      >
         <template #default="scope">
-          <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-          <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
+          <el-button
+            link
+            type="primary"
+            @click="handleDialogEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,13 +114,12 @@
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />
-
   </el-main>
 
   <el-dialog
+    v-model="dialog.visible"
     :title="dialog.title"
     :close-on-click-modal="false"
-    v-model="dialog.visible"
     destroy-on-close
     close-on-press-escape
     center
@@ -64,23 +129,44 @@
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-form-item label="邮箱" prop="email">
+      <el-form-item
+        label="邮箱"
+        prop="email"
+      >
         <el-input v-model="dialog.form.email" />
       </el-form-item>
-      <el-form-item v-if="dialog.formAction == 'add'" label="密码" prop="passwd">
+      <el-form-item
+        v-if="dialog.formAction == 'add'"
+        label="密码"
+        prop="passwd"
+      >
         <el-input v-model="dialog.form.passwd" />
       </el-form-item>
-      <el-form-item label="昵称" prop="nickname">
+      <el-form-item
+        label="昵称"
+        prop="nickname"
+      >
         <el-input v-model="dialog.form.nickname" />
       </el-form-item>
-      <el-form-item label="权限" prop="adminRoleId">
-        <el-link type="primary" v-if="dialog.form.AdminRole"> {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] | </el-link> &nbsp;
+      <el-form-item
+        label="权限"
+        prop="adminRoleId"
+      >
+        <el-link
+          v-if="dialog.form.AdminRole"
+          type="primary"
+        >
+          {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] |
+        </el-link> &nbsp;
         <el-select
           v-model="dialog.roleSelect.value"
-          filterable remote remote-show-suffix placeholder="输入权限名称来搜索权限列表"
+          filterable
+          remote
+          remote-show-suffix
+          placeholder="输入权限名称来搜索权限列表"
           :remote-method="handleRoleSelectSearch"
-          @change="handleRoleSelectChange"
           :loading="dialog.roleSelect.loading"
+          @change="handleRoleSelectChange"
         >
           <el-option
             v-for="item in dialog.roleSelect.options"
@@ -90,7 +176,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item
+        label="状态"
+        prop="status"
+      >
         <el-switch
           v-model="dialog.form.status"
           :active-value="1"
@@ -104,11 +193,13 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitForm">确定</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

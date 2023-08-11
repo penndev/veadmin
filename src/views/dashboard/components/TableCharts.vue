@@ -1,21 +1,31 @@
 <template>
   <!--  -->
-  <el-row style="margin-bottom: 12px;" :gutter="20">
+  <el-row
+    style="margin-bottom: 12px;"
+    :gutter="20"
+  >
     <el-col :span="12">
-      <div ref="sharechart" class="chart"></div>
+      <div
+        ref="sharechart"
+        class="chart"
+      />
     </el-col>
     <el-col :span="12">
-      <div ref="detailchart"  class="chart"></div>
+      <div
+        ref="detailchart"
+        class="chart"
+      />
     </el-col>
-
   </el-row>
 
   <el-row>
     <el-col :span="24">
-      <div ref="trendchart"  class="chart"></div>
+      <div
+        ref="trendchart"
+        class="chart"
+      />
     </el-col>
   </el-row>
-
 </template>
 
 <script setup>

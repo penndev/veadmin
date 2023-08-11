@@ -1,133 +1,155 @@
 <template>
-    <!-- 顶部筛选框 -->
-    <div>
+  <!-- 顶部筛选框 -->
+  <div>
+    <el-form :inline="true">
+      <el-form-item label="名称">
+        <el-input
+          v-model="table.query.name"
+          placeholder="名称"
+          clearable
+        />
+      </el-form-item>
 
-      <el-form :inline="true" >
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="search"
+          @click="handleTableData"
+        >
+          查询
+        </el-button>
+        <el-button
+          type="info"
+          icon="Refresh"
+          @click="handleQueryRefresh"
+        >
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 
-        <el-form-item label="名称">
-          <el-input
-            placeholder="名称"
-            v-model="table.query.name"
-            clearable
-          />
-        </el-form-item>
+  <!-- 数据展示框 -->
+  <el-main style="background-color:#fff">
+    <!-- 数据操作按钮 -->
+    <el-button
+      type="primary"
+      icon="Plus"
+      @click="handleDialogAdd"
+    >
+      新增
+    </el-button>
 
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="search"
-            @click="handleTableData"
-          >
-            查询
-          </el-button>
-          <el-button
-            type="info"
-            icon="Refresh"
-            @click="handleQueryRefresh"
-          >
-            重置
-          </el-button>
-        </el-form-item>
-
-      </el-form>
-
-    </div>
-
-    <!-- 数据展示框 -->
-    <el-main style="background-color:#fff">
-      <!-- 数据操作按钮 -->
-      <el-button
-        type="primary"
-        icon="Plus"
-        @click="handleDialogAdd"
-      >
-        新增
-      </el-button>
-
-      <!-- 数据table -->
-      <el-table
-        :data="table.data"
-        style="width: 100%"
-        @sort-change="handleSortChange"
-      >
-
-        <el-table-column label="ID" prop="id" width="80" sortable="custom" />
-
-        <el-table-column label="名称" prop="nickname" width="160" />
-
-        <el-table-column label="邮箱" width="240">
-          <template #default="scope">
-            <a target="_blank">{{ scope.row.email }}</a>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="updatedAt" label="最近更新" width="200" />
-
-        <el-table-column prop="createdAt" label="创建日期" width="200" />
-
-        <el-table-column fixed="right" label="操作" width="105">
-          <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              @click="handleDialogEdit(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              link
-              type="danger"
-              @click="handleDialogDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-
-      </el-table>
-
-      <br>
-
-      <el-pagination
-        background
-        layout="total, sizes, prev, pager, next"
-        :total="table.total"
-        :page-size="table.query.limit"
-        @current-change="handleChangePage"
-        @size-change="handleChangeLimit"
+    <!-- 数据table -->
+    <el-table
+      :data="table.data"
+      style="width: 100%"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        label="ID"
+        prop="id"
+        width="80"
+        sortable="custom"
       />
 
-    </el-main>
+      <el-table-column
+        label="名称"
+        prop="nickname"
+        width="160"
+      />
 
-    <!-- 处理数据|新增编辑 -->
-    <el-dialog
-      :title="dialog.title"
-      :close-on-click-modal="false"
-      v-model="dialog.visible"
-      destroy-on-close close-on-press-escape
-      center
-    >
-
-      <el-form
-        ref="dialogRef"
-        label-position="left"
-        :model="dialog.form"
-        :rules="dialog.formRule"
+      <el-table-column
+        label="邮箱"
+        width="240"
       >
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="dialog.form.email" />
-        </el-form-item>
-      </el-form>
+        <template #default="scope">
+          <a target="_blank">{{ scope.row.email }}</a>
+        </template>
+      </el-table-column>
 
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialog.visible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmitForm">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+      <el-table-column
+        prop="updatedAt"
+        label="最近更新"
+        width="200"
+      />
 
-  </template>
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        width="200"
+      />
+
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="105"
+      >
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="handleDialogEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <br>
+
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
+  </el-main>
+
+  <!-- 处理数据|新增编辑 -->
+  <el-dialog
+    v-model="dialog.visible"
+    :title="dialog.title"
+    :close-on-click-modal="false"
+    destroy-on-close
+    close-on-press-escape
+    center
+  >
+    <el-form
+      ref="dialogRef"
+      label-position="left"
+      :model="dialog.form"
+      :rules="dialog.formRule"
+    >
+      <el-form-item
+        label="邮箱"
+        prop="email"
+      >
+        <el-input v-model="dialog.form.email" />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialog.visible = false">取消</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
 
 <script setup>
 import { ref } from 'vue'

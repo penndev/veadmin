@@ -1,19 +1,55 @@
 <template>
   <div class="ve-history">
-    <el-tabs type="card" closable v-model="selected" @tab-click="handleClicked" @tab-remove="handleRemove">
-      <template v-for="(item, key, index) in layoutHistory" :key="index">
-        <el-tab-pane v-if="item.meta" :name="key">
+    <el-tabs
+      v-model="selected"
+      type="card"
+      closable
+      @tab-click="handleClicked"
+      @tab-remove="handleRemove"
+    >
+      <template
+        v-for="(item, key, index) in layoutHistory"
+        :key="index"
+      >
+        <el-tab-pane
+          v-if="item.meta"
+          :name="key"
+        >
           <template #label>
             <span @contextmenu.prevent="openMenu(key, $event)"><i class="hot" />{{ item.meta.title }}</span>
           </template>
         </el-tab-pane>
       </template>
     </el-tabs>
-    <div class="ve-contextmenu" ref="veContextMenu" @mouseleave="closeMenu">
-      <li class="el-menu-item" @click="closeOther">关闭其他</li>
-      <li class="el-menu-item" @click="closeAll">关闭全部</li>
-      <li class="el-menu-item" @click="closeLeft">关闭左侧</li>
-      <li class="el-menu-item" @click="closeRight">关闭右侧</li>
+    <div
+      ref="veContextMenu"
+      class="ve-contextmenu"
+      @mouseleave="closeMenu"
+    >
+      <li
+        class="el-menu-item"
+        @click="closeOther"
+      >
+        关闭其他
+      </li>
+      <li
+        class="el-menu-item"
+        @click="closeAll"
+      >
+        关闭全部
+      </li>
+      <li
+        class="el-menu-item"
+        @click="closeLeft"
+      >
+        关闭左侧
+      </li>
+      <li
+        class="el-menu-item"
+        @click="closeRight"
+      >
+        关闭右侧
+      </li>
     </div>
   </div>
 </template>

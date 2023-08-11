@@ -1,23 +1,61 @@
 <template>
-
   <div>
     <el-form :inline="true">
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.name" clearable />
+        <el-input
+          v-model="table.query.name"
+          placeholder="名称"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-        <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+        <el-button
+          type="primary"
+          icon="search"
+          @click="handleTableData"
+        >
+          查询
+        </el-button>
+        <el-button
+          type="info"
+          icon="Refresh"
+          @click="handleQueryRefresh"
+        >
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
 
   <el-main style="background-color:#fff">
-    <el-button type="primary" icon="Plus" @click="handleDialogAdd">新增</el-button>
-    <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-      <el-table-column prop="id" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="name" label="名称" width="160" />
-      <el-table-column prop="status" label="状态" width="160">
+    <el-button
+      type="primary"
+      icon="Plus"
+      @click="handleDialogAdd"
+    >
+      新增
+    </el-button>
+    <el-table
+      :data="table.data"
+      style="width: 100%"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="name"
+        label="名称"
+        width="160"
+      />
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="160"
+      >
         <template #default="scope">
           <el-link
             :type="scope.row.status > 0 ? 'success' : 'danger'"
@@ -26,66 +64,120 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="hits" label="热度" width="160" />
-      <el-table-column prop="content" label="描述" width="160" />
-      <el-table-column prop="updatedAt" label="最近更新" width="200" />
-      <el-table-column prop="createdAt" label="创建日期" width="200" />
-      <el-table-column fixed="right" label="操作" width="105">
+      <el-table-column
+        prop="hits"
+        label="热度"
+        width="160"
+      />
+      <el-table-column
+        prop="content"
+        label="描述"
+        width="160"
+      />
+      <el-table-column
+        prop="updatedAt"
+        label="最近更新"
+        width="200"
+      />
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        width="200"
+      />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="105"
+      >
         <template #default="scope">
-          <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-          <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
+          <el-button
+            link
+            type="primary"
+            @click="handleDialogEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <br>
 
-    <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
-    :page-size="table.query.limit" @current-change="handleChangePage" @size-change="handleChangeLimit" />
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
   </el-main>
 
   <!-- 处理数据|新增编辑 -->
   <el-dialog
+    v-model="dialog.visible"
     :title="dialog.title"
     :close-on-click-modal="false"
-    v-model="dialog.visible"
-    destroy-on-close close-on-press-escape
+    destroy-on-close
+    close-on-press-escape
     center
   >
-
     <el-form
       ref="dialogRef"
       label-position="left"
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-    <el-form-item label="名称" prop="name">
+      <el-form-item
+        label="名称"
+        prop="name"
+      >
         <el-input v-model="dialog.form.name" />
       </el-form-item>
       <el-form-item label="状态">
         <el-switch
-          v-model="dialog.form.status" size="large"
-          active-text="开启" inactive-text="关闭"
-          :active-value="1" :inactive-value="0"
+          v-model="dialog.form.status"
+          size="large"
+          active-text="开启"
+          inactive-text="关闭"
+          :active-value="1"
+          :inactive-value="0"
         />
       </el-form-item>
-      <el-form-item label="热度" prop="hits">
-        <el-input v-model="dialog.form.hits"/>
+      <el-form-item
+        label="热度"
+        prop="hits"
+      >
+        <el-input v-model="dialog.form.hits" />
       </el-form-item>
-      <el-form-item label="描述" prop="content">
-        <el-input v-model="dialog.form.content" type="textarea"/>
+      <el-form-item
+        label="描述"
+        prop="content"
+      >
+        <el-input
+          v-model="dialog.form.content"
+          type="textarea"
+        />
       </el-form-item>
     </el-form>
 
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitForm">确定</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

@@ -1,20 +1,25 @@
 <template>
-    <el-upload
-        class="upload-demo"
-        :http-request="handleUploadCatch"
-        :limit="100"
-        :multiple="true"
-        accept="video/*"
-        v-bind="$attrs"
+  <el-upload
+    class="upload-demo"
+    :http-request="handleUploadCatch"
+    :limit="100"
+    :multiple="true"
+    accept="video/*"
+    v-bind="$attrs"
+  >
+    <el-button
+      type="primary"
+      icon="Upload"
     >
-        <el-button type="primary"  icon="Upload" >点击上传</el-button>
-        <template #tip>
-            <div class="el-upload__tip">
-                仅允许上传视频媒体文件
-            </div>
-        </template>
-    </el-upload>
-    <br />
+      点击上传
+    </el-button>
+    <template #tip>
+      <div class="el-upload__tip">
+        仅允许上传视频媒体文件
+      </div>
+    </template>
+  </el-upload>
+  <br>
 </template>
 <script setup>
 import { fileUploadPart, fileUploadBefore } from '@/apis/video'

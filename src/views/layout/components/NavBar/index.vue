@@ -1,6 +1,9 @@
 <template>
   <el-main class="ea-nav">
-    <div class="ea-collapse" @click="handleCollapse">
+    <div
+      class="ea-collapse"
+      @click="handleCollapse"
+    >
       <el-icon v-if="layout.collapse">
         <Expand />
       </el-icon>
@@ -9,33 +12,69 @@
       </el-icon>
     </div>
 
-    <el-breadcrumb class="ea-breadcrumb" separator-icon="ArrowRight">
-      <el-breadcrumb-item :to="{ path: '/' }"><strong>首页</strong></el-breadcrumb-item>
-      <template v-for="(item, index) in breadcrumb" :key="index">
-        <el-breadcrumb-item v-if="item.meta.title">{{ item.meta.title }}</el-breadcrumb-item>
+    <el-breadcrumb
+      class="ea-breadcrumb"
+      separator-icon="ArrowRight"
+    >
+      <el-breadcrumb-item :to="{ path: '/' }">
+        <strong>首页</strong>
+      </el-breadcrumb-item>
+      <template
+        v-for="(item, index) in breadcrumb"
+        :key="index"
+      >
+        <el-breadcrumb-item v-if="item.meta.title">
+          {{ item.meta.title }}
+        </el-breadcrumb-item>
       </template>
     </el-breadcrumb>
-    <div style="flex:1"></div>
-    <div class="ea-icon" style="max-width: 160px;">
-      <el-select filterable placeholder="搜索菜单" @change="selectMenu">
+    <div style="flex:1" />
+    <div
+      class="ea-icon"
+      style="max-width: 160px;"
+    >
+      <el-select
+        filterable
+        placeholder="搜索菜单"
+        @change="selectMenu"
+      >
         <template v-for="item,index in routes">
           <template v-if="item.meta">
-            <el-option v-if="item.meta.title && item.meta.hidden != true" :key="index" :label="item.meta.title" :value="item.meta.path ?? item.path" />
+            <el-option
+              v-if="item.meta.title && item.meta.hidden != true"
+              :key="index"
+              :label="item.meta.title"
+              :value="item.meta.path ?? item.path"
+            />
           </template>
           <!-- 组 -->
           <template v-if="item.children">
             <template v-for="citem,cindex in item.children">
-              <el-option v-if="citem.meta && citem.meta.title && citem.meta.hidden != true" :key="index + '-' + cindex" :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title" :value="citem.path" />
+              <el-option
+                v-if="citem.meta && citem.meta.title && citem.meta.hidden != true"
+                :key="index + '-' + cindex"
+                :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title"
+                :value="citem.path"
+              />
             </template>
           </template>
         </template>
       </el-select>
     </div>
-    <div class="ea-icon" @click="handleFullScreen">
-      <el-icon v-if="!fullScreen" title="打开全屏">
+    <div
+      class="ea-icon"
+      @click="handleFullScreen"
+    >
+      <el-icon
+        v-if="!fullScreen"
+        title="打开全屏"
+      >
         <FullScreen />
       </el-icon>
-      <el-icon v-else title="关闭全屏">
+      <el-icon
+        v-else
+        title="关闭全屏"
+      >
         <Rank />
       </el-icon>
     </div>
@@ -47,8 +86,15 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item> 当前角色: Admin </el-dropdown-item>
-          <el-dropdown-item icon="avatar"> 个人信息 </el-dropdown-item>
-          <el-dropdown-item icon="reading-lamp" @click="handleLoginOut"> 登出 </el-dropdown-item>
+          <el-dropdown-item icon="avatar">
+            个人信息
+          </el-dropdown-item>
+          <el-dropdown-item
+            icon="reading-lamp"
+            @click="handleLoginOut"
+          >
+            登出
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>

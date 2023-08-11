@@ -1,17 +1,31 @@
 <template>
   <el-container class="ea-layout">
     <!-- 菜单栏 -->
-    <div class="ea-aside-mask" v-if="!layout.collapse" @click="handleCollapse"></div>
-    <el-aside class="ea-aside" :class="{ 'ea-aside-collapse': layout.collapse }">
+    <div
+      v-if="!layout.collapse"
+      class="ea-aside-mask"
+      @click="handleCollapse"
+    />
+    <el-aside
+      class="ea-aside"
+      :class="{ 'ea-aside-collapse': layout.collapse }"
+    >
       <div class="logo">
-        <img class="logoimg" src="@/assets/logo.svg">
-        <h2 v-if="!layout.collapse" class="logotitle"> {{ $env.VE_NAME }} </h2>
+        <img
+          class="logoimg"
+          src="@/assets/logo.svg"
+        >
+        <h2
+          v-if="!layout.collapse"
+          class="logotitle"
+        >
+          {{ $env.VE_NAME }}
+        </h2>
       </div>
       <AsideBar />
     </el-aside>
     <!-- 功能栏 -->
     <el-container class="ea-select">
-
       <el-header>
         <NavBar />
       </el-header>
@@ -20,14 +34,15 @@
 
       <router-view v-slot="{ Component }">
         <el-main class="ea-main">
-          <div v-loading="viewLoading.status" :element-loading-text="viewLoading.text">
-            <component :is="Component"/>
+          <div
+            v-loading="viewLoading.status"
+            :element-loading-text="viewLoading.text"
+          >
+            <component :is="Component" />
           </div>
         </el-main>
       </router-view>
-
     </el-container>
-
   </el-container>
 </template>
 

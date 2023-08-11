@@ -3,14 +3,24 @@
     <div class="login_panle">
       <div class="login_panle_form">
         <div class="login_panle_form_title">
-          <img class="login_panle_form_title_logo" src="@/assets/logo.svg" />
+          <img
+            class="login_panle_form_title_logo"
+            src="@/assets/logo.svg"
+          >
           <div class="login_panle_form_title_p">
             用户登录
           </div>
         </div>
-        <el-form ref="loginForm" :rules="rules" :model="formData">
+        <el-form
+          ref="loginForm"
+          :rules="rules"
+          :model="formData"
+        >
           <el-form-item prop="username">
-            <el-input v-model="formData.username" placeholder="请输入用户名">
+            <el-input
+              v-model="formData.username"
+              placeholder="请输入用户名"
+            >
               <template #suffix>
                 <span class="input-icon">
                   <el-icon>
@@ -21,11 +31,18 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input placeholder="请输入密码" v-model="formData.password" :type="lock === 'lock' ? 'password' : 'text'">
+            <el-input
+              v-model="formData.password"
+              placeholder="请输入密码"
+              :type="lock === 'lock' ? 'password' : 'text'"
+            >
               <template #suffix>
                 <a class="input-icon">
                   <el-icon>
-                    <component :is="lock" @click="handleChangeLock" />
+                    <component
+                      :is="lock"
+                      @click="handleChangeLock"
+                    />
                   </el-icon>
                 </a>
               </template>
@@ -33,19 +50,31 @@
           </el-form-item>
           <el-form-item prop="captcha">
             <div class="vPicBox">
-              <el-input v-model="formData.captcha" placeholder="请输入验证码" style="width: 60%" />
+              <el-input
+                v-model="formData.captcha"
+                placeholder="请输入验证码"
+                style="width: 60%"
+              />
               <div class="vPic">
-                <img alt="验证码" :src="captcha" @click="handleChangeCaptcha">
+                <img
+                  alt="验证码"
+                  :src="captcha"
+                  @click="handleChangeCaptcha"
+                >
               </div>
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="large" style="width: 46%;" @click="formSubmit">
+            <el-button
+              type="primary"
+              size="large"
+              style="width: 46%;"
+              @click="formSubmit"
+            >
               登 录
             </el-button>
           </el-form-item>
         </el-form>
-
       </div>
       <div class="login_panle_right" />
     </div>

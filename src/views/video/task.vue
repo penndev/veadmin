@@ -1,72 +1,168 @@
 <template>
-
   <div>
     <el-form :inline="true">
       <el-form-item label="源文件">
-        <el-input placeholder="源文件" v-model="table.query.fileId" clearable />
+        <el-input
+          v-model="table.query.fileId"
+          placeholder="源文件"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="编码器">
-        <el-input placeholder="编码器" v-model="table.query.transcodeId" clearable />
+        <el-input
+          v-model="table.query.transcodeId"
+          placeholder="编码器"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-        <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+        <el-button
+          type="primary"
+          icon="search"
+          @click="handleTableData"
+        >
+          查询
+        </el-button>
+        <el-button
+          type="info"
+          icon="Refresh"
+          @click="handleQueryRefresh"
+        >
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
 
   <el-main style="background-color:#fff">
-    <el-table :data="table.data" @sort-change="handleSortChange">
-      <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" align="center" />
-      <el-table-column prop="fileId" label="文件" min-width="180" align="center">
-        <template #default="scope">{{ scope.row.VideoFile.fileName }}</template>
-      </el-table-column>
-      <el-table-column prop="transcodeId" label="编码器" min-width="80" align="center" >
-        <template #default="scope">{{ scope.row.VideoTranscode.name }}</template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" width="80" align="center" >
+    <el-table
+      :data="table.data"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        fixed
+        prop="id"
+        label="ID"
+        width="80"
+        sortable="custom"
+        align="center"
+      />
+      <el-table-column
+        prop="fileId"
+        label="文件"
+        min-width="180"
+        align="center"
+      >
         <template #default="scope">
-          <el-link @click="handleStatus(scope.row)" :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
-          <el-progress v-if="scope.row.status==0 && scope.row.progress" type="circle" :percentage="scope.row.progress" :width="60" />
+          {{ scope.row.VideoFile.fileName }}
         </template>
       </el-table-column>
-      <el-table-column label="执行参数" min-width="180"  header-align="center">
+      <el-table-column
+        prop="transcodeId"
+        label="编码器"
+        min-width="80"
+        align="center"
+      >
+        <template #default="scope">
+          {{ scope.row.VideoTranscode.name }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="80"
+        align="center"
+      >
+        <template #default="scope">
+          <el-link
+            :type="scope.row.status > 0?'success':'danger'"
+            @click="handleStatus(scope.row)"
+          >
+            {{ table.querySelect.status[scope.row.status] }}
+          </el-link>
+          <el-progress
+            v-if="scope.row.status==0 && scope.row.progress"
+            type="circle"
+            :percentage="scope.row.progress"
+            :width="60"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="执行参数"
+        min-width="180"
+        header-align="center"
+      >
         <template #default="scope">
           <pre>{{ scope.row.options }}</pre>
         </template>
       </el-table-column>
-      <el-table-column label="输出文件路径" min-width="260" align="center">
+      <el-table-column
+        label="输出文件路径"
+        min-width="260"
+        align="center"
+      >
         <template #default="scope">
-          <el-link @click="copyPath(scope.row.outFile)">{{ scope.row.outFile }} [{{ fileSizeFormat(scope.row.outSize) }}]</el-link>
+          <el-link @click="copyPath(scope.row.outFile)">
+            {{ scope.row.outFile }} [{{ fileSizeFormat(scope.row.outSize) }}]
+          </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        min-width="170"
+        align="center"
+      />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="120"
+      >
         <template #default="scope">
-          <el-button link type="danger" @click="handleDialogDelete(scope.row)">删除</el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <br>
 
-    <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
-      :page-size="table.query.limit" @current-change="handleChangePage" @size-change="handleChangeLimit" />
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
   </el-main>
 
   <!-- 播放dialog -->
-  <el-dialog v-model="playDialogVisible" title="播放" width="40%" destroy-on-close center>
+  <el-dialog
+    v-model="playDialogVisible"
+    title="播放"
+    width="40%"
+    destroy-on-close
+    center
+  >
     <play :options="playOptions" />
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="playDialogVisible = false">
+        <el-button
+          type="primary"
+          @click="playDialogVisible = false"
+        >
           关闭
         </el-button>
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

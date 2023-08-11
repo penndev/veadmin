@@ -1,16 +1,21 @@
 <template>
   <el-scrollbar style="height: calc(100vh - 60px)">
-      <el-menu
-        unique-opened
-        :collapse="layout.collapse"
-        :collapse-transition="false"
-        :background-color="variables.sidebarBgcolor"
-        :text-color="variables.sidebarColor"
-        :router="true"
-        :default-active="active"
-      >
-        <MenuItem v-for="(item, index) in routes" :key="index" :item="item" :allow="auth.routes" />
-      </el-menu>
+    <el-menu
+      unique-opened
+      :collapse="layout.collapse"
+      :collapse-transition="false"
+      :background-color="variables.sidebarBgcolor"
+      :text-color="variables.sidebarColor"
+      :router="true"
+      :default-active="active"
+    >
+      <MenuItem
+        v-for="(item, index) in routes"
+        :key="index"
+        :item="item"
+        :allow="auth.routes"
+      />
+    </el-menu>
   </el-scrollbar>
 </template>
 

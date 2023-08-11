@@ -1,139 +1,229 @@
 <template>
+  <div>
+    <el-form :inline="true">
+      <el-form-item label="角色名称">
+        <el-input
+          v-model="table.query.email"
+          placeholder="角色名称"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="search"
+          @click="handleTableData"
+        >
+          查询
+        </el-button>
+        <el-button
+          type="info"
+          icon="Refresh"
+          @click="handleQueryRefresh"
+        >
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 
-    <div>
-      <el-form :inline="true">
-        <el-form-item label="角色名称">
-          <el-input placeholder="角色名称" v-model="table.query.email" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-          <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-
-    <el-main style="background-color:#fff">
-      <el-button type="primary" icon="Plus" @click="handleDialogAdd">新建角色</el-button>
-      <el-table :data="table.data" style="width: 100%" @sort-change="handleSortChange">
-        <el-table-column prop="id" label="ID" width="80" sortable="custom" />
-        <el-table-column prop="name" label="名称"  width="150" />
-        <el-table-column prop="status" label="状态" width="120" >
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-              size="large"
-              inline-prompt
-              active-text="启用"
-              inactive-text="禁用"
-              :disabled="true"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="menu" label="菜单组">
-          <template #default="scope">
-            <el-tag v-for="(val,key) of scope.row.menu.split(',')" :key="key" style="margin:1px">
-              {{ val }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="route" label="路由组">
-          <template #default="scope">
-            <el-tag v-for="(val,key) of scope.row.route" :key="key" type="success" style="margin:1px">
-              {{ val.path }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createdAt" label="创建日期" width="200" />
-        <el-table-column fixed="right" label="操作" width="120">
-          <template #default="scope">
-            <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-            <el-button link type="danger" @click="handleDialogDelete(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <br>
-
-      <el-pagination
-        background
-        layout="total, sizes, prev, pager, next"
-        :total="table.total"
-        :default-page-size="table.query.limit"
-        @current-change="handleChangePage"
-        @size-change="handleChangeLimit"
-      />
-
-    </el-main>
-
-    <!-- 处理数据|新增编辑 -->
-    <el-dialog
-      :title="dialog.title"
-      :close-on-click-modal="false"
-      v-model="dialog.visible"
-      destroy-on-close
-      close-on-press-escape
-      center
+  <el-main style="background-color:#fff">
+    <el-button
+      type="primary"
+      icon="Plus"
+      @click="handleDialogAdd"
     >
-      <el-form
-        ref="dialogRef"
-        :model="dialog.form"
-        :rules="dialog.formRule"
+      新建角色
+    </el-button>
+    <el-table
+      :data="table.data"
+      style="width: 100%"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="name"
+        label="名称"
+        width="150"
+      />
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="120"
       >
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="dialog.form.name" />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
+        <template #default="scope">
           <el-switch
-            v-model="dialog.form.status"
+            v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
+            size="large"
+            inline-prompt
             active-text="启用"
             inactive-text="禁用"
+            :disabled="true"
           />
-        </el-form-item>
-        <el-form-item label="菜单" prop="menu">
-          <el-input v-model="dialog.form.menu" />
-          <small>输入前端开发中的路由名称用英文逗号分割！例 `Dashboard,SystemAdministrator | *` </small>
-        </el-form-item>
-        <br/>
-        <el-form-item label="路由组" prop="route">
-          <div
-            v-for="(val,key) of dialog.form.route" :key="key"
-            style="margin-bottom: 8px;width: 100%;"
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="menu"
+        label="菜单组"
+      >
+        <template #default="scope">
+          <el-tag
+            v-for="(val,key) of scope.row.menu.split(',')"
+            :key="key"
+            style="margin:1px"
           >
-              <el-link type="info">
-                路由-> {{ val.path }}
-              </el-link>
+            {{ val }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="route"
+        label="路由组"
+      >
+        <template #default="scope">
+          <el-tag
+            v-for="(val,key) of scope.row.route"
+            :key="key"
+            type="success"
+            style="margin:1px"
+          >
+            {{ val.path }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        width="200"
+      />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="120"
+      >
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="handleDialogEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <br>
+
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :default-page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
+  </el-main>
+
+  <!-- 处理数据|新增编辑 -->
+  <el-dialog
+    v-model="dialog.visible"
+    :title="dialog.title"
+    :close-on-click-modal="false"
+    destroy-on-close
+    close-on-press-escape
+    center
+  >
+    <el-form
+      ref="dialogRef"
+      :model="dialog.form"
+      :rules="dialog.formRule"
+    >
+      <el-form-item
+        label="名称"
+        prop="name"
+      >
+        <el-input v-model="dialog.form.name" />
+      </el-form-item>
+
+      <el-form-item
+        label="状态"
+        prop="status"
+      >
+        <el-switch
+          v-model="dialog.form.status"
+          :active-value="1"
+          :inactive-value="0"
+          active-text="启用"
+          inactive-text="禁用"
+        />
+      </el-form-item>
+      <el-form-item
+        label="菜单"
+        prop="menu"
+      >
+        <el-input v-model="dialog.form.menu" />
+        <small>输入前端开发中的路由名称用英文逗号分割！例 `Dashboard,SystemAdministrator | *` </small>
+      </el-form-item>
+      <br>
+      <el-form-item
+        label="路由组"
+        prop="route"
+      >
+        <div
+          v-for="(val,key) of dialog.form.route"
+          :key="key"
+          style="margin-bottom: 8px;width: 100%;"
+        >
+          <el-link type="info">
+            路由-> {{ val.path }}
+          </el-link>
               &nbsp;
-              <el-button
-                size="small"
-                type="info"
-                icon="Delete"
-                @click="handleRouteDel(key)"
-                circle
-              />
-          </div>
-          <el-input v-model="dialog.tempvalue" >
-            <template #append>
-              <el-button icon="Plus" @click="handleRouteAdd" />
-            </template>
-          </el-input>
-          <small>输入后端开发预留的全路径部分接口地址！例 `/admin/add | *` </small>
-        </el-form-item>
-      </el-form>
+          <el-button
+            size="small"
+            type="info"
+            icon="Delete"
+            circle
+            @click="handleRouteDel(key)"
+          />
+        </div>
+        <el-input v-model="dialog.tempvalue">
+          <template #append>
+            <el-button
+              icon="Plus"
+              @click="handleRouteAdd"
+            />
+          </template>
+        </el-input>
+        <small>输入后端开发预留的全路径部分接口地址！例 `/admin/add | *` </small>
+      </el-form-item>
+    </el-form>
 
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialog.visible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmitForm">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-
-  </template>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialog.visible = false">取消</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
 
 <script setup>
 import { ref } from 'vue'

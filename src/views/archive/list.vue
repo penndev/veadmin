@@ -1,15 +1,20 @@
 <template>
-
   <div>
-
     <el-form :inline="true">
-
       <el-form-item label="ID">
-        <el-input placeholder="ID" v-model="table.query.id" style="max-width: 120px;" />
+        <el-input
+          v-model="table.query.id"
+          placeholder="ID"
+          style="max-width: 120px;"
+        />
       </el-form-item>
 
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.name" style="max-width: 180px;" />
+        <el-input
+          v-model="table.query.name"
+          placeholder="名称"
+          style="max-width: 180px;"
+        />
       </el-form-item>
 
       <el-form-item label="上架状态">
@@ -19,8 +24,16 @@
           clearable
           style="max-width: 150px;"
         >
-          <el-option key="0" label="下架" value="0" />
-          <el-option key="1" label="上架" value="1" />
+          <el-option
+            key="0"
+            label="下架"
+            value="0"
+          />
+          <el-option
+            key="1"
+            label="上架"
+            value="1"
+          />
         </el-select>
       </el-form-item>
 
@@ -49,9 +62,7 @@
           查询
         </el-button>
       </el-form-item>
-
     </el-form>
-
   </div>
 
   <el-main style="background-color:#fff">
@@ -68,17 +79,33 @@
       :data="table.data"
       @sort-change="handleSortChange"
     >
-      <el-table-column label="ID" prop="id" fixed width="80" sortable="custom" />
+      <el-table-column
+        label="ID"
+        prop="id"
+        fixed
+        width="80"
+        sortable="custom"
+      />
 
-      <el-table-column label="名称" prop="name" align="center" />
+      <el-table-column
+        label="名称"
+        prop="name"
+        align="center"
+      />
 
-      <el-table-column label="分类" align="center">
+      <el-table-column
+        label="分类"
+        align="center"
+      >
         <template #default="scope">
           {{ dialog.vodTypeDict[scope.row.archiveCategoryId] ?? '未知' }}
         </template>
       </el-table-column>
 
-      <el-table-column  label="封面" align="center">
+      <el-table-column
+        label="封面"
+        align="center"
+      >
         <template #default="scope">
           <el-image
             :src="scope.row.Pic"
@@ -90,7 +117,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="上架状态" align="center">
+      <el-table-column
+        label="上架状态"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             :type="scope.row.status > 0 ? 'success' : 'danger'"
@@ -100,22 +130,35 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="标签" width="250" align="center">
+      <el-table-column
+        label="标签"
+        width="250"
+        align="center"
+      >
         <template #default="scope">
           <el-tag
             v-for="tag in scope.row.Tags"
             :key="tag.id"
             closable
-            @close="handleDeleteTagMap(tag.id, scope.row.Tags)"
             style="margin:2px 3px;"
+            @close="handleDeleteTagMap(tag.id, scope.row.Tags)"
           >
             {{ tag?.ArchiveTag.name }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column label="最近更新" prop="updatedAt" width="200" align="center" />
-      <el-table-column label="操作" fixed="right" width="120">
+      <el-table-column
+        label="最近更新"
+        prop="updatedAt"
+        width="200"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="120"
+      >
         <template #default="scope">
           <el-button
             link
@@ -145,13 +188,12 @@
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />
-
   </el-main>
 
   <el-dialog
+    v-model="dialog.visible"
     :title="dialog.title"
     :close-on-click-modal="false"
-    v-model="dialog.visible"
     destroy-on-close
     close-on-press-escape
     center
@@ -164,7 +206,10 @@
       label-position="left"
       label-width="80px"
     >
-      <el-form-item  label="状态" prop="status">
+      <el-form-item
+        label="状态"
+        prop="status"
+      >
         <el-switch
           v-model="dialog.form.status"
           :active-value="1"
@@ -174,7 +219,10 @@
         />
       </el-form-item>
 
-      <el-form-item label="视频分类" prop="videoTypeId">
+      <el-form-item
+        label="视频分类"
+        prop="videoTypeId"
+      >
         <el-row :gutter="20">
           <el-col :span="12">
             <el-select
@@ -200,8 +248,8 @@
               <template v-for="item in dialog.vodTypeList">
                 <el-option
                   v-if="dialog.form.archiveCategoryId
-                        || dialog.formTempSelectType == item.parent
-                        || dialog.formTempSelectType == item.id"
+                    || dialog.formTempSelectType == item.parent
+                    || dialog.formTempSelectType == item.id"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -212,13 +260,17 @@
         </el-row>
       </el-form-item>
 
-      <el-form-item label="标签栏" prop="status" v-if="dialog.formAction == 'edit'" >
+      <el-form-item
+        v-if="dialog.formAction == 'edit'"
+        label="标签栏"
+        prop="status"
+      >
         <el-tag
           v-for="tag in dialog.form.Tags"
           :key="tag.id"
           closable
-          @close="handleDeleteTagMap(tag.id)"
           style="margin: 6px;"
+          @close="handleDeleteTagMap(tag.id)"
         >
           {{ tag.ArchiveTag.name }}
         </el-tag>
@@ -229,8 +281,8 @@
           reserve-keyword
           placeholder="搜索标签名称"
           :remote-method="handleRemoteTagList"
-          @change="handleRemoteTagSelect"
           size="small"
+          @change="handleRemoteTagSelect"
         >
           <el-option
             v-for="item in dialog.vodTagList"
@@ -243,60 +295,89 @@
       <br>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="总集数" prop="total">
+          <el-form-item
+            label="总集数"
+            prop="total"
+          >
             <el-input v-model="dialog.form.total" />
           </el-form-item>
         </el-col>
       </el-row>
-      <br />
+      <br>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="标题" prop="name">
+          <el-form-item
+            label="标题"
+            prop="name"
+          >
             <el-input v-model="dialog.form.name" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="副标题" prop="sub">
+          <el-form-item
+            label="副标题"
+            prop="sub"
+          >
             <el-input v-model="dialog.form.sub" />
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="封面" prop="pic">
+      <el-form-item
+        label="封面"
+        prop="pic"
+      >
         <el-input v-model="dialog.form.pic" />
       </el-form-item>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="年份" prop="year">
+          <el-form-item
+            label="年份"
+            prop="year"
+          >
             <el-input v-model="dialog.form.year" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="语言" prop="lang">
+          <el-form-item
+            label="语言"
+            prop="lang"
+          >
             <el-input v-model="dialog.form.lang" />
           </el-form-item>
-
         </el-col>
         <el-col :span="8">
-          <el-form-item label="地区" prop="area">
+          <el-form-item
+            label="地区"
+            prop="area"
+          >
             <el-input v-model="dialog.form.area" />
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-form-item label="内容简介" prop="content" width="100">
-        <el-input v-model="dialog.form.content" :rows="3" type="textarea" />
+      <el-form-item
+        label="内容简介"
+        prop="content"
+        width="100"
+      >
+        <el-input
+          v-model="dialog.form.content"
+          :rows="3"
+          type="textarea"
+        />
       </el-form-item>
-
     </el-form>
 
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitForm">确定</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

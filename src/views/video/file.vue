@@ -1,76 +1,212 @@
 <template>
-
   <div>
     <el-form :inline="true">
       <el-form-item label="名称">
-        <el-input placeholder="名称" v-model="table.query.fileName" clearable />
+        <el-input
+          v-model="table.query.fileName"
+          placeholder="名称"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="校验码">
-        <el-input placeholder="MD5" v-model="table.query.fileMd5" clearable />
+        <el-input
+          v-model="table.query.fileMd5"
+          placeholder="MD5"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="search" @click="handleTableData">查询</el-button>
-        <el-button type="info" icon="Refresh" @click="handleQueryRefresh">重置</el-button>
+        <el-button
+          type="primary"
+          icon="search"
+          @click="handleTableData"
+        >
+          查询
+        </el-button>
+        <el-button
+          type="info"
+          icon="Refresh"
+          @click="handleQueryRefresh"
+        >
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
 
   <el-main style="background-color:#fff">
     <upload :on-success="handleUploadSuccess" />
-    <el-table :data="table.data" @sort-change="handleSortChange" style="width: 100%;height: 100%;" >
-      <el-table-column fixed prop="id" label="ID" width="80" sortable="custom" align="center" />
-      <el-table-column prop="fileName" label="文件名" min-width="160"  align="center" />
-      <el-table-column prop="fileMd5" label="文件MD5" min-width="110" align="center">
+    <el-table
+      :data="table.data"
+      style="width: 100%;height: 100%;"
+      @sort-change="handleSortChange"
+    >
+      <el-table-column
+        fixed
+        prop="id"
+        label="ID"
+        width="80"
+        sortable="custom"
+        align="center"
+      />
+      <el-table-column
+        prop="fileName"
+        label="文件名"
+        min-width="160"
+        align="center"
+      />
+      <el-table-column
+        prop="fileMd5"
+        label="文件MD5"
+        min-width="110"
+        align="center"
+      >
         <template #default="scope">
-          <el-tooltip class="box-item" effect="dark" :content="scope.row.fileMd5" placement="top-end">
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="scope.row.fileMd5"
+            placement="top-end"
+          >
             <span>{{ scope.row.fileMd5.substring(0, 12) }}...</span>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" align="center" >
+      <el-table-column
+        prop="status"
+        label="状态"
+        align="center"
+      >
         <template #default="scope">
-          <el-link :type="scope.row.status > 0?'success':'danger'">{{ table.querySelect.status[scope.row.status] }}</el-link>
+          <el-link :type="scope.row.status > 0?'success':'danger'">
+            {{ table.querySelect.status[scope.row.status] }}
+          </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="视频信息" min-width="180" align="center">
+      <el-table-column
+        label="视频信息"
+        min-width="180"
+        align="center"
+      >
         <template #default="scope">
-          <el-tag class="ea-tag" type="success">时长 {{ timeFormat(scope.row.videoDuration) }} </el-tag>
-          <el-tag class="ea-tag" type="info">帧率 {{ scope.row.videoFps }} </el-tag>
-          <el-tag class="ea-tag">分辨率 {{ scope.row.videoWidth }}×{{ scope.row.videoHeight }} </el-tag>
-          <el-tag class="ea-tag" type="info">码率 {{ scope.row.videoBitrate }} </el-tag>
-          <el-tag class="ea-tag" type="success">大小 {{ fileSizeFormat(scope.row.fileSize) }}</el-tag>
+          <el-tag
+            class="ea-tag"
+            type="success"
+          >
+            时长 {{ timeFormat(scope.row.videoDuration) }}
+          </el-tag>
+          <el-tag
+            class="ea-tag"
+            type="info"
+          >
+            帧率 {{ scope.row.videoFps }}
+          </el-tag>
+          <el-tag class="ea-tag">
+            分辨率 {{ scope.row.videoWidth }}×{{ scope.row.videoHeight }}
+          </el-tag>
+          <el-tag
+            class="ea-tag"
+            type="info"
+          >
+            码率 {{ scope.row.videoBitrate }}
+          </el-tag>
+          <el-tag
+            class="ea-tag"
+            type="success"
+          >
+            大小 {{ fileSizeFormat(scope.row.fileSize) }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="创建日期" min-width="170" align="center" />
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column
+        prop="createdAt"
+        label="创建日期"
+        min-width="170"
+        align="center"
+      />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="200"
+      >
         <template #default="scope">
-          <el-popover placement="top-start" title="Play" :width="220" trigger="hover">
-            <el-button @click="handlePlay(scope.row.FilePath)">VideoJS</el-button>
-            <el-button @click="handleDownload(scope.row.FilePath)">Download</el-button>
+          <el-popover
+            placement="top-start"
+            title="Play"
+            :width="220"
+            trigger="hover"
+          >
+            <el-button @click="handlePlay(scope.row.FilePath)">
+              VideoJS
+            </el-button>
+            <el-button @click="handleDownload(scope.row.FilePath)">
+              Download
+            </el-button>
             <template #reference>
-              <el-button link type="info">预览</el-button>
+              <el-button
+                link
+                type="info"
+              >
+                预览
+              </el-button>
             </template>
           </el-popover>
-          <el-button link type="warning" @click="handleTranscode(scope.row)">转码</el-button>
-          <el-button link type="primary" @click="handleDialogEdit(scope.row)">编辑</el-button>
-          <el-button link type="danger" @click="handleDialogDelete(scope.row)">删除</el-button>
+          <el-button
+            link
+            type="warning"
+            @click="handleTranscode(scope.row)"
+          >
+            转码
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="handleDialogEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDialogDelete(scope.row)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <br>
 
-    <el-pagination background layout="total, sizes, prev, pager, next" :total="table.total"
-      :page-size="table.query.limit" @current-change="handleChangePage" @size-change="handleChangeLimit" />
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="table.total"
+      :page-size="table.query.limit"
+      @current-change="handleChangePage"
+      @size-change="handleChangeLimit"
+    />
   </el-main>
 
   <!-- 处理数据|编辑 -->
-  <el-dialog :title="dialog.title" :close-on-click-modal="false" v-model="dialog.visible" destroy-on-close
-    close-on-press-escape center>
-
-    <el-form ref="dialogRef" label-width="80px" :model="dialog.form" :rules="dialog.formRule">
-      <el-form-item label="名称" prop="fileName">
+  <el-dialog
+    v-model="dialog.visible"
+    :title="dialog.title"
+    :close-on-click-modal="false"
+    destroy-on-close
+    close-on-press-escape
+    center
+  >
+    <el-form
+      ref="dialogRef"
+      label-width="80px"
+      :model="dialog.form"
+      :rules="dialog.formRule"
+    >
+      <el-form-item
+        label="名称"
+        prop="fileName"
+      >
         <el-input v-model="dialog.form.fileName" />
       </el-form-item>
     </el-form>
@@ -78,17 +214,29 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitForm">确定</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitForm"
+        >确定</el-button>
       </span>
     </template>
   </el-dialog>
 
   <!-- 播放dialog -->
-  <el-dialog v-model="playDialogVisible" title="播放" width="40%" destroy-on-close center>
+  <el-dialog
+    v-model="playDialogVisible"
+    title="播放"
+    width="40%"
+    destroy-on-close
+    center
+  >
     <play :options="playOptions" />
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="playDialogVisible = false">
+        <el-button
+          type="primary"
+          @click="playDialogVisible = false"
+        >
           关闭
         </el-button>
       </span>
@@ -96,15 +244,38 @@
   </el-dialog>
 
   <!-- 选择转码编辑dialog -->
-  <el-dialog v-model="transcodeDialog.visible" :title="transcodeDialog.title" destroy-on-close center>
-    <el-form ref="dialogTranscodeRef" :model="transcodeDialog.form" :rules="transcodeDialog.formRule">
-      <el-form-item label="源文件" prop="id">
-        <el-input-number v-model="transcodeDialog.form.id" disabled style="display:none" />
+  <el-dialog
+    v-model="transcodeDialog.visible"
+    :title="transcodeDialog.title"
+    destroy-on-close
+    center
+  >
+    <el-form
+      ref="dialogTranscodeRef"
+      :model="transcodeDialog.form"
+      :rules="transcodeDialog.formRule"
+    >
+      <el-form-item
+        label="源文件"
+        prop="id"
+      >
+        <el-input-number
+          v-model="transcodeDialog.form.id"
+          disabled
+          style="display:none"
+        />
         <span>{{ transcodeDialog.form.fileName }}</span>
       </el-form-item>
 
-      <el-form-item label="编码器" prop="transcodeId">
-        <el-select v-model="transcodeDialog.form.transcodeId" filterable placeholder="输入编码器名称">
+      <el-form-item
+        label="编码器"
+        prop="transcodeId"
+      >
+        <el-select
+          v-model="transcodeDialog.form.transcodeId"
+          filterable
+          placeholder="输入编码器名称"
+        >
           <el-option
             v-for="item in transcodeDialog.transcodeSelect"
             :key="item.id"
@@ -114,25 +285,32 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="FFMPEG参数" prop="command">
-          <el-input
-            v-model="transcodeDialog.form.command"
-            rows="3"
-            type="textarea"
-            placeholder="FFMPEG自定义的参数 按行分割"
-          />
+      <el-form-item
+        label="FFMPEG参数"
+        prop="command"
+      >
+        <el-input
+          v-model="transcodeDialog.form.command"
+          rows="3"
+          type="textarea"
+          placeholder="FFMPEG自定义的参数 按行分割"
+        />
       </el-form-item>
-
     </el-form>
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="info" @click="transcodeDialog.visible = false">关闭 </el-button>
-        <el-button type="primary" @click="handleSubmitTask">确定</el-button>
+        <el-button
+          type="info"
+          @click="transcodeDialog.visible = false"
+        >关闭 </el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmitTask"
+        >确定</el-button>
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

@@ -1,5 +1,8 @@
 <template>
-  <video ref="videoTag" class="video-main video-js  vjs-16-9" />
+  <video
+    ref="videoTag"
+    class="video-main video-js  vjs-16-9"
+  />
 </template>
 
 <script setup>
