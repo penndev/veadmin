@@ -13,7 +13,7 @@
       <div class="logo">
         <img
           class="logoimg"
-          src="@/assets/logo.svg"
+          src="/logo.svg"
         >
         <h2
           v-if="!layout.collapse"

@@ -5,7 +5,7 @@
         <div class="login_panle_form_title">
           <img
             class="login_panle_form_title_logo"
-            src="@/assets/logo.svg"
+            src="/logo.svg"
           >
           <div class="login_panle_form_title_p">
             用户登录
