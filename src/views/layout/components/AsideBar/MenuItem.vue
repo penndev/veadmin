@@ -45,17 +45,17 @@
           <span>{{ item.meta.title }}</span>
         </template>
         <MenuItem
-          v-for="(item, index) in item.children"
+          v-for="(itemChild, index) in item.children"
           :key="index"
-          :item="item"
+          :item="itemChild"
           :allow="allow"
         />
       </el-sub-menu>
       <template v-else>
         <MenuItem
-          v-for="(item, index) in item.children"
+          v-for="(itemChild, index) in item.children"
           :key="index"
-          :item="item"
+          :item="itemChild"
           :allow="allow"
         />
       </template>
@@ -76,7 +76,10 @@
   </template>
 </template>
 <script setup>
-defineProps(['item', 'allow'])
+defineProps({
+  item: { type: Object, default: () => ({}) },
+  allow: { type: String, default: '' }
+})
 
 const handleOpen = (url) => {
   window.open(url, '_bank')

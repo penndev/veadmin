@@ -8,8 +8,6 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'standard'
   ],
-  overrides: [
-  ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module'
