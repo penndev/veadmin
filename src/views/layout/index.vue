@@ -35,9 +35,10 @@
       <router-view v-slot="{ Component }">
         <div
           v-loading="viewLoading.status"
+          class="ea-main"
           :element-loading-text="viewLoading.text"
         >
-          <el-main class="ea-main">
+          <el-main>
             <component :is="Component" />
           </el-main>
         </div>
@@ -132,7 +133,8 @@ const handleCollapse = () => {
     height: 100vh;
 
     .ea-main {
-      width: auto !important;
+      height: 100%;
+      overflow: auto;
       background-color: $mainBgcolor;
     }
   }

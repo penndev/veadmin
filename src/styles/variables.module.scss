@@ -1,4 +1,8 @@
 // 优化element-ui
+.el-scrollbar__wrap {
+    overflow: visible;
+}
+
 @media screen and (max-width: 720px) { 
     .el-dialog {
         width: 90%;

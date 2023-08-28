@@ -38,7 +38,6 @@
     <upload :on-success="handleUploadSuccess" />
     <el-table
       :data="table.data"
-      style="width: 100%;height: 100%;"
       @sort-change="handleSortChange"
     >
       <el-table-column
