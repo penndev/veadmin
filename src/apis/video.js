@@ -1,13 +1,16 @@
 import service from '@/utils/request'
 
-// 上传文件
+// 上传文件前置检查
 export const fileUploadBefore = (data) => {
   return service({
     url: '/video/upload/before',
     method: 'post',
-    data
+    data,
+    viewLoading: false
   })
 }
+
+// 切片上传文件
 export const fileUploadPart = (data) => {
   return service({
     url: '/video/upload/part',
@@ -28,6 +31,7 @@ export const listFile = (params) => {
     params
   })
 }
+
 export const updateFile = (data) => {
   return service({
     url: '/video/file',
@@ -35,6 +39,7 @@ export const updateFile = (data) => {
     data
   })
 }
+
 export const deleteFile = (params) => {
   return service({
     url: '/video/file',
@@ -51,6 +56,7 @@ export const addTranscode = (data) => {
     data
   })
 }
+
 export const listTranscode = (params) => {
   return service({
     url: '/video/transcode',
@@ -58,6 +64,7 @@ export const listTranscode = (params) => {
     params
   })
 }
+
 export const updateTranscode = (data) => {
   return service({
     url: '/video/transcode',
@@ -65,6 +72,7 @@ export const updateTranscode = (data) => {
     data
   })
 }
+
 export const deleteTranscode = (params) => {
   return service({
     url: '/video/transcode',

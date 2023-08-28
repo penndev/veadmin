@@ -33,14 +33,14 @@
       <HistoryBar />
 
       <router-view v-slot="{ Component }">
-        <el-main class="ea-main">
-          <div
-            v-loading="viewLoading.status"
-            :element-loading-text="viewLoading.text"
-          >
+        <div
+          v-loading="viewLoading.status"
+          :element-loading-text="viewLoading.text"
+        >
+          <el-main class="ea-main">
             <component :is="Component" />
-          </div>
-        </el-main>
+          </el-main>
+        </div>
       </router-view>
     </el-container>
   </el-container>
