@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import SparkMD5 from 'spark-md5'
 
 // file File文件类型
@@ -39,14 +38,27 @@ export function MD5LargeFile (file, progress) {
 
 // 格式化文件大小
 // 从字节开始格式化
-export const fileSizeFormat = (b) => {
-  if (b >= 1099511627776) {
-    return (b / 1099511627776).toFixed(2) + 'T'
+export const fileSizeFormat = (byteLen) => {
+  const TB = 1099511627776
+  const GB = 1073741824
+  const MB = 1048576
+  const KB = 1024
+
+  if (typeof byteLen !== 'number' || isNaN(byteLen)) {
+    throw new Error('Input must be a valid number')
   }
-  if (b >= 1073741824) {
-    return (b / 1073741824).toFixed(2) + 'G'
+
+  if (byteLen >= TB) {
+    return (byteLen / TB).toFixed(2) + 'TB'
+  } else if (byteLen >= GB) {
+    return (byteLen / GB).toFixed(2) + 'GB'
+  } else if (byteLen >= MB) {
+    return (byteLen / MB).toFixed(2) + 'MB'
+  } else if (byteLen >= KB) {
+    return (byteLen / KB).toFixed(2) + 'KB'
+  } else {
+    return byteLen + 'Byte'
   }
-  return (b / 1048576).toFixed(2) + 'M'
 }
 
 // 格式化时间 秒对文字
@@ -60,21 +72,20 @@ export const timeFormat = (sec) => {
   }
 }
 
-export const formatRouteList = (routes) => {
-  // 原始路由列表
-  const routelist = []
-  const formatRouteChildren = (children, basePath) => {
-    children.path = resolve(basePath, children.path)
-    if (children.children) {
-      for (const item of children.children) {
-        formatRouteChildren(item, children.path)
-      }
-    }
-  }
-  for (const item of routes) {
-    formatRouteChildren(item, '/')
-    // 进行角色权限验证
-    routelist.push(item)
-  }
-  return routelist
+// 返回时间戳。或者unix格式化字符串
+export const dateFormat = (dateString, timestamp) => {
+  const date = (timestamp && timestamp > 0) ? new Date(timestamp * 1000) : new Date()
+  const year = date.getFullYear().toString()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return dateString
+    .replace('Y', year)
+    .replace('m', month)
+    .replace('d', day)
+    .replace('H', hours)
+    .replace('i', minutes)
+    .replace('s', seconds)
 }

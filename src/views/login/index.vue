@@ -147,7 +147,7 @@ const formSubmit = () => {
         }
         permission.token = result.token
         permission.routes = result.routes
-        router.push(route.query.redirect ?? '/')
+        router.push(route.query.redirect ?? result.index ?? '/')
       }).catch(() => {
         handleChangeCaptcha()
       })

@@ -1,6 +1,26 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { formatRouteList } from '@/utils'
 import Layout from '@/views/layout/index.vue'
+import { resolve } from 'path'
+
+// 格式路由结构
+const formatRouteList = (routes) => {
+  // 原始路由列表
+  const routelist = []
+  const formatRouteChildren = (children, basePath) => {
+    children.path = resolve(basePath, children.path)
+    if (children.children) {
+      for (const item of children.children) {
+        formatRouteChildren(item, children.path)
+      }
+    }
+  }
+  for (const item of routes) {
+    formatRouteChildren(item, '/')
+    // 进行角色权限验证
+    routelist.push(item)
+  }
+  return routelist
+}
 
 /**
  * 动态路由不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
@@ -131,6 +151,20 @@ const routes = formatRouteList([
         component: () => import('@/views/archive/tag.vue'),
         name: 'archiveTag',
         meta: { title: '标签列表', icon: 'PriceTag' }
+      }
+    ]
+  },
+  {
+    path: '/wafcdn',
+    component: Layout,
+    redirect: '/wafcdn/stat',
+    meta: { title: 'WAFCDN', icon: 'Postcard' },
+    children: [
+      {
+        path: 'stat',
+        component: () => import('@/views/wafcdn/stat.vue'),
+        name: 'WafCdnStat',
+        meta: { title: '状态总览', icon: 'Odometer' }
       }
     ]
   },
