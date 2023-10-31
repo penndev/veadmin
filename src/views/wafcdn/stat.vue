@@ -135,7 +135,7 @@
 import { stat } from '@/apis/wafcdn'
 import * as echarts from 'echarts'
 import { ref, onMounted } from 'vue'
-import { dateFormat, fileSizeFormat } from '@/utils/index'
+import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils/index'
 
 const table = ref({
   cpu: {
@@ -174,25 +174,15 @@ const netOption = {
   yAxis: {
     type: 'value',
     axisLabel: {
-      formatter: function (value, index) {
-        const bps = value * 8
-        if (bps > 1000000000) {
-          return (bps / 1000000000).toFixed(2) + 'Gbps'
-        } else if (bps > 1000000) {
-          return (bps / 1000000).toFixed(1) + 'Mbps'
-        } else if (bps > 1000) {
-          return (bps / 1000).toFixed(1) + 'Kbps'
-        } else {
-          return bps + 'bps'
-        }
-      }
+      formatter: (value, index) => byteBPSFormat(value)
     }
   },
   tooltip: {
     trigger: 'axis', // 触发类型为坐标轴
     axisPointer: { // 坐标轴指示器配置
       type: 'cross' // 十字准星指示器
-    }
+    },
+    valueFormatter: (value) => byteBPSFormat(value)
   },
   series: [
     {
@@ -253,7 +243,6 @@ const handleReflushStat = () => {
 }
 
 handleReflushStat()
-
 </script>
 
 <style lang="scss" scoped>

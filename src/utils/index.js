@@ -61,6 +61,20 @@ export const fileSizeFormat = (byteLen) => {
   }
 }
 
+// 格式化BPS
+export const byteBPSFormat = (byteLen) => {
+  const bps = byteLen * 8
+  if (bps > 1000000000) {
+    return (bps / 1000000000).toFixed(2) + 'Gbps'
+  } else if (bps > 1000000) {
+    return (bps / 1000000).toFixed(1) + 'Mbps'
+  } else if (bps > 1000) {
+    return (bps / 1000).toFixed(1) + 'Kbps'
+  } else {
+    return bps + 'bps'
+  }
+}
+
 // 格式化时间 秒对文字
 export const timeFormat = (sec) => {
   if (sec >= 3600) {

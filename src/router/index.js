@@ -2,28 +2,29 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '@/views/layout/index.vue'
 import { resolve } from 'path'
 
+import { video, archive, wafcdn } from './dynamic'
+
 // 格式路由结构
-const formatRouteList = (routes) => {
-  // 原始路由列表
-  const routelist = []
-  const formatRouteChildren = (children, basePath) => {
-    children.path = resolve(basePath, children.path)
-    if (children.children) {
-      for (const item of children.children) {
-        formatRouteChildren(item, children.path)
-      }
+const formatRouteItem = (children, basePath) => {
+  children.path = resolve(basePath, children.path)
+  if (children.children) {
+    for (const item of children.children) {
+      formatRouteItem(item, children.path)
     }
   }
+}
+
+const formatRouteList = (routes) => {
+  const routelist = []
   for (const item of routes) {
-    formatRouteChildren(item, '/')
-    // 进行角色权限验证
+    formatRouteItem(item, '/')
     routelist.push(item)
   }
   return routelist
 }
 
 /**
- * 动态路由不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
+ * 动态路由 router.addRoute() 不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
  * 所以最有效率的解决办法是通过hide + beforeEach 来控制权限问题
  * - 参数介绍
  * path : 进行跳转
@@ -103,72 +104,6 @@ const routes = formatRouteList([
     ]
   },
   {
-    path: '/video',
-    component: Layout,
-    redirect: '/video/index',
-    meta: { title: '视频管理', icon: 'Film' },
-    children: [
-      {
-        path: 'file',
-        component: () => import('@/views/video/file.vue'),
-        name: 'videoFile',
-        meta: { title: '视频文件', icon: 'Files' }
-      },
-      {
-        path: 'transcode',
-        component: () => import('@/views/video/transcode.vue'),
-        name: 'videoTranscode',
-        meta: { title: '编码配置', icon: 'Memo' }
-      },
-      {
-        path: 'task',
-        component: () => import('@/views/video/task.vue'),
-        name: 'videoTask',
-        meta: { title: '任务管理', icon: 'DocumentCopy' }
-      }
-    ]
-  },
-  {
-    path: '/archive',
-    component: Layout,
-    redirect: '/archive/index',
-    meta: { title: '资料档案', icon: 'Postcard' },
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/archive/list.vue'),
-        name: 'archiveList',
-        meta: { title: '资料列表', icon: 'Memo' }
-      },
-      {
-        path: 'category',
-        component: () => import('@/views/archive/category.vue'),
-        name: 'archiveCategory',
-        meta: { title: '分类列表', icon: 'Grid' }
-      },
-      {
-        path: 'tag',
-        component: () => import('@/views/archive/tag.vue'),
-        name: 'archiveTag',
-        meta: { title: '标签列表', icon: 'PriceTag' }
-      }
-    ]
-  },
-  {
-    path: '/wafcdn',
-    component: Layout,
-    redirect: '/wafcdn/stat',
-    meta: { title: 'WAFCDN', icon: 'Postcard' },
-    children: [
-      {
-        path: 'stat',
-        component: () => import('@/views/wafcdn/stat.vue'),
-        name: 'WafCdnStat',
-        meta: { title: '状态总览', icon: 'Odometer' }
-      }
-    ]
-  },
-  {
     path: 'icon',
     component: Layout,
     name: 'Icon',
@@ -179,6 +114,8 @@ const routes = formatRouteList([
     }
   }
 ])
+
+routes.push(...formatRouteList([video, archive, wafcdn]))
 
 const router = createRouter({
   history: createWebHashHistory(),

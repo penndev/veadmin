@@ -42,17 +42,19 @@ router.beforeEach(async (to, from, next) => {
         )
         next(Error('没有访问权限'))
       } catch (error) {
-        next({ name: 'login' })
+        next({
+          name: 'login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
       }
     }
     return
   }
-
+  // 第一次登录的用户。
   next({
-    name: 'login',
-    query: {
-      redirect: to.fullPath
-    }
+    name: 'login'
   })
 })
 
