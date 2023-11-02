@@ -57,6 +57,7 @@
         label="名称"
         prop="nickname"
         width="160"
+        align="center"
       />
 
       <el-table-column
@@ -198,9 +199,6 @@ const handleTableData = () => {
   })
 }
 
-// 新增编辑数据
-const dialogRef = ref(null)
-
 const dialog = ref({
   visible: false,
   title: 'dialog',
@@ -222,11 +220,14 @@ const handleDialogAdd = () => {
 }
 
 const handleDialogEdit = (row) => {
-  dialog.value.title = '创建数据'
+  dialog.value.title = '编辑数据'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
+
+const dialogRef = ref(null)
+
 const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
