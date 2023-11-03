@@ -226,6 +226,7 @@ const handleDialogEdit = (row) => {
   dialog.value.form = row
 }
 
+// dialog 的 element 实例
 const dialogRef = ref(null)
 
 const handleSubmitForm = () => { // 提交数据
@@ -245,7 +246,7 @@ const handleSubmitForm = () => { // 提交数据
         })
         dialog.value.visible = false
       } else {
-        ElMessage.info('提交错误')
+        ElMessage.error('提交错误')
       }
     } else {
       ElMessage.error('请输入正确的数据！')

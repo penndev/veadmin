@@ -14,7 +14,6 @@
     <el-table
       :data="table.data"
       style="width: 100%"
-      @sort-change="handleSortChange"
     >
       <el-table-column
         label="域名"
@@ -74,7 +73,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDialogDelete(scope.row.id)"
+            @click="handleDialogDelete(scope.$index)"
           >
             删除
           </el-button>
@@ -95,7 +94,7 @@
     <el-form
       ref="dialogRef"
       label-position="left"
-      :model="dialog.form"
+      :model="dialog.formTmp"
       :rules="dialog.formRule"
     >
       <el-tabs type="border-card">
@@ -104,13 +103,13 @@
             label="域名"
             prop="domain"
           >
-            <el-input v-model="dialog.form.domain" />
+            <el-input v-model="dialog.formTmp.domain" />
           </el-form-item>
           <el-form-item
             label="端口"
             prop="port"
           >
-            <el-input-number v-model="dialog.form.port" />
+            <el-input-number v-model="dialog.formTmp.port" />
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="回源管理">
@@ -118,17 +117,17 @@
             label="回源路径"
             prop="backend.url"
           >
-            <el-input v-model="dialog.form.backend.url" />
+            <el-input v-model="dialog.formTmp.backend.url" />
           </el-form-item>
           <el-form-item
             label="回源域名"
-            prop="backend.url"
+            prop="backend.host"
           >
-            <el-input v-model="dialog.form.backend.url" />
+            <el-input v-model="dialog.formTmp.backend.host" />
           </el-form-item>
           <el-form-item label="回源请求头">
             <template
-              v-for="(value,index) in dialog.form.backend.req_header"
+              v-for="(value,index) in dialog.formTmp.backend.req_header"
               :key="index"
             >
               <el-col :span="11">
@@ -146,7 +145,7 @@
                   type="primary"
                   icon="Plus"
                   circle
-                  @click="dialog.form.backend.req_header.push({name:'',value:''})"
+                  @click="dialog.formTmp.backend.req_header.push({name:'',value:''})"
                 />
                 <span v-else>-</span>
               </el-col>
@@ -166,7 +165,7 @@
           </el-form-item>
           <el-form-item label="回源返回头">
             <template
-              v-for="(value,index) in dialog.form.backend.resp_header"
+              v-for="(value,index) in dialog.formTmp.backend.resp_header"
               :key="index"
             >
               <el-col :span="11">
@@ -184,7 +183,7 @@
                   type="primary"
                   icon="Plus"
                   circle
-                  @click="dialog.form.backend.resp_header.push({name:'',value:''})"
+                  @click="dialog.formTmp.backend.resp_header.push({name:'',value:''})"
                 />
                 <span v-else>-</span>
               </el-col>
@@ -208,7 +207,7 @@
             label="回源路径"
             prop="ssl.port"
           >
-            <el-input v-model="dialog.form.ssl.port" />
+            <el-input v-model="dialog.formTmp.ssl.port" />
           </el-form-item>
           <el-row>
             <el-col :span="11">
@@ -217,7 +216,7 @@
                 prop="ssl.crt"
               >
                 <el-input
-                  v-model="dialog.form.ssl.crt"
+                  v-model="dialog.formTmp.ssl.crt"
                   rows="15"
                   type="textarea"
                 />
@@ -229,7 +228,7 @@
                 prop="ssl.key"
               >
                 <el-input
-                  v-model="dialog.form.ssl.key"
+                  v-model="dialog.formTmp.ssl.key"
                   rows="15"
                   type="textarea"
                 />
@@ -238,10 +237,53 @@
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="缓存配置">
-          Task
+          <el-form-item
+            label="缓存路径"
+            prop="cache.dir"
+          >
+            <el-input v-model="dialog.formTmp.cache.dir" />
+          </el-form-item>
+          <el-form-item label="缓存规则">
+            <template
+              v-for="(value,index) in dialog.formTmp.cache.rule"
+              :key="index"
+            >
+              <el-col :span="11">
+                <el-input
+                  v-model="value.path"
+                  placeholder="名"
+                />
+              </el-col>
+              <el-col
+                :span="2"
+                style="text-align: center;"
+              >
+                <el-button
+                  v-if="index==0"
+                  type="primary"
+                  icon="Plus"
+                  circle
+                  @click="dialog.formTmp.backend.resp_header.push({path:'/example',time:1440})"
+                />
+                <span v-else>-</span>
+              </el-col>
+              <el-col
+                :span="11"
+              >
+                <el-input
+                  v-model="value.time"
+                  placeholder="值(分钟)"
+                />
+              </el-col>
+              <el-col
+                :span="24"
+                style="height: 5px;"
+              />
+            </template>
+          </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="安全配置">
-          Task
+          暂未开启
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -262,39 +304,27 @@
 import { ref } from 'vue'
 
 // import api
-import { getDomain, postExample, putExample, deleteExample } from '@/apis/wafcdn'
+import { getDomain, putDomain } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
   data: []
 })
 
-const handleSortChange = ({ column, prop, order }) => {
-  let orderSymbol = ''
-  if (order === 'descending') {
-    orderSymbol = '-'
-  } else if (order === 'ascending') {
-    orderSymbol = '+'
-  }
-  table.value.query.order = orderSymbol + prop
-  handleTableData()
-}
 const handleTableData = () => {
   getDomain().then((result) => {
     table.value.data = result
   })
 }
 
+const dialogRef = ref(null)
+
 const dialog = ref({
   visible: false,
   title: 'dialog',
   form: {},
-  formRule: {
-    email: [
-      { required: true, message: '邮箱', trigger: 'blur' },
-      { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
-    ]
-  },
+  formTmp: {},
+  formRule: {},
   formAction: 'add' // add|edit
 })
 
@@ -303,38 +333,60 @@ const handleDialogAdd = () => {
   dialog.value.visible = true
   dialog.value.formAction = 'add'
   dialog.value.form = {}
+  dialog.value.formTmp = {
+    domain: '',
+    port: 0,
+    ssl: {
+      port: 0,
+      crt: '',
+      key: ''
+    },
+    backend: {
+      url: '',
+      host: '',
+      req_header: [],
+      resp_header: []
+    },
+    cache: {
+      dir: '',
+      rule: [
+      ]
+    }
+  }
 }
 
 const handleDialogEdit = (row) => {
   dialog.value.title = '修改 ' + row.domain + ' 的配置'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
-  row.ssl.crt = atob(row.ssl.crt)
-  row.ssl.key = atob(row.ssl.key)
   dialog.value.form = row
+  // 对对象进行copy
+  dialog.value.formTmp = JSON.parse(JSON.stringify(row))
+  dialog.value.formTmp.ssl.crt = atob(row.ssl.crt)
+  dialog.value.formTmp.ssl.key = atob(row.ssl.key)
 }
-
-// 新增编辑数据
-const dialogRef = ref(null)
 
 const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
-        postExample(dialog.value.form).then((result) => {
+        table.value.data.push(dialog.value.formTmp)
+        putDomain(table.value.data).then((result) => {
           dialog.value.visible = false
-          ElMessage.info(result)
-          handleTableData()
+          ElMessage.info('新增完成')
         })
       } else if (dialog.value.formAction === 'edit') {
-        putExample(dialog.value.form).then((result) => {
+        dialog.value.formTmp.ssl.crt = btoa(dialog.value.formTmp.ssl.crt)
+        dialog.value.formTmp.ssl.key = btoa(dialog.value.formTmp.ssl.key)
+        for (const key in dialog.value.formTmp) {
+          dialog.value.form[key] = dialog.value.formTmp[key]
+        }
+        putDomain(table.value.data).then((result) => {
           dialog.value.visible = false
-          ElMessage.info(result)
-          handleTableData()
+          ElMessage.info('修改完成')
         })
-        dialog.value.visible = false
       } else {
-        ElMessage.info('提交错误')
+        ElMessage.error('提交错误')
       }
     } else {
       ElMessage.error('请输入正确的数据！')
@@ -342,15 +394,16 @@ const handleSubmitForm = () => { // 提交数据
   })
 }
 
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
+const handleDialogDelete = (index) => {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${index}]?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteExample({ id }).then((result) => {
-      ElMessage.warning(result)
-      handleTableData()
+    table.value.data.splice(index, 1)
+    putDomain(table.value.data).then((result) => {
+      dialog.value.visible = false
+      ElMessage.info('删除完成')
     })
   })
 }

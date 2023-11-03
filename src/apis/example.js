@@ -1,6 +1,5 @@
 import service from '@/utils/request'
 
-// 获取系统验证码
 export const getExample = (params) => {
   return service({
     url: '/example/admin',

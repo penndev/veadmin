@@ -10,7 +10,7 @@ export const stat = (params) => {
   })
 }
 
-// 获取系统验证码
+//
 export const getDomain = (params) => {
   return service({
     url: '/domain',
@@ -19,26 +19,11 @@ export const getDomain = (params) => {
   })
 }
 
-export const postExample = (data) => {
+//
+export const putDomain = (data) => {
   return service({
-    url: '/example/admin',
-    method: 'post',
-    data
-  })
-}
-
-export const putExample = (data) => {
-  return service({
-    url: '/example/admin',
+    url: '/domain',
     method: 'put',
     data
-  })
-}
-
-export const deleteExample = (params) => {
-  return service({
-    url: '/example/admin',
-    method: 'delete',
-    params
   })
 }
