@@ -43,7 +43,6 @@
     <!-- 数据table -->
     <el-table
       :data="table.data"
-      style="width: 100%"
       @sort-change="handleSortChange"
     >
       <el-table-column

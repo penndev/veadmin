@@ -13,30 +13,25 @@
     <!-- 数据table -->
     <el-table
       :data="table.data"
-      style="width: 100%"
     >
       <el-table-column
         label="域名"
         prop="domain"
         align="center"
-        width="200"
       />
       <el-table-column
         label="端口(http)"
         prop="port"
         align="center"
-        width="120"
       />
       <el-table-column
         label="端口(https)"
         prop="ssl.port"
         align="center"
-        width="120"
       />
       <el-table-column
         label="源站"
         align="center"
-        width="300"
       >
         <template #default="scope">
           <el-text type="info">
@@ -55,7 +50,6 @@
         label="缓存目录"
         prop="cache.dir"
         align="center"
-        width="200"
       />
       <el-table-column
         fixed="right"
