@@ -27,3 +27,20 @@ export const putDomain = (data) => {
     data
   })
 }
+
+//
+export const getCache = (params) => {
+  return service({
+    url: '/cache',
+    method: 'get',
+    params
+  })
+}
+
+export const deleteCache = (params) => {
+  return service({
+    url: '/cache',
+    method: 'delete',
+    params
+  })
+}

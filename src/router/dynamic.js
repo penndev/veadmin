@@ -71,6 +71,12 @@ export const wafcdn = {
       component: () => import('@/views/wafcdn/domain.vue'),
       name: 'WafCdnDomain',
       meta: { title: '域名管理', icon: 'Grid' }
+    },
+    {
+      path: 'cache',
+      component: () => import('@/views/wafcdn/cache.vue'),
+      name: 'WafCdnCache',
+      meta: { title: '缓存文件', icon: 'Files' }
     }
   ]
 }
