@@ -34,6 +34,27 @@
     <!-- 数据操作按钮 -->
     <el-button
       type="primary"
+      size="small"
+      :icon="table.selectStat? 'SemiSelect':'Select'"
+      @click="table.selectStat = !table.selectStat"
+    />
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      @click="handleInvertSelection"
+    >
+      反选
+    </el-button>
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      @click="tableRef.clearSelection()"
+    >
+      清空
+    </el-button>
+
+    <el-button
+      type="primary"
       icon="Plus"
       @click="handleDialogAdd"
     >
@@ -195,6 +216,14 @@ const handleTableData = () => {
   getExample(table.value.query).then((result) => {
     table.value.data = result.data
     table.value.total = result.total
+  })
+}
+
+const tableRef = ref()
+
+const handleInvertSelection = () => {
+  table.value.data.forEach((row) => {
+    tableRef.value.toggleRowSelection(row)
   })
 }
 

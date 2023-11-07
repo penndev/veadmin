@@ -34,65 +34,89 @@
     <!-- 数据操作按钮 -->
     <el-button
       type="primary"
-      icon="Plus"
-      @click="handleDialogAdd"
+      size="small"
+      :icon="table.selectStat? 'SemiSelect':'Select'"
+      @click="table.selectStat = !table.selectStat"
+    />
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      @click="handleInvertSelection"
     >
-      新增
+      反选
+    </el-button>
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      @click="tableRef.clearSelection()"
+    >
+      清空
     </el-button>
 
     <!-- 数据table -->
     <el-table
+      ref="tableRef"
       :data="table.data"
       @sort-change="handleSortChange"
     >
       <el-table-column
-        label="ID"
-        prop="id"
-        width="80"
-        sortable="custom"
+        v-if="table.selectStat"
+        type="selection"
+        width="50"
+      />
+      <el-table-column
+        label="站点"
+        prop="SiteID"
       />
 
       <el-table-column
-        label="名称"
-        prop="nickname"
-        width="160"
+        label="路径"
         align="center"
-      />
-
-      <el-table-column
-        label="邮箱"
-        width="240"
       >
         <template #default="scope">
-          <a target="_blank">{{ scope.row.email }}</a>
+          <el-tooltip
+            :content="scope.row.File"
+            placement="top"
+          >
+            <el-link>{{ scope.row.Path }}</el-link>
+          </el-tooltip>
         </template>
       </el-table-column>
-
       <el-table-column
-        prop="updatedAt"
-        label="最近更新"
-        width="200"
-      />
-
+        label="文件大小"
+        align="center"
+      >
+        <template #default="scope">
+          <el-link>{{ fileSizeFormat(scope.row.Size) }}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="createdAt"
-        label="创建日期"
-        width="200"
-      />
-
+        label="访问日期"
+        align="center"
+      >
+        <template #default="scope">
+          <el-link>{{ dateFormat("Y-m-d H:i:s" ,scope.row.Accessed) }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="过期时间"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tooltip
+            :content="'创建：' + scope.row.CreatedAt"
+            placement="top"
+          >
+            <el-link>{{ dateFormat("Y-m-d H:i:s" ,scope.row.Expried) }}</el-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
-        width="105"
+        width="65"
       >
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="handleDialogEdit(scope.row)"
-          >
-            编辑
-          </el-button>
           <el-button
             link
             type="danger"
@@ -123,8 +147,18 @@ import { ref } from 'vue'
 // import api
 import { getCache, deleteCache } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { fileSizeFormat, dateFormat } from '@/utils'
+
+const tableRef = ref()
+
+const handleInvertSelection = () => {
+  table.value.data.forEach((row) => {
+    tableRef.value.toggleRowSelection(row)
+  })
+}
 
 const table = ref({
+  selectStat: false,
   total: 0,
   query: {
     limit: 20,
@@ -134,19 +168,23 @@ const table = ref({
   },
   data: []
 })
+
 const handleQueryRefresh = (value) => {
   table.value.query.name = null
   table.value.query.order = null
   handleTableData()
 }
+
 const handleChangePage = (value) => {
   table.value.query.page = value
   handleTableData()
 }
+
 const handleChangeLimit = (value) => {
   table.value.query.limit = value
   handleTableData()
 }
+
 const handleSortChange = ({ column, prop, order }) => {
   let orderSymbol = ''
   if (order === 'descending') {
@@ -157,6 +195,7 @@ const handleSortChange = ({ column, prop, order }) => {
   table.value.query.order = orderSymbol + prop
   handleTableData()
 }
+
 const handleTableData = () => {
   getCache(table.value.query).then((result) => {
     table.value.data = result.data
