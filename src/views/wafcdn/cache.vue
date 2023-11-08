@@ -48,11 +48,18 @@
     <el-button
       v-if="table.selectStat"
       size="small"
-      @click="tableRef.clearSelection()"
+      @click="tableRef.clearSelection"
     >
       清空
     </el-button>
-
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      type="danger"
+      @click="handleDeleteMore"
+    >
+      删除选中
+    </el-button>
     <!-- 数据table -->
     <el-table
       ref="tableRef"
@@ -120,7 +127,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDialogDelete(scope.row.id)"
+            @click="handleDialogDelete(scope.row)"
           >
             删除
           </el-button>
@@ -203,13 +210,34 @@ const handleTableData = () => {
   })
 }
 
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
+const handleDialogDelete = (row) => {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${row.File}]?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteCache({ id }).then((result) => {
+    deleteCache({ file: row.File }).then((result) => {
+      ElMessage.warning(result)
+      handleTableData()
+    })
+  })
+}
+
+const handleDeleteMore = () => {
+  const rows = tableRef.value.getSelectionRows()
+  let files = ''
+  rows.forEach((row) => {
+    if (files !== '') {
+      files += ','
+    }
+    files += row.File
+  })
+  ElMessageBox.confirm(`请仔细确认是否删除 ${rows.length} 条数据?`, '警告', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteCache({ file: files }).then((result) => {
       ElMessage.warning(result)
       handleTableData()
     })
