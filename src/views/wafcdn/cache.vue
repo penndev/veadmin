@@ -2,10 +2,10 @@
   <!-- 顶部筛选框 -->
   <div>
     <el-form :inline="true">
-      <el-form-item label="名称">
+      <el-form-item label="路径">
         <el-input
-          v-model="table.query.name"
-          placeholder="名称"
+          v-model="table.query.path"
+          placeholder="/url"
           clearable
         />
       </el-form-item>
@@ -171,7 +171,7 @@ const table = ref({
     limit: 20,
     page: 1,
     order: null,
-    name: null
+    path: null
   },
   data: []
 })
