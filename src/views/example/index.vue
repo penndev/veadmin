@@ -148,7 +148,7 @@
     center
   >
     <el-form
-      ref="dialogRef"
+      ref="dialogForm"
       label-position="left"
       :model="dialog.form"
       :rules="dialog.formRule"
@@ -256,10 +256,10 @@ const handleDialogEdit = (row) => {
 }
 
 // dialog 的 element 实例
-const dialogRef = ref(null)
+const dialogForm = ref(null)
 
 const handleSubmitForm = () => { // 提交数据
-  dialogRef.value.validate((validate) => {
+  dialogForm.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
         postExample(dialog.value.form).then((result) => {
@@ -273,7 +273,6 @@ const handleSubmitForm = () => { // 提交数据
           ElMessage.info(result)
           handleTableData()
         })
-        dialog.value.visible = false
       } else {
         ElMessage.error('提交错误')
       }
