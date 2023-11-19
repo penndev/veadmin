@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '@/views/layout/index.vue'
 import { resolve } from 'path'
 
-import { video, archive, wafcdn } from './dynamic'
+import { video, archive, wafcdn, system } from './dynamic'
 
 // 格式路由结构
 const formatRouteItem = (children, basePath) => {
@@ -65,32 +65,6 @@ const routes = formatRouteList([
     ]
   },
   {
-    path: '/system',
-    component: Layout,
-    redirect: '/system/administrator',
-    meta: { title: '系统设置', icon: 'Setting' },
-    children: [
-      {
-        path: 'administrator',
-        component: () => import('@/views/system/administrator.vue'),
-        name: 'SystemAdministrator',
-        meta: { title: '管理员', icon: 'User' }
-      },
-      {
-        path: 'permission',
-        component: () => import('@/views/system/permission.vue'),
-        name: 'SystemPermission',
-        meta: { title: '访问权限', icon: 'Filter' }
-      },
-      {
-        path: 'accesslog',
-        component: () => import('@/views/system/accesslog.vue'),
-        name: 'SystemAccesslog',
-        meta: { title: '请求日志', icon: 'Postcard' }
-      }
-    ]
-  },
-  {
     path: '/example',
     component: Layout,
     redirect: '/example/index',
@@ -115,7 +89,7 @@ const routes = formatRouteList([
   }
 ])
 
-routes.push(...formatRouteList([video, archive, wafcdn]))
+routes.push(...formatRouteList([system, video, archive, wafcdn]))
 
 const router = createRouter({
   history: createWebHashHistory(),
