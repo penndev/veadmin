@@ -53,7 +53,7 @@
     <el-button
       type="primary"
       icon="Plus"
-      @click="handleDialogAdd"
+      @click="dialog.handleDialogAdd"
     >
       新增
     </el-button>
@@ -71,21 +71,17 @@
       />
 
       <el-table-column
-        label="名称"
-        prop="nickname"
+        label="主机"
+        prop="ip"
         width="160"
         align="center"
       />
-
       <el-table-column
-        label="邮箱"
-        width="240"
-      >
-        <template #default="scope">
-          <a target="_blank">{{ scope.row.email }}</a>
-        </template>
-      </el-table-column>
-
+        label="端口"
+        prop="port"
+        width="160"
+        align="center"
+      />
       <el-table-column
         prop="updatedAt"
         label="最近更新"
@@ -101,9 +97,16 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="105"
+        width="165"
       >
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="terminal.hnadleOpen(scope.row)"
+          >
+            终端
+          </el-button>
           <el-button
             link
             type="primary"
@@ -150,10 +153,28 @@
       :rules="dialog.formRule"
     >
       <el-form-item
-        label="邮箱"
-        prop="email"
+        label="主机IP"
+        prop="ip"
       >
-        <el-input v-model="dialog.form.email" />
+        <el-input v-model="dialog.form.ip" />
+      </el-form-item>
+      <el-form-item
+        label="SSH端口"
+        prop="port"
+      >
+        <el-input-number v-model="dialog.form.port" />
+      </el-form-item>
+      <el-form-item
+        label="用户名"
+        prop="username"
+      >
+        <el-input v-model="dialog.form.username" />
+      </el-form-item>
+      <el-form-item
+        label="密码"
+        prop="password"
+      >
+        <el-input v-model="dialog.form.password" />
       </el-form-item>
     </el-form>
 
@@ -167,13 +188,26 @@
       </span>
     </template>
   </el-dialog>
+
+  <!-- 终端展示框 -->
+  <el-dialog
+    v-model="terminal.visible"
+    title="终端"
+    :before-close="terminal.handleClose"
+    @open="terminal.handleOpen"
+  >
+    <div ref="terminalRef" />
+  </el-dialog>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
+import { Terminal } from 'xterm'
+import 'xterm/css/xterm.css'
+
 // import api
-import { getExample, postExample, putExample, deleteExample } from '@/apis/example'
+import { getControlHost, postControlHost, putControlHost, deleteControlHost } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const tableRef = ref()
@@ -188,7 +222,7 @@ const table = ref({
   },
   data: [],
   handleTableData: () => {
-    getExample(table.value.query).then((result) => {
+    getControlHost(table.value.query).then((result) => {
       table.value.data = result.data
       table.value.total = result.total
     })
@@ -231,9 +265,17 @@ const dialog = ref({
   title: 'dialog',
   form: {},
   formRule: {
-    email: [
-      { required: true, message: '邮箱', trigger: 'blur' },
-      { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    ip: [
+      { required: true, message: '主机必须填写正确的IP', trigger: 'blur' }
+    ],
+    port: [
+      { required: true, message: '端口', trigger: 'blur' }
+    ],
+    username: [
+      { required: true, message: '用户', trigger: 'blur' }
+    ],
+    password: [
+      { required: true, message: '密码', trigger: 'blur' }
     ]
   },
   formAction: 'add', // add|edit
@@ -253,13 +295,13 @@ const dialog = ref({
     dialogRef.value.validate((validate) => {
       if (validate) { // 判断表单是否验证通过。
         if (dialog.value.formAction === 'add') {
-          postExample(dialog.value.form).then((result) => {
+          postControlHost(dialog.value.form).then((result) => {
             dialog.value.visible = false
             ElMessage.info(result)
             table.value.handleTableData()
           })
         } else if (dialog.value.formAction === 'edit') {
-          putExample(dialog.value.form).then((result) => {
+          putControlHost(dialog.value.form).then((result) => {
             dialog.value.visible = false
             ElMessage.info(result)
             table.value.handleTableData()
@@ -278,12 +320,34 @@ const dialog = ref({
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
-      deleteExample({ id }).then((result) => {
+      deleteControlHost({ id }).then((result) => {
         ElMessage.warning(result)
         table.value.handleTableData()
       })
     })
   }
+})
+
+const terminalRef = ref(null)
+
+const terminal = ref({
+  visible: false,
+  terminal: {},
+  hnadleOpen: () => {
+    terminal.value.visible = true
+  },
+  handleOpen: () => {
+    terminal.value.visible = true
+    const term = new Terminal()
+    term.open(terminalRef.value)
+    // 监听用户输入事件
+    term.onData((data) => {
+      term.write(data)
+    })
+
+    term.write('连接中...\n')
+  },
+  handleClose: () => {}
 })
 
 table.value.handleTableData()

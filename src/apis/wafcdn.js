@@ -10,7 +10,6 @@ export const stat = (params) => {
   })
 }
 
-//
 export const getDomain = (params) => {
   return service({
     url: '/domain',
@@ -19,7 +18,6 @@ export const getDomain = (params) => {
   })
 }
 
-//
 export const putDomain = (data) => {
   return service({
     url: '/domain',
@@ -28,7 +26,6 @@ export const putDomain = (data) => {
   })
 }
 
-//
 export const getCache = (params) => {
   return service({
     url: '/cache',
@@ -40,6 +37,38 @@ export const getCache = (params) => {
 export const deleteCache = (params) => {
   return service({
     url: '/cache',
+    method: 'delete',
+    params
+  })
+}
+
+export const postControlHost = (data) => {
+  return service({
+    url: '/control/host',
+    method: 'post',
+    data
+  })
+}
+
+export const getControlHost = (params) => {
+  return service({
+    url: '/control/host',
+    method: 'get',
+    params
+  })
+}
+
+export const putControlHost = (data) => {
+  return service({
+    url: '/control/host',
+    method: 'put',
+    data
+  })
+}
+
+export const deleteControlHost = (params) => {
+  return service({
+    url: '/control/host',
     method: 'delete',
     params
   })
