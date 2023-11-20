@@ -53,7 +53,7 @@
     <el-button
       type="primary"
       icon="Plus"
-      @click="handleDialogAdd"
+      @click="dialog.handleDialogAdd"
     >
       新增
     </el-button>
