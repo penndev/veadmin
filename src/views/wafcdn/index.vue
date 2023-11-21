@@ -193,7 +193,8 @@
   <el-dialog
     v-model="terminal.visible"
     title="终端"
-    :before-close="terminal.handleClose"
+    width="800px"
+    @close="terminal.handleClose"
     @open="terminal.handleOpen"
   >
     <div ref="terminalRef" />
@@ -332,6 +333,7 @@ const terminalRef = ref(null)
 
 const terminal = ref({
   visible: false,
+  ws: {},
   terminal: {},
   hnadleOpen: () => {
     terminal.value.visible = true
@@ -340,14 +342,23 @@ const terminal = ref({
     terminal.value.visible = true
     const term = new Terminal()
     term.open(terminalRef.value)
-    // 监听用户输入事件
+    term.write('正在连接控制器 \r\n')
+    const wsurl = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
+    const ws = new WebSocket(wsurl)
+    ws.onopen = (event) => {
+      term.write('控制器已经建立连接 \r\n')
+    }
+    ws.onmessage = (event) => {
+      term.write(event.data)
+    }
     term.onData((data) => {
-      term.write(data)
+      ws.send(data)
     })
-
-    term.write('连接中...\n')
+    terminal.value.ws = ws
   },
-  handleClose: () => {}
+  handleClose: () => {
+    terminal.value.ws.close()
+  }
 })
 
 table.value.handleTableData()
