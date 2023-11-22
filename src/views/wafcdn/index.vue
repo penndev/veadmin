@@ -103,7 +103,7 @@
           <el-button
             link
             type="primary"
-            @click="terminal.hnadleOpen(scope.row)"
+            @click="terminal.handleNew(scope.row)"
           >
             终端
           </el-button>
@@ -194,6 +194,9 @@
     v-model="terminal.visible"
     title="终端"
     width="800px"
+    destroy-on-close
+    close-on-press-escape
+    center
     @close="terminal.handleClose"
     @open="terminal.handleOpen"
   >
@@ -210,6 +213,13 @@ import 'xterm/css/xterm.css'
 // import api
 import { getControlHost, postControlHost, putControlHost, deleteControlHost } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
+// ws 请求地址配置
+import { authStoe } from '@/stores'
+const permission = authStoe()
+let wsurl = new URL(import.meta.env.VE_API_URL, window.location.href)
+wsurl = wsurl.origin.replace('http', 'ws').replace('https', 'wss')
+wsurl = `${wsurl}/ssh?token=${permission.token}`
 
 const tableRef = ref()
 
@@ -334,17 +344,18 @@ const terminalRef = ref(null)
 const terminal = ref({
   visible: false,
   ws: {},
+  wsurl: '',
   terminal: {},
-  hnadleOpen: () => {
+  handleNew: (row) => {
     terminal.value.visible = true
+    terminal.value.wsurl = wsurl + '&hid=' + row.id
   },
   handleOpen: () => {
     terminal.value.visible = true
     const term = new Terminal()
     term.open(terminalRef.value)
     term.write('正在连接控制器 \r\n')
-    const wsurl = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
-    const ws = new WebSocket(wsurl)
+    const ws = new WebSocket(terminal.value.wsurl)
     ws.onopen = (event) => {
       term.write('控制器已经建立连接 \r\n')
     }

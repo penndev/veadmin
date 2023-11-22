@@ -91,7 +91,7 @@ export const wafcdn = {
       path: 'index',
       component: () => import('@/views/wafcdn/index.vue'),
       name: 'WafCdnIndex',
-      meta: { title: '主控', icon: 'Odometer' }
+      meta: { title: '主控', icon: 'HelpFilled' }
     },
     {
       path: 'stat',
