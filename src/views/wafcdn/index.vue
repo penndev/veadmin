@@ -83,15 +83,10 @@
         align="center"
       />
       <el-table-column
-        prop="updatedAt"
-        label="最近更新"
-        width="200"
-      />
-
-      <el-table-column
         prop="createdAt"
+        align="center"
         label="创建日期"
-        width="200"
+        width="220"
       />
 
       <el-table-column
@@ -192,7 +187,7 @@
   <!-- 终端展示框 -->
   <el-dialog
     v-model="terminal.visible"
-    title="终端"
+    :title="terminal.title"
     width="800px"
     destroy-on-close
     close-on-press-escape
@@ -200,6 +195,70 @@
     @close="terminal.handleClose"
     @open="terminal.handleOpen"
   >
+    <template #header>
+      <el-row>
+        <span class="el-dialog__title">{{ terminal.title }}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <el-switch
+          v-model="terminal.installVisible"
+          active-text="取消安装"
+          inactive-text="开启安装"
+          inline-prompt
+        />
+        &nbsp;&nbsp;
+        <el-switch
+          v-model="terminal.portVisible"
+          active-text="取消端口"
+          inactive-text="开启端口"
+          inline-prompt
+        />
+      </el-row>
+    </template>
+    <!-- 安装软件 -->
+    <el-form
+      v-if="terminal.installVisible"
+      label-position="left"
+      size="small"
+      inline="true"
+      label-width="100px"
+    >
+      <el-form-item label="API密钥">
+        <el-input />
+      </el-form-item>
+      <el-form-item label="API端口">
+        <el-input />
+      </el-form-item>
+      <el-form-item label="缓存目录">
+        <el-input />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">
+          运行安装
+        </el-button>
+      </el-form-item>
+      <br><br>
+    </el-form>
+    <!-- 开放端口 -->
+    <el-form
+      v-if="terminal.portVisible"
+      label-position="left"
+      size="small"
+      inline="true"
+      label-width="100px"
+    >
+      <el-form-item label="端口">
+        <el-input />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">
+          放开
+        </el-button>
+        <el-button type="primary">
+          查看
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 终端窗口 -->
     <div ref="terminalRef" />
   </el-dialog>
 </template>
@@ -216,10 +275,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
 import { authStoe } from '@/stores'
-const permission = authStoe()
-let wsurl = new URL(import.meta.env.VE_API_URL, window.location.href)
-wsurl = wsurl.origin.replace('http', 'ws').replace('https', 'wss')
-wsurl = `${wsurl}/ssh?token=${permission.token}`
+const wsOrigin = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
+const wsssh = `${wsOrigin}/ssh?token=${authStoe().token}`
 
 const tableRef = ref()
 
@@ -342,13 +399,14 @@ const dialog = ref({
 const terminalRef = ref(null)
 
 const terminal = ref({
+  title: '终端',
   visible: false,
   ws: {},
   wsurl: '',
   terminal: {},
   handleNew: (row) => {
     terminal.value.visible = true
-    terminal.value.wsurl = wsurl + '&hid=' + row.id
+    terminal.value.wsurl = wsssh + '&hid=' + row.id
   },
   handleOpen: () => {
     terminal.value.visible = true
@@ -369,7 +427,9 @@ const terminal = ref({
   },
   handleClose: () => {
     terminal.value.ws.close()
-  }
+  },
+  installVisible: false,
+  portVisible: false
 })
 
 table.value.handleTableData()
