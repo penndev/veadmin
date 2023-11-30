@@ -219,20 +219,23 @@
       v-if="terminal.installVisible"
       label-position="left"
       size="small"
-      inline="true"
+      inline
       label-width="100px"
     >
       <el-form-item label="API密钥">
-        <el-input />
+        <el-input v-model="terminal.form.apikey" />
       </el-form-item>
       <el-form-item label="API端口">
-        <el-input />
+        <el-input v-model="terminal.form.apiport" />
       </el-form-item>
       <el-form-item label="缓存目录">
-        <el-input />
+        <el-input v-model="terminal.form.cachedir" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          @click="terminal.handleInstall"
+        >
           运行安装
         </el-button>
       </el-form-item>
@@ -243,7 +246,7 @@
       v-if="terminal.portVisible"
       label-position="left"
       size="small"
-      inline="true"
+      inline
       label-width="100px"
     >
       <el-form-item label="端口">
@@ -270,7 +273,7 @@ import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
 
 // import api
-import { getControlHost, postControlHost, putControlHost, deleteControlHost } from '@/apis/wafcdn'
+import { getControlHost, postControlHost, putControlHost, deleteControlHost, installControlHost } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
@@ -405,6 +408,7 @@ const terminal = ref({
   wsurl: '',
   terminal: {},
   handleNew: (row) => {
+    terminal.value.form = row
     terminal.value.visible = true
     terminal.value.wsurl = wsssh + '&hid=' + row.id
   },
@@ -429,6 +433,17 @@ const terminal = ref({
     terminal.value.ws.close()
   },
   installVisible: false,
+  form: {},
+  handleInstall: () => {
+    installControlHost({
+      id: terminal.value.form.id,
+      apikey: terminal.value.form.apikey,
+      apiport: terminal.value.form.apiport,
+      cachedir: terminal.value.form.cachedir
+    }).then((result) => {
+      console.log(result)
+    })
+  },
   portVisible: false
 })
 

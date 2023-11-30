@@ -73,3 +73,11 @@ export const deleteControlHost = (params) => {
     params
   })
 }
+
+export const installControlHost = (data) => {
+  return service({
+    url: '/control/host/install',
+    method: 'put',
+    data
+  })
+}
