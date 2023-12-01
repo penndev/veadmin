@@ -30,7 +30,7 @@
   </div>
 
   <!-- 数据展示框 -->
-  <el-main style="background-color:#fff">
+  <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-button
       type="primary"

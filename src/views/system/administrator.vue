@@ -25,7 +25,7 @@
     </el-form-item>
   </el-form>
 
-  <el-main style="background-color:#fff">
+  <el-main class="ea-table">
     <el-button
       type="primary"
       icon="Plus"

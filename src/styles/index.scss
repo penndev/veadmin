@@ -1,0 +1,118 @@
+// element-plus
+@import 'element-plus/dist/index.css';
+
+// // 优化element-ui
+// .el-scrollbar__wrap {
+//     overflow: visible;
+// }
+
+// 夜间模式
+@import 'element-plus/theme-chalk/dark/css-vars.css';
+
+
+:root {
+    --ea-main-color: #ffffff;
+
+    --ea-aside-color: #191a23;
+    --ea-aside-text-color: #ffffff;
+    --ea-aside-active-color: #000000;
+}
+
+.dark {
+    --ea-main-color: #141414;
+    --ea-aside-color: #141414;
+
+    .ea-aside .el-menu {
+        --el-menu-bg-color: #141414 !important;
+    }
+}
+
+
+.ea-layout {
+    display: flex;
+    justify-content: space-between;
+
+    // 侧边栏
+    .ea-aside {
+        width: 200px;
+        text-align: center;
+        background-color: var(--ea-aside-color);
+        height: 100vh;
+
+        .logo {
+            height: 60px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            color: var(--ea-aside-text-color);
+
+            .logoimg {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: var(--ea-aside-text-color);
+            }
+
+            .logotitle {
+                width: auto;
+                display: inline-block;
+                font-weight: 600;
+                font-size: 20px;
+                padding-left: 10px;
+            }
+        }
+
+        .el-menu {
+            --el-menu-bg-color: var(--ea-aside-color);
+            --el-menu-text-color: var(--ea-aside-text-color);
+            --el-menu-hover-bg-color: var(--ea-aside-active-color)
+        }
+    }
+
+    .ea-aside-collapse {
+        width: auto !important;
+    }
+
+    .ea-select {
+        height: 100vh;
+
+        .ea-main {
+            height: 100%;
+            overflow: auto;
+            background-color: var(--el-bg-color-page);
+
+            .ea-table {
+                background-color: var(--ea-main-color);
+            }
+        }
+    }
+
+}
+
+
+@media screen and (max-width: 720px) {
+    .el-dialog {
+        width: 90%;
+    }
+
+    .ea-aside-collapse {
+        display: none;
+    }
+
+    .ea-aside-mask {
+        background: #000;
+        width: 100%;
+        top: 0;
+        opacity: 0.3;
+        height: 100%;
+        position: absolute;
+        z-index: 9999;
+    }
+
+    .ea-aside {
+        z-index: 10000;
+        position: absolute;
+        height: 100%;
+        top: 0;
+    }
+}

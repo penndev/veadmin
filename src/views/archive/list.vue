@@ -65,7 +65,7 @@
     </el-form>
   </div>
 
-  <el-main style="background-color:#fff">
+  <el-main class="ea-table">
     <!-- 处理操作按钮 -->
     <el-button
       type="primary"

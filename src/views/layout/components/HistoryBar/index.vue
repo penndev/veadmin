@@ -140,10 +140,8 @@ const closeLeft = () => {
 </script>
 
 <style lang="scss">
-@import '@/styles/variables.module.scss';
-
 .ve-history {
-  border-top: 1px solid $mainBgcolor;
+  border-top: 1px solid var(--el-color-white);
 
   .el-tabs__header {
     margin: 0;
@@ -177,10 +175,10 @@ const closeLeft = () => {
     display: none;
     background-color: var(--el-menu-bg-color);
     border: 1px solid var(--el-border-color-light);
+
     .el-menu-item {
       height: 36px;
     }
   }
 }
-
 </style>

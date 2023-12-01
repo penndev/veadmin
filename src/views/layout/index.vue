@@ -1,11 +1,12 @@
 <template>
   <el-container class="ea-layout">
-    <!-- 菜单栏 -->
+    <!-- 菜单栏遮罩层 -->
     <div
       v-if="!layout.collapse"
       class="ea-aside-mask"
       @click="handleCollapse"
     />
+    <!-- 菜单栏展示 -->
     <el-aside
       class="ea-aside"
       :class="{ 'ea-aside-collapse': layout.collapse }"
@@ -24,14 +25,15 @@
       </div>
       <AsideBar />
     </el-aside>
-    <!-- 功能栏 -->
+    <!-- 右侧内容层 -->
     <el-container class="ea-select">
+      <!-- 顶部工具层 -->
       <el-header>
         <NavBar />
       </el-header>
-
+      <!-- 历史记录栏 -->
       <HistoryBar />
-
+      <!-- 实际路由展示层 -->
       <router-view v-slot="{ Component }">
         <div
           v-loading="viewLoading.status"
@@ -61,83 +63,3 @@ const handleCollapse = () => {
 }
 
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/variables.module.scss';
-
-@media screen and (max-width: 720px) {
-
-  .ea-aside-collapse {
-    display: none;
-  }
-
-  .ea-aside-mask {
-    background: #000;
-    width: 100%;
-    top: 0;
-    opacity: 0.3;
-    height: 100%;
-    position: absolute;
-    z-index: 9999;
-  }
-
-  .ea-aside {
-    z-index: 10000;
-    position: absolute;
-    height: 100%;
-    top: 0;
-  }
-}
-
-.ea-layout {
-  display: flex;
-  justify-content: space-between;
-
-  .ea-aside {
-    width: 200px;
-    text-align: center;
-    background-color: $sidebarBgcolor;
-    height: 100vh;
-
-    .logo {
-      background: $sidebarBgcolor;
-      height: 60px;
-      align-items: center;
-      justify-content: center;
-      display: flex;
-      color: #fff;
-
-      .logoimg {
-        width: 30px;
-        height: 30px;
-        background: #fff;
-        border-radius: 50%;
-      }
-
-      .logotitle {
-        width: auto;
-        display: inline-block;
-        font-weight: 600;
-        font-size: 20px;
-        padding-left: 10px;
-      }
-    }
-
-  }
-
-  .ea-aside-collapse {
-    width: auto !important;
-  }
-
-  .ea-select {
-    height: 100vh;
-
-    .ea-main {
-      height: 100%;
-      overflow: auto;
-      background-color: $mainBgcolor;
-    }
-  }
-
-}
-</style>

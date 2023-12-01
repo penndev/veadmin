@@ -4,8 +4,6 @@
       unique-opened
       :collapse="layout.collapse"
       :collapse-transition="false"
-      :background-color="variables.sidebarBgcolor"
-      :text-color="variables.sidebarColor"
       :router="true"
       :default-active="active"
     >
@@ -21,7 +19,6 @@
 
 <script setup>
 import MenuItem from './MenuItem.vue'
-import variables from '@/styles/variables.module.scss'
 import { watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { layoutStoe, authStoe } from '@/stores'

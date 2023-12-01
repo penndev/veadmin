@@ -27,7 +27,7 @@
     </el-form>
   </div>
 
-  <el-main style="background-color:#fff">
+  <el-main class="ea-table">
     <el-table
       :data="table.data"
       style="width: 100%"

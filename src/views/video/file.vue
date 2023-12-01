@@ -34,7 +34,7 @@
     </el-form>
   </div>
 
-  <el-main style="background-color:#fff">
+  <el-main class="ea-table">
     <upload :on-success="handleUploadSuccess" />
     <el-table
       :data="table.data"

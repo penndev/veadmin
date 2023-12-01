@@ -29,6 +29,28 @@
       </template>
     </el-breadcrumb>
     <div style="flex:1" />
+    <!-- 夜晚模式 -->
+    <div
+      class="ea-icon"
+    >
+      <el-switch
+        v-model="drakMode"
+        inline-prompt
+        active-action-icon="Moon"
+        inactive-action-icon="Sunny"
+      />
+    </div>
+    <!-- fullscreen 模式。 -->
+    <div
+      class="ea-icon"
+      @click="handleFullScreen"
+    >
+      <el-icon
+        title="全屏切换"
+      >
+        <FullScreen />
+      </el-icon>
+    </div>
     <div
       class="ea-icon"
       style="max-width: 160px;"
@@ -61,25 +83,8 @@
         </template>
       </el-select>
     </div>
-    <div
-      class="ea-icon"
-      @click="handleFullScreen"
-    >
-      <el-icon
-        v-if="!fullScreen"
-        title="打开全屏"
-      >
-        <FullScreen />
-      </el-icon>
-      <el-icon
-        v-else
-        title="关闭全屏"
-      >
-        <Rank />
-      </el-icon>
-    </div>
     <el-dropdown class="ea-dropdown">
-      <div>
+      <div style="cursor: pointer;outline: none;">
         <strong class="ea-dropdown-name">管理员 </strong>
         <el-icon><arrow-down /></el-icon>
       </div>
@@ -104,7 +109,6 @@
 <script setup>
 import { authStoe, layoutStoe } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
-
 import { watch, ref } from 'vue'
 
 const layout = layoutStoe()
@@ -138,6 +142,15 @@ const handleFullScreen = () => {
   }
 }
 
+const drakMode = ref(false)
+watch(drakMode, () => {
+  if (drakMode.value) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+})
+
 // 菜单列表
 const routes = router.options.routes
 const selectMenu = (value) => {
@@ -151,6 +164,7 @@ const selectMenu = (value) => {
 </script>
 
 <style lang="scss" scoped>
+
 @media screen and (max-width: 720px) {
   .ea-icon {
     display: none;
