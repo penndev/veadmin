@@ -116,7 +116,7 @@ getDashboardTotal().then((result) => {
     position: relative;
     overflow: hidden;
     color: #666;
-    background: #fff;
+    background: var(--ea-main-color);
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
     border-color: rgba(0, 0, 0, .05);
 
@@ -179,7 +179,7 @@ getDashboardTotal().then((result) => {
 
       .card-panel-text {
         line-height: 18px;
-        color: rgba(0, 0, 0, 0.45);
+        color: rgba(130, 130, 130, 0.45);
         font-size: 16px;
         margin-bottom: 12px;
       }
@@ -190,5 +190,4 @@ getDashboardTotal().then((result) => {
     }
   }
 }
-
 </style>

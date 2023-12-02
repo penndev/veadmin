@@ -79,7 +79,8 @@ onMounted(() => {
 <style scoped lang="scss">
 .chart {
   min-height: 300px;
-  background-color: #fff;
+  color: var(--ea-main-text-color);
+  background-color: var(--ea-main-color);
 }
 
 </style>

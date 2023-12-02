@@ -162,7 +162,7 @@ const closeLeft = () => {
     background-color: #ccc;
   }
 
-  .hot-active {
+  .is-active .hot {
     background-color: var(--el-color-primary);
   }
 
