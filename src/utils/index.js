@@ -1,4 +1,5 @@
 import SparkMD5 from 'spark-md5'
+import { resolve } from 'path'
 
 // file File文件类型
 // progress callback(0.11) 进度11%
@@ -102,4 +103,25 @@ export const dateFormat = (dateString, timestamp) => {
     .replace('H', hours)
     .replace('i', minutes)
     .replace('s', seconds)
+}
+
+// 格式路由路径
+const formatRouteItem = (children, basePath) => {
+  children.path = resolve(basePath, children.path)
+  if (children.children) {
+    for (const item of children.children) {
+      formatRouteItem(item, children.path)
+    }
+  }
+}
+
+// 格式化路由
+// 将路由的路径进行拼装。
+export const formatRouteList = (routes) => {
+  const routelist = []
+  for (const item of routes) {
+    formatRouteItem(item, '/')
+    routelist.push(item)
+  }
+  return routelist
 }

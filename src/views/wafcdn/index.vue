@@ -424,6 +424,12 @@ const terminal = ref({
     ws.onmessage = (event) => {
       term.write(event.data)
     }
+    ws.onerror = (event) => {
+      ElMessage.warning('WebSocket发生错误:' + event)
+    }
+    ws.onclose = (event) => {
+      term.write('\r\n控制器连接  已关闭\r\n')
+    }
     term.onData((data) => {
       ws.send(data)
     })
@@ -441,7 +447,8 @@ const terminal = ref({
       apiport: terminal.value.form.apiport,
       cachedir: terminal.value.form.cachedir
     }).then((result) => {
-      console.log(result)
+      ElMessage.success(result.message)
+      terminal.value.ws.send(result.command)
     })
   },
   portVisible: false

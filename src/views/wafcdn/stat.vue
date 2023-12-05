@@ -134,7 +134,7 @@
 <script setup>
 import { stat } from '@/apis/wafcdn'
 import * as echarts from 'echarts'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils/index'
 
 const table = ref({
@@ -199,14 +199,6 @@ const netOption = {
     }
   ]
 }
-onMounted(() => {
-  netEcharts = echarts.init(netChart.value)
-  netEcharts.hideLoading()
-
-  window.onresize = function () {
-    netEcharts.resize()
-  }
-})
 
 const handleReflushStat = () => {
   stat().then((result) => {
@@ -239,10 +231,25 @@ const handleReflushStat = () => {
     }
     netEcharts.setOption(netOption)
   })
-  setTimeout(handleReflushStat, table.value.flushDelay * 1000)
 }
 
+onMounted(() => {
+  netEcharts = echarts.init(netChart.value)
+  netEcharts.hideLoading()
+
+  window.onresize = function () {
+    netEcharts.resize()
+  }
+})
+
 handleReflushStat()
+
+const intervalId = setInterval(handleReflushStat, table.value.flushDelay * 1000)
+
+onUnmounted(() => {
+  clearInterval(intervalId)
+})
+
 </script>
 
 <style lang="scss" scoped>

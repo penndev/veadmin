@@ -12,7 +12,6 @@ import stores from '@/stores' // import pania store
 import router from '@/router/auth' // import after permission router
 
 const app = createApp(App)
-app.config.globalProperties.$env = import.meta.env
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

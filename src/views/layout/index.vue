@@ -20,7 +20,7 @@
           v-if="!layout.collapse"
           class="logotitle"
         >
-          {{ $env.VE_NAME }}
+          {{ title }}
         </h2>
       </div>
       <AsideBar />
@@ -61,5 +61,7 @@ const layout = layoutStoe()
 const handleCollapse = () => {
   layout.collapse = !layout.collapse
 }
+
+const title = import.meta.env.VE_NAME
 
 </script>

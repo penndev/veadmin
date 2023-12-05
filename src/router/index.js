@@ -1,27 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '@/views/layout/index.vue'
-import { resolve } from 'path'
 
-import { video, archive, wafcdn, system } from './dynamic'
-
-// 格式路由结构
-const formatRouteItem = (children, basePath) => {
-  children.path = resolve(basePath, children.path)
-  if (children.children) {
-    for (const item of children.children) {
-      formatRouteItem(item, children.path)
-    }
-  }
-}
-
-const formatRouteList = (routes) => {
-  const routelist = []
-  for (const item of routes) {
-    formatRouteItem(item, '/')
-    routelist.push(item)
-  }
-  return routelist
-}
+import { example, icon } from './modules/example'
+import { system } from './modules/system'
+import { wafcdn } from './modules/wafcdn'
+import { video, archive } from './modules/video'
+import { formatRouteList } from '@/utils'
 
 /**
  * 动态路由 router.addRoute() 不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
@@ -36,6 +20,7 @@ const formatRouteList = (routes) => {
  * 如果菜单childen只有一个则子meta 菜单处理详见src\views\layout\components\AsideBar\MenuItem.vue
  * 通过配置src\stores\module\auth.js的routes是否包含name字符串来鉴权是否放行
  */
+
 const routes = formatRouteList([
   // default route
   {
@@ -63,33 +48,15 @@ const routes = formatRouteList([
         meta: { title: '仪表盘', icon: 'Odometer' }
       }
     ]
-  },
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/example/index.vue'),
-        name: 'exampleIndex',
-        meta: { title: '示例列表', icon: 'Tickets' }
-      }
-    ]
-  },
-  {
-    path: 'icon',
-    component: Layout,
-    name: 'Icon',
-    meta: { // 处理外链
-      title: '图标',
-      icon: 'PictureRounded',
-      path: 'https://element-plus.org/zh-CN/component/icon.html#%E5%9B%BE%E6%A0%87%E9%9B%86%E5%90%88'
-    }
   }
 ])
 
-routes.push(...formatRouteList([system, video, archive, wafcdn]))
+// 提供动态编译。
+if (import.meta.env.MODE === 'wafcdn') {
+  routes.push(...formatRouteList([wafcdn]))
+} else {
+  routes.push(...formatRouteList([example, icon, system, video, archive, wafcdn]))
+}
 
 const router = createRouter({
   history: createWebHashHistory(),
