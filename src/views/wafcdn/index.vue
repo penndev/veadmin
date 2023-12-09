@@ -188,9 +188,11 @@
   <el-dialog
     v-model="terminal.visible"
     :title="terminal.title"
-    width="800px"
+    width="80%"
     destroy-on-close
-    close-on-press-escape
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :draggable="true"
     center
     @close="terminal.handleClose"
     @open="terminal.handleOpen"
@@ -262,7 +264,9 @@
       </el-form-item>
     </el-form>
     <!-- 终端窗口 -->
-    <div ref="terminalRef" />
+    <div
+      ref="terminalRef"
+    />
   </el-dialog>
 </template>
 
@@ -270,6 +274,7 @@
 import { ref } from 'vue'
 
 import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
 
 // import api
@@ -415,7 +420,13 @@ const terminal = ref({
   handleOpen: () => {
     terminal.value.visible = true
     const term = new Terminal()
+    const termFit = new FitAddon()
+    term.loadAddon(termFit)
     term.open(terminalRef.value)
+    termFit.fit()
+    setTimeout(() => {
+      termFit.fit()
+    }, 1000)
     term.write('正在连接控制器 \r\n')
     const ws = new WebSocket(terminal.value.wsurl)
     ws.onopen = (event) => {
