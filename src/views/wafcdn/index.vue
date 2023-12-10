@@ -419,14 +419,14 @@ const terminal = ref({
   },
   handleOpen: () => {
     terminal.value.visible = true
-    const term = new Terminal()
+    const term = new Terminal({
+      fontSize: 14
+    })
     const termFit = new FitAddon()
     term.loadAddon(termFit)
     term.open(terminalRef.value)
     termFit.fit()
-    setTimeout(() => {
-      termFit.fit()
-    }, 1000)
+    window.onresize = () => termFit.fit()
     term.write('正在连接控制器 \r\n')
     const ws = new WebSocket(terminal.value.wsurl)
     ws.onopen = (event) => {
