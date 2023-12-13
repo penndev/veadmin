@@ -253,13 +253,10 @@
                 style="text-align: center;"
               >
                 <el-button
-                  v-if="index==0"
-                  type="primary"
-                  icon="Plus"
+                  icon="Minus"
                   circle
-                  @click="dialog.formTmp.backend.resp_header.push({path:'/example',time:1440})"
+                  @click="dialog.formTmp.cache.rule.splice(index,1)"
                 />
-                <span v-else>-</span>
               </el-col>
               <el-col
                 :span="11"
@@ -274,6 +271,12 @@
                 style="height: 5px;"
               />
             </template>
+            <el-button
+              type="primary"
+              icon="Plus"
+              circle
+              @click="dialog.formTmp.cache.rule.push({path:'/example',time:1440})"
+            />
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="安全配置">

@@ -66,22 +66,84 @@
       <el-table-column
         label="ID"
         prop="id"
-        width="80"
+        width="60"
         sortable="custom"
       />
 
       <el-table-column
         label="主机"
         prop="ip"
-        width="160"
+        width="120"
         align="center"
       />
       <el-table-column
         label="端口"
         prop="port"
-        width="160"
+        width="60"
         align="center"
       />
+      <el-table-column
+        align="center"
+        label="带宽:下行/上行"
+        width="220"
+      >
+        <template #default="scope">
+          <el-text v-if="scope.row.stat">
+            {{ scope.row.stat.netsend + "/" + scope.row.stat.netrecv }}
+          </el-text>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="缓存文件:今日/总计"
+        width="220"
+      >
+        <template #default="scope">
+          <el-text v-if="scope.row.stat">
+            {{ scope.row.stat.file.today + "/" + scope.row.stat.file.total }}
+          </el-text>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="配置"
+        width="220"
+      >
+        <template #default="scope">
+          <el-text
+            v-if="scope.row.stat"
+            line-clamp="2"
+          >
+            {{ scope.row.stat.conf.time }} <br> {{ scope.row.stat.conf.version }}
+          </el-text>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="状态cpu/memory"
+        width="220"
+      >
+        <template #default="scope">
+          <el-text
+            v-if="scope.row.stat"
+          >
+            {{ scope.row.stat.cpu }}% / {{ scope.row.stat.memory }}%
+          </el-text>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="硬盘"
+        width="220"
+      >
+        <template #default="scope">
+          <el-text
+            v-if="scope.row.stat"
+          >
+            {{ scope.row.stat.disk.used }} / {{ scope.row.stat.disk.total }}
+          </el-text>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="createdAt"
         align="center"
@@ -283,8 +345,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
 import { authStoe } from '@/stores'
+import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils'
 const wsOrigin = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
 const wsssh = `${wsOrigin}/ssh?token=${authStoe().token}`
+const wsmonitor = `${wsOrigin}/monitor?token=${authStoe().token}`
 
 const tableRef = ref()
 
@@ -330,6 +394,24 @@ const table = ref({
     table.value.data.forEach((row) => {
       tableRef.value.toggleRowSelection(row)
     })
+  },
+  handleNewStat: () => {
+    const ws = new WebSocket(wsmonitor)
+    ws.onmessage = (event) => {
+      const row = JSON.parse(event.data)
+      row.conf.time = dateFormat('Y-m-d H:i:s', row.conf.time)
+      row.disk.used = fileSizeFormat(row.disk.used)
+      row.disk.total = fileSizeFormat(row.disk.total)
+      row.netsend = byteBPSFormat(row.netsend)
+      row.netrecv = byteBPSFormat(row.netrecv)
+      // console.log(row)
+      for (const element of table.value.data) {
+        if (element.host === row.ip) {
+          element.stat = row
+          break
+        }
+      }
+    }
   }
 })
 
@@ -466,5 +548,6 @@ const terminal = ref({
 })
 
 table.value.handleTableData()
+table.value.handleNewStat()
 
 </script>
