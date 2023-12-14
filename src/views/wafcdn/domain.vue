@@ -135,13 +135,10 @@
                 style="text-align: center;"
               >
                 <el-button
-                  v-if="index==0"
-                  type="primary"
-                  icon="Plus"
+                  icon="Minus"
                   circle
-                  @click="dialog.formTmp.backend.req_header.push({name:'',value:''})"
+                  @click="dialog.formTmp.backend.req_header.splice(index,1)"
                 />
-                <span v-else>-</span>
               </el-col>
               <el-col
                 :span="11"
@@ -156,6 +153,12 @@
                 style="height: 5px;"
               />
             </template>
+            <el-button
+              type="primary"
+              icon="Plus"
+              circle
+              @click="dialog.formTmp.backend.req_header.push({name:'Name',value:'Value'})"
+            />
           </el-form-item>
           <el-form-item label="回源返回头">
             <template
@@ -173,13 +176,10 @@
                 style="text-align: center;"
               >
                 <el-button
-                  v-if="index==0"
-                  type="primary"
-                  icon="Plus"
+                  icon="Minus"
                   circle
-                  @click="dialog.formTmp.backend.resp_header.push({name:'',value:''})"
+                  @click="dialog.formTmp.backend.resp_header.splice(index,1)"
                 />
-                <span v-else>-</span>
               </el-col>
               <el-col
                 :span="11"
@@ -194,14 +194,20 @@
                 style="height: 5px;"
               />
             </template>
+            <el-button
+              type="primary"
+              icon="Plus"
+              circle
+              @click="dialog.formTmp.backend.resp_header.push({name:'Name',value:'Value'})"
+            />
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="SSL">
           <el-form-item
-            label="回源路径"
+            label="SSL端口"
             prop="ssl.port"
           >
-            <el-input v-model="dialog.formTmp.ssl.port" />
+            <el-input-number v-model="dialog.formTmp.ssl.port" />
           </el-form-item>
           <el-row>
             <el-col :span="11">
@@ -213,16 +219,18 @@
                   v-model="dialog.formTmp.ssl.crt"
                   rows="15"
                   type="textarea"
+                  placeholder="crt证书文件"
                 />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="密钥"
-                prop="ssl.key"
+                prop="ssl"
               >
                 <el-input
                   v-model="dialog.formTmp.ssl.key"
+                  placeholder="key私钥文件"
                   rows="15"
                   type="textarea"
                 />
@@ -332,9 +340,9 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
   dialog.value.formTmp = {
     domain: '',
-    port: 0,
+    port: null,
     ssl: {
-      port: 0,
+      port: null,
       crt: '',
       key: ''
     },
@@ -367,6 +375,8 @@ const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
+        dialog.value.formTmp.ssl.crt = btoa(dialog.value.formTmp.ssl.crt)
+        dialog.value.formTmp.ssl.key = btoa(dialog.value.formTmp.ssl.key)
         table.value.data.push(dialog.value.formTmp)
         putDomain(table.value.data).then((result) => {
           dialog.value.visible = false

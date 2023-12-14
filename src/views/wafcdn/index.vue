@@ -73,7 +73,7 @@
       <el-table-column
         label="主机"
         prop="ip"
-        width="120"
+        width="150"
         align="center"
       />
       <el-table-column
@@ -145,13 +145,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="createdAt"
-        align="center"
-        label="创建日期"
-        width="220"
-      />
-
-      <el-table-column
         fixed="right"
         label="操作"
         width="165"
@@ -203,6 +196,17 @@
     close-on-press-escape
     center
   >
+    <el-text>
+      创建时间: <el-link type="info">
+        {{ new Date( dialog.form.createdAt).toLocaleString() }}
+      </el-link>
+    </el-text>
+    <el-text>
+      上次更新: <el-link type="info">
+        {{ new Date( dialog.form.updatedAt).toLocaleString() }}
+      </el-link>
+    </el-text>
+    <br><br>
     <el-form
       ref="dialogRef"
       label-position="left"
