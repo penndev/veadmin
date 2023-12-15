@@ -60,9 +60,15 @@
 
     <!-- 数据table -->
     <el-table
+      ref="tableRef"
       :data="table.data"
       @sort-change="table.handleSortChange"
     >
+      <el-table-column
+        v-if="table.selectStat"
+        type="selection"
+        width="50"
+      />
       <el-table-column
         label="ID"
         prop="id"
@@ -179,6 +185,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 const tableRef = ref()
 
 const table = ref({
+  selectStat: false,
   total: 0,
   query: {
     limit: 20,

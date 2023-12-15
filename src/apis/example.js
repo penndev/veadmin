@@ -2,7 +2,7 @@ import service from '@/utils/request'
 
 export const getExample = (params) => {
   return service({
-    url: '/example/admin',
+    url: '/example/list',
     method: 'get',
     params
   })
@@ -10,7 +10,7 @@ export const getExample = (params) => {
 
 export const postExample = (data) => {
   return service({
-    url: '/example/admin',
+    url: '/example/create',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export const postExample = (data) => {
 
 export const putExample = (data) => {
   return service({
-    url: '/example/admin',
+    url: '/example/update',
     method: 'put',
     data
   })
@@ -26,7 +26,7 @@ export const putExample = (data) => {
 
 export const deleteExample = (params) => {
   return service({
-    url: '/example/admin',
+    url: '/example/delete',
     method: 'delete',
     params
   })
