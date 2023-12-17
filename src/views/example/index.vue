@@ -33,9 +33,8 @@
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-button
-      type="primary"
       :icon="table.selectStat? 'SemiSelect':'Select'"
-      @click="table.selectStat = !table.selectStat"
+      @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
     />
     <el-button
       v-if="table.selectStat"
@@ -43,13 +42,6 @@
     >
       反选
     </el-button>
-    <el-button
-      v-if="table.selectStat"
-      @click="tableRef.clearSelection()"
-    >
-      清空
-    </el-button>
-
     <el-button
       type="primary"
       icon="Plus"

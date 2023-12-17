@@ -33,9 +33,8 @@
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-button
-      type="primary"
       :icon="table.selectStat? 'SemiSelect':'Select'"
-      @click="table.selectStat = !table.selectStat"
+      @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
     />
     <el-button
       v-if="table.selectStat"
@@ -44,13 +43,6 @@
       反选
     </el-button>
     <el-button
-      v-if="table.selectStat"
-      @click="tableRef.clearSelection()"
-    >
-      清空
-    </el-button>
-
-    <el-button
       type="primary"
       icon="Plus"
       @click="dialog.handleDialogAdd"
@@ -58,18 +50,30 @@
       新增
     </el-button>
 
+    <el-button
+      type="primary"
+      icon="Refresh"
+      @click="table.handleConfigPush"
+    >
+      推送配置
+    </el-button>
     <!-- 数据table -->
     <el-table
+      ref="tableRef"
       :data="table.data"
       @sort-change="table.handleSortChange"
     >
       <el-table-column
+        v-if="table.selectStat"
+        type="selection"
+        width="50"
+      />
+      <el-table-column
         label="ID"
         prop="id"
-        width="60"
+        width="70"
         sortable="custom"
       />
-
       <el-table-column
         label="主机"
         prop="ip"
@@ -124,9 +128,7 @@
         width="220"
       >
         <template #default="scope">
-          <el-text
-            v-if="scope.row.stat"
-          >
+          <el-text v-if="scope.row.stat">
             {{ scope.row.stat.cpu }}% / {{ scope.row.stat.memory }}%
           </el-text>
         </template>
@@ -137,9 +139,7 @@
         width="220"
       >
         <template #default="scope">
-          <el-text
-            v-if="scope.row.stat"
-          >
+          <el-text v-if="scope.row.stat">
             {{ scope.row.stat.disk.used }} / {{ scope.row.stat.disk.total }}
           </el-text>
         </template>
@@ -198,12 +198,12 @@
   >
     <el-text>
       创建时间: <el-link type="info">
-        {{ new Date( dialog.form.createdAt).toLocaleString() }}
+        {{ new Date(dialog.form.createdAt).toLocaleString() }}
       </el-link>
     </el-text>
     <el-text>
       上次更新: <el-link type="info">
-        {{ new Date( dialog.form.updatedAt).toLocaleString() }}
+        {{ new Date(dialog.form.updatedAt).toLocaleString() }}
       </el-link>
     </el-text>
     <br><br>
@@ -330,9 +330,7 @@
       </el-form-item>
     </el-form>
     <!-- 终端窗口 -->
-    <div
-      ref="terminalRef"
-    />
+    <div ref="terminalRef" />
   </el-dialog>
 </template>
 
@@ -344,7 +342,7 @@ import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
 
 // import api
-import { getControlHost, postControlHost, putControlHost, deleteControlHost, installControlHost } from '@/apis/wafcdn'
+import { getControlHost, postControlHost, putControlHost, deleteControlHost, installControlHost, pushControlHost } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
@@ -416,6 +414,24 @@ const table = ref({
         }
       }
     }
+  },
+  handleConfigPush: () => {
+    const rows = tableRef.value.getSelectionRows()
+    ElMessageBox.confirm(rows.length ? '请确认是否推送仅选中?' : '请确认是否全部推送?', '推送配置',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    ).then(() => {
+      const ids = []
+      for (const row of rows) {
+        ids.push(row.id)
+      }
+      pushControlHost({ ids }).then((result) => {
+        ElMessage.info(result)
+      })
+    })
   }
 })
 

@@ -81,3 +81,11 @@ export const installControlHost = (data) => {
     data
   })
 }
+
+export const pushControlHost = (data) => {
+  return service({
+    url: '/control/host/push',
+    method: 'put',
+    data
+  })
+}

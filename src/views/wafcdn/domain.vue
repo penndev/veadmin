@@ -32,6 +32,7 @@
       <el-table-column
         label="源站"
         align="center"
+        width="300"
       >
         <template #default="scope">
           <el-text type="info">
@@ -269,7 +270,7 @@
               <el-col
                 :span="11"
               >
-                <el-input
+                <el-input-number
                   v-model="value.time"
                   placeholder="值(分钟)"
                 />
