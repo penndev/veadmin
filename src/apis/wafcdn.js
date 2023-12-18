@@ -89,3 +89,11 @@ export const pushControlHost = (data) => {
     data
   })
 }
+
+export const monitorControlHost = (params) => {
+  return service({
+    url: '/control/host/monitor',
+    method: 'get',
+    params
+  })
+}

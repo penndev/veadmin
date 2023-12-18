@@ -147,7 +147,7 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="165"
+        width="200"
       >
         <template #default="scope">
           <el-button
@@ -156,6 +156,13 @@
             @click="terminal.handleNew(scope.row)"
           >
             终端
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="chart.handleNew(scope.row)"
+          >
+            监控
           </el-button>
           <el-button
             link
@@ -269,15 +276,8 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <el-switch
           v-model="terminal.installVisible"
-          active-text="取消安装"
-          inactive-text="开启安装"
-          inline-prompt
-        />
-        &nbsp;&nbsp;
-        <el-switch
-          v-model="terminal.portVisible"
-          active-text="取消端口"
-          inactive-text="开启端口"
+          active-text="关闭工具"
+          inactive-text="开启工具"
           inline-prompt
         />
       </el-row>
@@ -311,7 +311,7 @@
     </el-form>
     <!-- 开放端口 -->
     <el-form
-      v-if="terminal.portVisible"
+      v-if="terminal.installVisible"
       label-position="left"
       size="small"
       inline
@@ -332,6 +332,43 @@
     <!-- 终端窗口 -->
     <div ref="terminalRef" />
   </el-dialog>
+
+  <el-dialog
+    v-model="chart.visible"
+    :title="chart.title"
+    fullscreen
+    @open="chart.handleOpen"
+  >
+    <template #header>
+      <el-row>
+        <span class="el-dialog__title">{{ chart.title }}</span>
+        <el-date-picker
+          v-model="chart.date"
+          type="datetimerange"
+          start-placeholder="选择开始时间"
+          end-placeholder="选择结束时间"
+          style="flex-grow: inherit;margin-left: 15px;"
+          @change="chart.update"
+        />
+      </el-row>
+    </template>
+
+    <div
+      ref="netChart"
+      class="chart"
+      style="height: 280px;"
+    />
+    <div
+      ref="cpuChart"
+      class="chart"
+      style="height: 230px;"
+    />
+    <div
+      ref="memoryChart"
+      class="chart"
+      style="height: 230px;"
+    />
+  </el-dialog>
 </template>
 
 <script setup>
@@ -342,18 +379,20 @@ import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
 
 // import api
-import { getControlHost, postControlHost, putControlHost, deleteControlHost, installControlHost, pushControlHost } from '@/apis/wafcdn'
+import { getControlHost, postControlHost, putControlHost, deleteControlHost, installControlHost, pushControlHost, monitorControlHost } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
 import { authStoe } from '@/stores'
 import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils'
-const wsOrigin = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
-const wsssh = `${wsOrigin}/ssh?token=${authStoe().token}`
-const wsmonitor = `${wsOrigin}/monitor?token=${authStoe().token}`
+
+import * as echarts from 'echarts'
+
+const wsUrl = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
+const wsssh = `${wsUrl}/ssh?token=${authStoe().token}`
+const wsmonitor = `${wsUrl}/monitor?token=${authStoe().token}`
 
 const tableRef = ref()
-
 const table = ref({
   total: 0,
   query: {
@@ -437,7 +476,6 @@ const table = ref({
 
 // dialog 的 element 实例
 const dialogRef = ref(null)
-
 const dialog = ref({
   visible: false,
   title: 'dialog',
@@ -507,7 +545,6 @@ const dialog = ref({
 })
 
 const terminalRef = ref(null)
-
 const terminal = ref({
   title: '终端',
   visible: false,
@@ -520,7 +557,6 @@ const terminal = ref({
     terminal.value.wsurl = wsssh + '&hid=' + row.id
   },
   handleOpen: () => {
-    terminal.value.visible = true
     const term = new Terminal({
       fontSize: 14
     })
@@ -563,9 +599,139 @@ const terminal = ref({
       ElMessage.success(result.message)
       terminal.value.ws.send(result.command)
     })
-  },
-  portVisible: false
+  }
 })
+
+const netChart = ref(null)
+const netEchartX = []
+const netEchartRecv = []
+const netEchartSend = []
+const netEchartOption = {
+  title: { text: '网络IO' },
+  xAxis: { type: 'category', data: netEchartX },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      formatter: (value) => byteBPSFormat(value)
+    }
+  },
+  tooltip: {
+    trigger: 'axis', // 触发类型为坐标轴
+    axisPointer: { // 坐标轴指示器配置
+      type: 'cross' // 十字准星指示器
+    },
+    valueFormatter: (value) => byteBPSFormat(value)
+  },
+  series: [
+    {
+      name: '接收',
+      data: netEchartRecv,
+      type: 'line',
+      areaStyle: {}
+    },
+    {
+      name: '发送',
+      data: netEchartSend,
+      type: 'line',
+      areaStyle: {}
+    }
+  ]
+}
+
+const cpuChart = ref(null)
+const cpuChartCpuLimit = []
+const cpuEchartOption = {
+  title: { text: 'CPU' },
+  xAxis: { type: 'category', data: netEchartX },
+  yAxis: { type: 'value' },
+  tooltip: {
+    trigger: 'axis', // 触发类型为坐标轴
+    axisPointer: { // 坐标轴指示器配置
+      type: 'cross' // 十字准星指示器
+    }
+  },
+  series: [
+    {
+      name: '用量',
+      data: cpuChartCpuLimit,
+      type: 'line'
+    }
+  ]
+}
+
+const memoryChart = ref(null)
+const memoryChartLimit = []
+const memoryEchartOption = {
+  title: { text: '内存' },
+  xAxis: { type: 'category', data: netEchartX },
+  yAxis: { type: 'value' },
+  tooltip: {
+    trigger: 'axis', // 触发类型为坐标轴
+    axisPointer: { // 坐标轴指示器配置
+      type: 'cross' // 十字准星指示器
+    }
+  },
+  series: [
+    {
+      name: '用量',
+      data: memoryChartLimit,
+      type: 'line'
+    }
+  ]
+}
+
+const chart = ref({
+  title: '监控面板',
+  visible: false,
+  date: [], // 时间范围
+  netEchart: null,
+  cpuEchart: null,
+  memoryEchart: null,
+  update: () => {
+    monitorControlHost({
+      start: Math.floor(chart.value.date[0]?.getTime() / 1000),
+      end: Math.floor(chart.value.date[1]?.getTime() / 1000)
+    }).then((result) => {
+      for (const row of result.data) {
+        netEchartX.unshift(dateFormat('Y-m-d H:i:s', row.timestamp))
+        netEchartRecv.unshift(row.netrecv)
+        netEchartRecv.unshift(row.netsend)
+        cpuChartCpuLimit.unshift(row.cpu)
+        memoryChartLimit.unshift(row.memory)
+      }
+      chart.value.netEchart.setOption(netEchartOption)
+      chart.value.cpuEchart.setOption(cpuEchartOption)
+      chart.value.memoryEchart.setOption(memoryEchartOption)
+    })
+  },
+  handleNew: (row) => {
+    chart.value.visible = true
+  },
+  handleOpen: () => {
+    if (chart.value.netEchart == null) {
+      chart.value.netEchart = echarts.init(netChart.value)
+    }
+    if (chart.value.cpuEchart == null) {
+      chart.value.cpuEchart = echarts.init(cpuChart.value)
+    }
+    if (chart.value.memoryEchart == null) {
+      chart.value.memoryEchart = echarts.init(memoryChart.value)
+    }
+    chart.value.update()
+  }
+})
+
+window.onresize = function () {
+  if (chart.value.netEchart != null) {
+    chart.value.netEchart.resize()
+  }
+  if (chart.value.cpuEchart != null) {
+    chart.value.cpuEchart.resize()
+  }
+  if (chart.value.memoryEchart != null) {
+    chart.value.memoryEchart.resize()
+  }
+}
 
 table.value.handleTableData()
 table.value.handleNewStat()
