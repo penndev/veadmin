@@ -1,5 +1,19 @@
 import Layout from '@/views/layout/index.vue'
 
+export const dashboard = {
+  path: '/',
+  component: Layout,
+  redirect: '/dashboard',
+  children: [
+    {
+      path: 'dashboard',
+      component: () => import('@/views/dashboard/index.vue'),
+      name: 'Dashboard',
+      meta: { title: '仪表盘', icon: 'Odometer' }
+    }
+  ]
+}
+
 export const system = {
   path: '/system',
   component: Layout,

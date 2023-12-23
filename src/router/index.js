@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Layout from '@/views/layout/index.vue'
 
-import { example, icon } from './modules/example'
-import { system } from './modules/system'
-import { wafcdn } from './modules/wafcdn'
+import { dashboard, system } from './modules/system'
 import { video, archive } from './modules/video'
-import { formatRouteList } from '@/utils'
+import { example, icon } from './modules/example'
+import { wafcdn } from './modules/wafcdn'
+
+import { formatRouteItem, formatRouteList } from '@/utils'
 
 /**
  * 动态路由 router.addRoute() 不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
@@ -21,8 +21,7 @@ import { formatRouteList } from '@/utils'
  * 通过配置src\stores\module\auth.js的routes是否包含name字符串来鉴权是否放行
  */
 
-const routes = formatRouteList([
-  // default route
+const routes = [
   {
     name: 'notFound',
     path: '/:pathMatch(.*)*',
@@ -34,28 +33,16 @@ const routes = formatRouteList([
     path: '/login',
     component: () => import('@/views/login/index.vue'),
     meta: { white: true, hidden: true }
-  },
-  // menu route
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-        name: 'Dashboard',
-        meta: { title: '仪表盘', icon: 'Odometer' }
-      }
-    ]
   }
-])
+]
 
 // 提供动态编译。
 if (import.meta.env.MODE === 'wafcdn') {
-  routes.push(...formatRouteList([wafcdn]))
+  wafcdn.path = '/'
+  wafcdn.redirect = '/stat'
+  routes.push(formatRouteItem(wafcdn, '/'))
 } else {
-  routes.push(...formatRouteList([example, icon, system, video, archive, wafcdn]))
+  routes.push(...formatRouteList([dashboard, system, video, archive, wafcdn, example, icon]))
 }
 
 const router = createRouter({

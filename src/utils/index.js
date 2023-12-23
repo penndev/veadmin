@@ -106,13 +106,14 @@ export const dateFormat = (dateString, timestamp) => {
 }
 
 // 格式路由路径
-const formatRouteItem = (children, basePath) => {
+export const formatRouteItem = (children, basePath) => {
   children.path = resolve(basePath, children.path)
   if (children.children) {
     for (const item of children.children) {
       formatRouteItem(item, children.path)
     }
   }
+  return children
 }
 
 // 格式化路由
