@@ -1,7 +1,5 @@
 <template>
-  <el-select
-    v-model="table.flushDelay"
-  >
+  <el-select v-model="table.flushDelay">
     <el-option
       :key="5"
       label="服务器状态刷新间隔: 5秒"
@@ -99,9 +97,7 @@
           {{ table.conf.time }}
         </el-link>
         &nbsp;-&nbsp;
-        <el-tooltip
-          :content="table.conf.version"
-        >
+        <el-tooltip :content="table.conf.version">
           <el-link type="primary">
             {{ table.conf.version.substring(0, 12) }}
           </el-link>
@@ -254,29 +250,29 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .panel-group {
-    .card-panel {
-        margin: 10px 0;
-        background: #fff;
-        text-align: center;
-        box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-        border-color: rgba(0, 0, 0, .05);
-
-        .text {
-            font-size: 16px;
-            color: rgba(0, 0, 0, 0.45);
-            margin-top: 10px;
-        }
+  .card-panel {
+    margin: 10px 0;
+    text-align: center;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .05);
+    background: var(--ea-main-color);
+    .text {
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.45);
+      margin-top: 10px;
     }
+  }
 }
 
 .notifyCard {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .netChart {
-    margin: 10px 0;
-    padding: 5px;
-    min-height: 300px;
-    background-color: #fff;
+  margin: 10px 0;
+  padding: 5px;
+  min-height: 300px;
+  color: #666;
+  background: var(--ea-main-color);
 }
 </style>

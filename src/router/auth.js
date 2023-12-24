@@ -21,6 +21,7 @@ const getRole = (name) => {
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta && to.meta.white === true) { // 放行白名单
+    document.title = import.meta.env.VE_NAME ?? '后台管理系统'
     next()
     return
   }
