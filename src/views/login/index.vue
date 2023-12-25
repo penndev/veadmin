@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { authStoe } from '@/stores'
+import { authStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -133,7 +133,7 @@ const rules = reactive({
 
 // 处理用户登录相关逻辑
 const loginForm = ref(null)
-const permission = authStoe()
+const permission = authStore()
 const router = useRouter()
 const route = useRoute()
 

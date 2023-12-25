@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { authStoe } from '@/stores'
+import { authStore } from '@/stores'
 import { viewLoading } from '@/stores/reactive'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
@@ -15,7 +15,7 @@ service.interceptors.request.use(
     if (config.viewLoading !== false && viewLoading.status === false) {
       viewLoading.status = true
     }
-    const permission = authStoe()
+    const permission = authStore()
     // 获取token
     config.headers = {
       'x-token': permission.token,

@@ -1,4 +1,4 @@
-import { authStoe } from '@/stores'
+import { authStore } from '@/stores'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
 
@@ -6,13 +6,13 @@ import { ElMessageBox } from 'element-plus'
 let auth = null
 const getToken = () => {
   if (auth === null) {
-    auth = authStoe()
+    auth = authStore()
   }
   return !!auth.token
 }
 const getRole = (name) => {
   if (auth === null) {
-    auth = authStoe()
+    auth = authStore()
   }
   if (!auth.routes) return false
   if (auth.routes === '*') return true

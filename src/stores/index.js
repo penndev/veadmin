@@ -4,7 +4,7 @@ const stores = createPinia()
 
 stores.use(piniaPluginPersistedstate)
 
-export { default as layoutStoe } from './module/layout'
-export { default as authStoe } from './module/auth'
+export { default as layoutStore } from './module/layout'
+export { default as authStore } from './module/auth'
 
 export default stores

@@ -107,14 +107,14 @@
 </template>
 
 <script setup>
-import { authStoe, layoutStoe } from '@/stores'
+import { authStore, layoutStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 
-const layout = layoutStoe()
+const layout = layoutStore()
 const router = useRouter()
 const route = useRoute()
-const auth = authStoe()
+const auth = authStore()
 
 const breadcrumb = ref(route.matched)
 

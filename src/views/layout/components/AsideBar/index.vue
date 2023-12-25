@@ -21,16 +21,16 @@
 import MenuItem from './MenuItem.vue'
 import { watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { layoutStoe, authStoe } from '@/stores'
+import { layoutStore, authStore } from '@/stores'
 
 const router = useRouter()
 const route = useRoute()
 
 // 通用组件布局
-const layout = layoutStoe()
+const layout = layoutStore()
 
 // 菜单权限
-const auth = authStoe()
+const auth = authStore()
 
 // 菜单列表
 const routes = router.options.routes

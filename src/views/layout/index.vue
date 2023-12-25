@@ -51,12 +51,12 @@
 
 <script setup>
 import { AsideBar, NavBar, HistoryBar } from './components'
-import { layoutStoe } from '@/stores'
+import { layoutStore } from '@/stores'
 // 加载网络请求时要打开loading dialog 防止多操作
 import { viewLoading } from '@/stores/reactive'
 
 // 通用组件布局
-const layout = layoutStoe()
+const layout = layoutStore()
 
 const handleCollapse = () => {
   layout.collapse = !layout.collapse

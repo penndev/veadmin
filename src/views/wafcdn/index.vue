@@ -383,14 +383,14 @@ import { getControlHost, postControlHost, putControlHost, deleteControlHost, ins
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // ws 请求地址配置
-import { authStoe } from '@/stores'
+import { authStore } from '@/stores'
 import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils'
 
 import * as echarts from 'echarts'
 
 const wsUrl = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
-const wsssh = `${wsUrl}/ssh?token=${authStoe().token}`
-const wsmonitor = `${wsUrl}/monitor?token=${authStoe().token}`
+const wsssh = `${wsUrl}/ssh?token=${authStore().token}`
+const wsmonitor = `${wsUrl}/monitor?token=${authStore().token}`
 
 const tableRef = ref()
 const table = ref({
