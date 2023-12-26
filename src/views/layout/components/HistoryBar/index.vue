@@ -99,7 +99,11 @@ const openMenu = (item, event) => {
   veContextMenuSelect.value = item
   veContextMenu.value.style.display = 'block'
   veContextMenu.value.style.top = event.y + 'px'
-  veContextMenu.value.style.left = event.x + 'px'
+  if ((veContextMenu.value.offsetWidth + 5 + event.x) > window.innerWidth) {
+    veContextMenu.value.style.left = window.innerWidth - 5 - veContextMenu.value.offsetWidth + 'px'
+  } else {
+    veContextMenu.value.style.left = event.x + 'px'
+  }
 }
 const closeMenu = () => {
   veContextMenu.value.style.display = 'none'

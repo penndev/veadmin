@@ -468,8 +468,8 @@ const transcodeDialog = ref({
 })
 const getTranscodeSelect = async () => {
   if (!transcodeDialog.value.transcodeSelect) {
-    const resdata = await listTranscode({ page: 1, limit: 999 })
-    transcodeDialog.value.transcodeSelect = resdata.data
+    const resData = await listTranscode({ page: 1, limit: 999 })
+    transcodeDialog.value.transcodeSelect = resData.data
   }
 }
 const handleTranscode = (row) => {

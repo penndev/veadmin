@@ -208,7 +208,7 @@ import { ref } from 'vue'
 // import api
 import { getSystemAdmin, postSystemAdmin, putSystemAdmin, deleteSystemAdmin } from '@/apis/system/administrator'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getSystemRole } from '@/apis/system/rolepermission'
+import { getSystemRole } from '@/apis/system/permission'
 
 const table = ref({
   total: 0,
@@ -278,7 +278,10 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
 }
 const handleDialogEdit = (row) => {
-  if (row.adminRoleId < 1) return
+  if (row.adminRoleId < 1) {
+    ElMessage.warning('超级管理员不允许被编辑')
+    return
+  }
   dialog.value.title = '创建数据'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'

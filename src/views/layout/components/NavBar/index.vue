@@ -34,7 +34,7 @@
       class="ea-icon"
     >
       <el-switch
-        v-model="drakMode"
+        v-model="darkMode"
         inline-prompt
         active-action-icon="Moon"
         inactive-action-icon="Sunny"
@@ -142,9 +142,9 @@ const handleFullScreen = () => {
   }
 }
 
-const drakMode = ref(false)
-watch(drakMode, () => {
-  if (drakMode.value) {
+const darkMode = ref(false)
+watch(darkMode, () => {
+  if (darkMode.value) {
     document.documentElement.classList.add('dark')
   } else {
     document.documentElement.classList.remove('dark')

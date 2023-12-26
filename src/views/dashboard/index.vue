@@ -84,7 +84,6 @@
       </div>
     </el-col>
   </el-row>
-
   <TableCharts />
 </template>
 

@@ -119,10 +119,10 @@ export const formatRouteItem = (children, basePath) => {
 // 格式化路由
 // 将路由的路径进行拼装。
 export const formatRouteList = (routes) => {
-  const routelist = []
+  const routeList = []
   for (const item of routes) {
     formatRouteItem(item, '/')
-    routelist.push(item)
+    routeList.push(item)
   }
-  return routelist
+  return routeList
 }

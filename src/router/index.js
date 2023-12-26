@@ -17,7 +17,7 @@ import { formatRouteItem, formatRouteList } from '@/utils'
  * meta.hidden 控制是否展示
  * meta.title 为空则菜单也会隐藏。
  *  - 备注说明
- * 如果菜单childen只有一个则子meta 菜单处理详见src\views\layout\components\AsideBar\MenuItem.vue
+ * 如果菜单children只有一个则子meta 菜单处理详见src\views\layout\components\AsideBar\MenuItem.vue
  * 通过配置src\stores\module\auth.js的routes是否包含name字符串来鉴权是否放行
  */
 

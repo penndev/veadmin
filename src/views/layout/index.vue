@@ -13,12 +13,12 @@
     >
       <div class="logo">
         <img
-          class="logoimg"
+          class="logo-img"
           src="/logo.svg"
         >
         <h2
           v-if="!layout.collapse"
-          class="logotitle"
+          class="logo-title"
         >
           {{ title }}
         </h2>

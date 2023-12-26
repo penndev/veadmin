@@ -196,7 +196,7 @@ const netOption = {
   ]
 }
 
-const handleReflushStat = () => {
+const handleReFlushStat = () => {
   stat().then((result) => {
     // cpu
     table.value.cpu.percent = Math.round(result.cpu.percent)
@@ -238,9 +238,9 @@ onMounted(() => {
   }
 })
 
-handleReflushStat()
+handleReFlushStat()
 
-const intervalId = setInterval(handleReflushStat, table.value.flushDelay * 1000)
+const intervalId = setInterval(handleReFlushStat, table.value.flushDelay * 1000)
 
 onUnmounted(() => {
   clearInterval(intervalId)

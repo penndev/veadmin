@@ -8,7 +8,6 @@
           style="max-width: 120px;"
         />
       </el-form-item>
-
       <el-form-item label="名称">
         <el-input
           v-model="table.query.name"
@@ -16,7 +15,6 @@
           style="max-width: 180px;"
         />
       </el-form-item>
-
       <el-form-item label="上架状态">
         <el-select
           v-model="table.query.status"
@@ -25,18 +23,17 @@
           style="max-width: 150px;"
         >
           <el-option
-            key="0"
+            :key="0"
             label="下架"
-            value="0"
+            :value="0"
           />
           <el-option
-            key="1"
+            :key="1"
             label="上架"
-            value="1"
+            :value="1"
           />
         </el-select>
       </el-form-item>
-
       <el-form-item label="日期">
         <el-date-picker
           v-model="table.query.updateStart"
@@ -52,7 +49,6 @@
           style="max-width: 180px;"
         />
       </el-form-item>
-
       <el-form-item>
         <el-button
           type="primary"

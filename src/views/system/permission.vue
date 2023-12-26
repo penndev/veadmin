@@ -201,7 +201,7 @@
             @click="handleRouteDel(key)"
           />
         </div>
-        <el-input v-model="dialog.tempvalue">
+        <el-input v-model="dialog.tempValue">
           <template #append>
             <el-button
               icon="Plus"
@@ -229,7 +229,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getSystemRole, postSystemRole, putSystemRole, deleteSystemRole } from '@/apis/system/rolepermission'
+import { getSystemRole, postSystemRole, putSystemRole, deleteSystemRole } from '@/apis/system/permission'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
@@ -284,7 +284,7 @@ const dialog = ref({
     ]
   },
   formAction: 'add', // add|edit
-  tempvalue: null
+  tempValue: null
 })
 
 const handleRouteDel = (value) => { // 清理路由json.
@@ -294,8 +294,8 @@ const handleRouteAdd = () => { // 增加路由到json.
   if (!dialog.value.form.route) {
     dialog.value.form.route = []
   }
-  dialog.value.form.route.push({ path: dialog.value.tempvalue })
-  dialog.value.tempvalue = ''
+  dialog.value.form.route.push({ path: dialog.value.tempValue })
+  dialog.value.tempValue = ''
 }
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'

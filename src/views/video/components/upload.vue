@@ -29,13 +29,13 @@ import { ElNotification } from 'element-plus'
 const handleUpload = async (options) => {
   options.onProgress({ percent: 0 })
   // 获取文件的md5
-  const filemd5 = await MD5LargeFile(options.file, (p) => {
+  const fileMd5 = await MD5LargeFile(options.file, (p) => {
     const progress = parseInt(p * 100)
     options.onProgress({ percent: (100 - progress) })
   })
   const upload = await fileUploadBefore({
     name: options.file.name,
-    md5: filemd5,
+    md5: fileMd5,
     size: options.file.size
   })
   //   处理文件上传
@@ -47,7 +47,7 @@ const handleUpload = async (options) => {
 
     const formData = new FormData()
     formData.append('currentPart', currentPart)
-    formData.append('uploadID', filemd5)
+    formData.append('uploadID', fileMd5)
     formData.append('uploadData', uploadData)
     await fileUploadPart(formData)
     options.onProgress({ percent: parseInt((currentPart / countPart) * 100) })

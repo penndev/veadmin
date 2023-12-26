@@ -114,7 +114,7 @@
             :content="'创建：' + scope.row.CreatedAt"
             placement="top"
           >
-            <el-link>{{ dateFormat("Y-m-d H:i:s" ,scope.row.Expried) }}</el-link>
+            <el-link>{{ dateFormat("Y-m-d H:i:s" ,scope.row.Expired) }}</el-link>
           </el-tooltip>
         </template>
       </el-table-column>

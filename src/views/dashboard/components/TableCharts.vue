@@ -6,13 +6,13 @@
   >
     <el-col :span="12">
       <div
-        ref="sharechart"
+        ref="shareChart"
         class="chart"
       />
     </el-col>
     <el-col :span="12">
       <div
-        ref="detailchart"
+        ref="detailChart"
         class="chart"
       />
     </el-col>
@@ -21,7 +21,7 @@
   <el-row>
     <el-col :span="24">
       <div
-        ref="trendchart"
+        ref="trendChart"
         class="chart"
       />
     </el-col>
@@ -32,13 +32,13 @@
 import { ref, onMounted } from 'vue'
 import * as echarts from 'echarts'
 
-const sharechart = ref(null)
-const detailchart = ref(null)
-const trendchart = ref(null)
+const shareChart = ref(null)
+const detailChart = ref(null)
+const trendChart = ref(null)
 
 onMounted(() => {
-  const mySharechart = echarts.init(sharechart.value)
-  mySharechart.setOption({
+  const myShareChart = echarts.init(shareChart.value)
+  myShareChart.setOption({
     title: { text: '转码列表' },
     series: [{
       type: 'pie',
@@ -47,12 +47,11 @@ onMounted(() => {
         { value: 634, name: 'mp4' },
         { value: 434, name: 'mpd' }
       ]
-    }
-    ]
+    }]
   })
 
-  const myDetail = echarts.init(detailchart.value)
-  myDetail.setOption({
+  const myDetailChart = echarts.init(detailChart.value)
+  myDetailChart.setOption({
     title: { text: '最高播放量' },
     tooltip: {},
     xAxis: { data: ['电视剧', '电影', '动漫', '短视频', '体育', '纪录片'] },
@@ -60,8 +59,8 @@ onMounted(() => {
     series: [{ name: '销量', type: 'bar', data: [5, 20, 36, 10, 10, 20] }]
   })
 
-  const myTrendchart = echarts.init(trendchart.value)
-  myTrendchart.setOption({
+  const myTrendChart = echarts.init(trendChart.value)
+  myTrendChart.setOption({
     title: { text: '7日新增趋势' },
     xAxis: { type: 'category', data: ['1', '2', '3', '4', '5', '6', '7'] },
     yAxis: { type: 'value' },
@@ -69,9 +68,9 @@ onMounted(() => {
   })
 
   window.onresize = function () {
-    mySharechart.resize()
-    myDetail.resize()
-    myTrendchart.resize()
+    myShareChart.resize()
+    myDetailChart.resize()
+    myTrendChart.resize()
   }
 })
 </script>

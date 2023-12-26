@@ -1,13 +1,13 @@
 <template>
   <div id="userLayout">
-    <div class="login_panle">
-      <div class="login_panle_form">
-        <div class="login_panle_form_title">
+    <div class="login_panel">
+      <div class="login_panel_form">
+        <div class="login_panel_form_title">
           <img
-            class="login_panle_form_title_logo"
+            class="login_panel_form_title_logo"
             src="/logo.svg"
           >
-          <div class="login_panle_form_title_p">
+          <div class="login_panel_form_title_p">
             用户登录
           </div>
         </div>
@@ -76,7 +76,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="login_panle_right" />
+      <div class="login_panel_right" />
     </div>
   </div>
 </template>
@@ -172,7 +172,7 @@ const formSubmit = () => {
     padding-top: 4px;
   }
 
-  .login_panle {
+  .login_panel {
     width: 96vw;
     height: 100%;
     background-color: rgba(255, 255, 255, .8);
@@ -182,7 +182,7 @@ const formSubmit = () => {
     align-items: center;
     justify-content: center;
 
-    .login_panle_right {
+    .login_panel_right {
       // background-image: url("@/assets/vue.svg");
       background-image: url("@/assets/logo-with-shadow.png");
       background-size: cover;
@@ -191,24 +191,24 @@ const formSubmit = () => {
       float: right !important;
     }
 
-    .login_panle_form {
+    .login_panel_form {
       width: 420px;
       background-color: #fff;
       padding: 40px 40px 40px 40px;
       border-radius: 10px;
       box-shadow: 2px 3px 7px rgba(0, 0, 0, .2);
 
-      .login_panle_form_title {
+      .login_panel_form_title {
         display: flex;
         align-items: center;
         margin: 30px 0;
 
-        .login_panle_form_title_logo {
+        .login_panel_form_title_logo {
           width: 90px;
           height: 72px;
         }
 
-        .login_panle_form_title_p {
+        .login_panel_form_title_p {
           font-size: 40px;
           padding-left: 20px;
         }
@@ -237,15 +237,15 @@ const formSubmit = () => {
 
 //小屏幕不显示右侧，将登陆框居中
 @media (max-width: 750px) {
-  .login_panle_right {
+  .login_panel_right {
     display: none;
   }
 
-  .login_panle {
+  .login_panel {
     margin-left: 2vw;
   }
 
-  .login_panle_form {
+  .login_panel_form {
     width: 100%;
   }
 }
