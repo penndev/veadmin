@@ -39,7 +39,7 @@ const routes = [
 // 提供动态编译。
 if (import.meta.env.MODE === 'wafcdn') {
   wafcdn.path = '/'
-  wafcdn.redirect = '/index'
+  wafcdn.redirect = import.meta.env.VE_INDEX ?? '/stat'
   routes.push(formatRouteItem(wafcdn, '/'))
 } else {
   routes.push(...formatRouteList([dashboard, system, archive, video, wafcdn, example, icon]))
