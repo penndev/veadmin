@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "build-wafcdn": "vite build --mode wafcdn",
+    "build:wafcdn": "vite build --mode wafcdn",
     "preview": "vite preview"
   },
   "dependencies": {
