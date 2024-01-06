@@ -109,13 +109,13 @@
         </el-tab-pane>
         <el-tab-pane label="回源管理">
           <el-form-item
-            label="回源路径"
+            label="回源URL"
             prop="backend.url"
           >
             <el-input v-model="dialog.formTmp.backend.url" />
           </el-form-item>
           <el-form-item
-            label="回源域名"
+            label="回源Host"
             prop="backend.host"
           >
             <el-input v-model="dialog.formTmp.backend.host" />
@@ -319,7 +319,7 @@ const table = ref({
 
 const handleTableData = () => {
   getDomain().then((result) => {
-    table.value.data = result
+    table.value.data = result instanceof Array ? result : []
   })
 }
 
