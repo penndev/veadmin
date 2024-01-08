@@ -330,7 +330,10 @@
       </el-form-item>
     </el-form>
     <!-- 终端窗口 -->
-    <div ref="terminalRef" />
+    <div
+      ref="terminalRef"
+      v-loading="terminal.load"
+    />
   </el-dialog>
 
   <el-dialog
@@ -547,6 +550,7 @@ const dialog = ref({
 const terminalRef = ref(null)
 const terminal = ref({
   title: '终端',
+  load: true,
   visible: false,
   ws: {},
   wsurl: '',
@@ -563,12 +567,19 @@ const terminal = ref({
     const termFit = new FitAddon()
     term.loadAddon(termFit)
     term.open(terminalRef.value)
-    termFit.fit()
-    window.onresize = () => termFit.fit()
-    term.write('正在连接控制器 \r\n')
+    const termFitInit = () => {
+      termFit.fit()
+      console.log()
+      ws.send(JSON.stringify({
+        action: 'setWindow',
+        ...termFit.proposeDimensions()
+      }))
+    }
+    window.onresize = termFitInit
     const ws = new WebSocket(terminal.value.wsurl)
     ws.onopen = (event) => {
-      term.write('控制器已经建立连接 \r\n')
+      terminal.value.load = false
+      termFitInit()
     }
     ws.onmessage = (event) => {
       term.write(event.data)
@@ -577,7 +588,7 @@ const terminal = ref({
       ElMessage.warning('WebSocket发生错误:' + event)
     }
     ws.onclose = (event) => {
-      term.write('\r\n控制器连接  已关闭\r\n')
+      ElMessage.info('终端 已关闭')
     }
     term.onData((data) => {
       ws.send(data)
