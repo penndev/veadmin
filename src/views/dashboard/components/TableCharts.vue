@@ -40,6 +40,8 @@ onMounted(() => {
   const myShareChart = echarts.init(shareChart.value)
   myShareChart.setOption({
     title: { text: '转码列表' },
+    legend: {},
+    tooltip: {},
     series: [{
       type: 'pie',
       data: [
@@ -53,6 +55,7 @@ onMounted(() => {
   const myDetailChart = echarts.init(detailChart.value)
   myDetailChart.setOption({
     title: { text: '最高播放量' },
+    legend: {},
     tooltip: {},
     xAxis: { data: ['电视剧', '电影', '动漫', '短视频', '体育', '纪录片'] },
     yAxis: {},
@@ -62,6 +65,8 @@ onMounted(() => {
   const myTrendChart = echarts.init(trendChart.value)
   myTrendChart.setOption({
     title: { text: '7日新增趋势' },
+    legend: {},
+    tooltip: {},
     xAxis: { type: 'category', data: ['1', '2', '3', '4', '5', '6', '7'] },
     yAxis: { type: 'value' },
     series: [{ data: [120, 200, 150, 175, 80, 256, 254], type: 'line' }]

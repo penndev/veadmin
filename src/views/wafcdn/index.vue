@@ -76,6 +76,12 @@
       />
       <el-table-column
         label="主机"
+        prop="title"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="主机"
         prop="ip"
         width="150"
         align="center"
@@ -220,6 +226,12 @@
       :model="dialog.form"
       :rules="dialog.formRule"
     >
+      <el-form-item
+        label="主机标题"
+        prop="title"
+      >
+        <el-input v-model="dialog.form.title" />
+      </el-form-item>
       <el-form-item
         label="主机IP"
         prop="ip"
@@ -585,10 +597,10 @@ const terminal = ref({
       term.write(event.data)
     }
     ws.onerror = (event) => {
-      ElMessage.warning('WebSocket发生错误:' + event)
+      term.write(`\r\nWebSocket发生错误:'${new Date()} - ${event}`)
     }
     ws.onclose = (event) => {
-      ElMessage.info('终端 已关闭')
+      term.write(`\r\nWebSocket已关闭:'${new Date()}`)
     }
     term.onData((data) => {
       ws.send(data)
@@ -619,6 +631,7 @@ const netEchartRecv = []
 const netEchartSend = []
 const netEchartOption = {
   title: { text: '网络IO' },
+  legend: {},
   xAxis: { type: 'category', data: netEchartX },
   yAxis: {
     type: 'value',
@@ -627,10 +640,7 @@ const netEchartOption = {
     }
   },
   tooltip: {
-    trigger: 'axis', // 触发类型为坐标轴
-    axisPointer: { // 坐标轴指示器配置
-      type: 'cross' // 十字准星指示器
-    },
+    trigger: 'item',
     valueFormatter: (value) => byteBPSFormat(value)
   },
   series: [
@@ -706,7 +716,7 @@ const chart = ref({
       for (const row of result.data) {
         netEchartX.unshift(dateFormat('Y-m-d H:i:s', row.timestamp))
         netEchartRecv.unshift(row.netrecv)
-        netEchartRecv.unshift(row.netsend)
+        netEchartSend.unshift(row.netsend)
         cpuChartCpuLimit.unshift(row.cpu)
         memoryChartLimit.unshift(row.memory)
       }
