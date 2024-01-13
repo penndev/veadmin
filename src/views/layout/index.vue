@@ -36,7 +36,7 @@
       <!-- 实际路由展示层 -->
       <router-view v-slot="{ Component }">
         <div
-          v-loading="viewLoading.status"
+          v-loading.fullscreen.lock="viewLoading.status"
           class="ea-main"
           :element-loading-text="viewLoading.text"
         >
