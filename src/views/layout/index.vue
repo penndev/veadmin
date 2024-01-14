@@ -36,11 +36,11 @@
       <!-- 实际路由展示层 -->
       <router-view v-slot="{ Component }">
         <div
-          v-loading.lock="viewLoading.status"
+          v-loading="viewLoading.status"
           :element-loading-text="viewLoading.text"
           class="ea-main"
         >
-          <el-main>
+          <el-main class="ea-main-flow">
             <component :is="Component" />
           </el-main>
         </div>

@@ -72,12 +72,13 @@
 
     .ea-select {
         height: 100vh;
-
         .ea-main {
-            height: 100%;
-            overflow: hidden;
             background-color: var(--el-bg-color-page);
-
+            .ea-main-flow {
+                // 2px border 
+                height: calc(100vh - 102px); 
+                overflow: auto;
+            }
             .ea-table {
                 background-color: var(--ea-main-color);
             }
