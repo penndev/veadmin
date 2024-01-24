@@ -460,9 +460,8 @@ const table = ref({
       row.disk.total = fileSizeFormat(row.disk.total)
       row.netsend = byteBPSFormat(row.netsend)
       row.netrecv = byteBPSFormat(row.netrecv)
-      // console.log(row)
       for (const element of table.value.data) {
-        if (element.host === row.ip) {
+        if (element.ip === row.host) {
           element.stat = row
           break
         }
