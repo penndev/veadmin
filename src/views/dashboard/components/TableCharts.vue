@@ -1,16 +1,21 @@
 <template>
-  <!--  -->
   <el-row
     style="margin-bottom: 12px;"
     :gutter="20"
   >
-    <el-col :span="12">
+    <el-col
+      :sm="12"
+      :xs="24"
+    >
       <div
         ref="shareChart"
         class="chart"
       />
     </el-col>
-    <el-col :span="12">
+    <el-col
+      :sm="12"
+      :xs="24"
+    >
       <div
         ref="detailChart"
         class="chart"

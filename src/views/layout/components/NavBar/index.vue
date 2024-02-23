@@ -52,8 +52,7 @@
       </el-icon>
     </div>
     <div
-      class="ea-icon"
-      style="max-width: 160px;"
+      class="ea-icon ea-icon-search"
     >
       <el-select
         filterable
@@ -195,6 +194,10 @@ const selectMenu = (value) => {
     font-size: 20px;
     line-height: 0;
     margin-right: 20px;
+  }
+
+  .ea-icon-search {
+    width: 160px;
   }
 
   .ea-breadcrumb {
