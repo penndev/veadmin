@@ -183,7 +183,6 @@ const formSubmit = () => {
     justify-content: center;
 
     .login_panel_right {
-      // background-image: url("@/assets/vue.svg");
       background-image: url("@/assets/logo-with-shadow.png");
       background-size: cover;
       width: 40%;
@@ -210,7 +209,7 @@ const formSubmit = () => {
 
         .login_panel_form_title_p {
           font-size: 40px;
-          padding-left: 20px;
+          padding-left: 15px;
         }
       }
 
@@ -236,7 +235,7 @@ const formSubmit = () => {
 }
 
 //小屏幕不显示右侧，将登陆框居中
-@media (max-width: 750px) {
+@media (max-width: 768px) {
   .login_panel_right {
     display: none;
   }
