@@ -9,27 +9,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.1.0",
-    "axios": "^1.5.1",
-    "echarts": "^5.4.0",
-    "element-plus": "^2.4.1",
+    "@element-plus/icons-vue": "^2.3.0",
+    "axios": "^1.6.1",
+    "echarts": "^5.5.0",
+    "element-plus": "^2.5.6",
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
     "spark-md5": "^3.0.2",
-    "vue": "^3.3.6",
-    "vue-router": "^4.2.5",
+    "vue": "^3.4.19",
+    "vue-router": "^4.3.0",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^5.0.5",
+    "@types/eslint": "^8.56.3",
     "@types/video.js": "^7.3.49",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^4.5.2",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-vue": "^9.19.2",
-    "video.js": "^8.3.0",
-    "vite": "^4.4.9",
+    "eslint-plugin-vue": "^9.22.0",
+    "sass": "^1.71.1",
+    "video.js": "^8.10.0",
+    "vite": "^4.5.2",
     "vite-plugin-eslint": "^1.8.1"
   }
 }
