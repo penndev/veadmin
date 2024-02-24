@@ -33,11 +33,7 @@
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-button
-      :icon="table.selectStat? 'SemiSelect':'Select'"
-      @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
-    />
-    <el-button
-      v-if="table.selectStat"
+      size="small"
       @click="table.handleInvertSelection"
     >
       反选
@@ -57,6 +53,22 @@
     >
       推送配置
     </el-button>
+    <el-checkbox
+      v-model="table.dataShow.port"
+      label="端口"
+      style="float: right; width: 60px;margin: 0;padding: 0;"
+    />
+    <el-checkbox
+      v-model="table.dataShow.ip"
+      label="主机"
+      style="float: right; width: 60px;margin: 0;padding: 0;"
+    />
+    <el-checkbox
+      v-model="table.dataShow.id"
+      label="ID"
+      style="float: right; width: 60px;margin: 0;padding: 0;"
+    />
+
     <!-- 数据table -->
     <el-table
       ref="tableRef"
@@ -64,29 +76,31 @@
       @sort-change="table.handleSortChange"
     >
       <el-table-column
-        v-if="table.selectStat"
         type="selection"
-        width="50"
+        width="30"
       />
       <el-table-column
+        v-if="table.dataShow.id"
         label="ID"
         prop="id"
         width="70"
         sortable="custom"
       />
       <el-table-column
-        label="主机"
+        label="名称"
         prop="title"
-        width="150"
+        width="180"
         align="center"
       />
       <el-table-column
-        label="主机"
+        v-if="table.dataShow.ip"
+        label="IP"
         prop="ip"
         width="150"
         align="center"
       />
       <el-table-column
+        v-if="table.dataShow.port"
         label="端口"
         prop="port"
         width="60"
@@ -95,7 +109,7 @@
       <el-table-column
         align="center"
         label="带宽:下行/上行"
-        width="220"
+        width="150"
       >
         <template #default="scope">
           <el-text v-if="scope.row.stat">
@@ -106,7 +120,7 @@
       <el-table-column
         align="center"
         label="缓存文件:今日/总计"
-        width="220"
+        width="200"
       >
         <template #default="scope">
           <el-text v-if="scope.row.stat">
@@ -117,21 +131,22 @@
       <el-table-column
         align="center"
         label="配置"
-        width="220"
+        width="180"
       >
         <template #default="scope">
-          <el-text
+          <el-tooltip
             v-if="scope.row.stat"
-            line-clamp="2"
+            :content="scope.row.stat.conf.version"
+            placement="top"
           >
-            {{ scope.row.stat.conf.time }} <br> {{ scope.row.stat.conf.version }}
-          </el-text>
+            {{ scope.row.stat.conf.time }}
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         label="状态cpu/memory"
-        width="220"
+        width="200"
       >
         <template #default="scope">
           <el-text v-if="scope.row.stat">
@@ -142,7 +157,7 @@
       <el-table-column
         align="center"
         label="硬盘"
-        width="220"
+        width="200"
       >
         <template #default="scope">
           <el-text v-if="scope.row.stat">
@@ -348,6 +363,7 @@
     />
   </el-dialog>
 
+  <!-- 监控展示框 -->
   <el-dialog
     v-model="chart.visible"
     :title="chart.title"
@@ -417,6 +433,11 @@ const table = ref({
     name: null
   },
   data: [],
+  dataShow: {
+    id: false,
+    ip: false,
+    port: false
+  },
   handleTableData: () => {
     getControlHost(table.value.query).then((result) => {
       table.value.data = result.data
@@ -455,7 +476,7 @@ const table = ref({
     const ws = new WebSocket(wsmonitor)
     ws.onmessage = (event) => {
       const row = JSON.parse(event.data)
-      row.conf.time = dateFormat('Y-m-d H:i:s', row.conf.time)
+      row.conf.time = row.conf.time ? dateFormat('Y-m-d H:i:s', row.conf.time) : '状态出错'
       row.disk.used = fileSizeFormat(row.disk.used)
       row.disk.total = fileSizeFormat(row.disk.total)
       row.netsend = byteBPSFormat(row.netsend)
@@ -712,12 +733,18 @@ const chart = ref({
       start: Math.floor(chart.value.date[0]?.getTime() / 1000),
       end: Math.floor(chart.value.date[1]?.getTime() / 1000)
     }).then((result) => {
+      netEchartX.length = 0
+      netEchartRecv.length = 0
+      netEchartSend.length = 0
+      cpuChartCpuLimit.length = 0
+      memoryChartLimit.length = 0
       for (const row of result.data) {
-        netEchartX.unshift(dateFormat('Y-m-d H:i:s', row.timestamp))
-        netEchartRecv.unshift(row.netrecv)
-        netEchartSend.unshift(row.netsend)
-        cpuChartCpuLimit.unshift(row.cpu)
-        memoryChartLimit.unshift(row.memory)
+        console.log(dateFormat('Y-m-d H:i:s', row.timestamp))
+        netEchartX.push(dateFormat('Y-m-d H:i:s', row.timestamp))
+        netEchartRecv.push(row.netrecv)
+        netEchartSend.push(row.netsend)
+        cpuChartCpuLimit.push(row.cpu)
+        memoryChartLimit.push(row.memory)
       }
       chart.value.netEchart.setOption(netEchartOption)
       chart.value.cpuEchart.setOption(cpuEchartOption)
@@ -737,6 +764,8 @@ const chart = ref({
     if (chart.value.memoryEchart == null) {
       chart.value.memoryEchart = echarts.init(memoryChart.value)
     }
+    chart.value.date[0] = new Date(new Date().getTime() - 86400000)
+    chart.value.date[1] = new Date()
     chart.value.update()
   }
 })
