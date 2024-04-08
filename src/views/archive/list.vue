@@ -199,7 +199,6 @@
       ref="dialogRef"
       :model="dialog.form"
       :rules="dialog.formRule"
-      label-position="left"
       label-width="80px"
     >
       <el-form-item
@@ -219,41 +218,47 @@
         label="视频分类"
         prop="videoTypeId"
       >
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-select
-              v-model="dialog.formTempSelectType"
-              placeholder="选一级分类"
-            >
-              <template v-for="item in dialog.vodTypeList">
-                <el-option
-                  v-if="item.parent == 0"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </template>
-            </el-select>
-          </el-col>
-          <el-col :span="12">
-            <el-select
-              v-if="dialog.formTempSelectType || dialog.form.archiveCategoryId"
-              v-model="dialog.form.archiveCategoryId"
-              placeholder="选二级分类"
-            >
-              <template v-for="item in dialog.vodTypeList">
-                <el-option
-                  v-if="dialog.form.archiveCategoryId
-                    || dialog.formTempSelectType == item.parent
-                    || dialog.formTempSelectType == item.id"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </template>
-            </el-select>
-          </el-col>
-        </el-row>
+        <el-col
+          :span="8"
+        >
+          <el-select
+            v-model="dialog.formTempSelectType"
+            placeholder="选一级分类"
+            style="width: 100%;"
+          >
+            <template v-for="item in dialog.vodTypeList">
+              <el-option
+                v-if="item.parent == 0"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </template>
+          </el-select>
+        </el-col>
+        <el-col
+          :span="2"
+        />
+        <el-col
+          :span="8"
+        >
+          <el-select
+            v-if="dialog.formTempSelectType || dialog.form.archiveCategoryId"
+            v-model="dialog.form.archiveCategoryId"
+            placeholder="选二级分类"
+          >
+            <template v-for="item in dialog.vodTypeList">
+              <el-option
+                v-if="dialog.form.archiveCategoryId
+                  || dialog.formTempSelectType == item.parent
+                  || dialog.formTempSelectType == item.id"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </template>
+          </el-select>
+        </el-col>
       </el-form-item>
 
       <el-form-item

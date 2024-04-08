@@ -10,29 +10,14 @@
     <el-table
       :data="table.data"
       style="width: 100%"
-      @sort-change="handleSortChange"
+      row-key="id"
+      default-expand-all
     >
-      <el-table-column
-        fixed
-        prop="id"
-        label="ID"
-        width="80"
-        sortable="custom"
-      />
       <el-table-column
         prop="name"
         label="名称"
         width="140"
       />
-      <el-table-column
-        prop="parent"
-        label="父级"
-        width="180"
-      >
-        <template #default="scope">
-          {{ scope.row.parent != 0 ? scope.row.parent : '父级分类' }}
-        </template>
-      </el-table-column>
       <el-table-column
         prop="status"
         label="状态"
@@ -50,6 +35,7 @@
         prop="order"
         label="排序"
         width="180"
+        sortable
       />
       <el-table-column
         prop="updatedAt"
@@ -86,15 +72,6 @@
     </el-table>
 
     <br>
-
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next"
-      :total="table.total"
-      :page-size="table.query.limit"
-      @current-change="handleChangePage"
-      @size-change="handleChangeLimit"
-    />
   </el-main>
 
   <!-- 处理数据|新增编辑 -->
@@ -171,9 +148,8 @@ import { addCategory, getCategory, updateCategory, deleteCategory } from '@/apis
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const table = ref({
-  total: 0,
   query: {
-    limit: 20,
+    limit: 9999,
     page: 1,
     order: null,
     name: null
@@ -181,28 +157,28 @@ const table = ref({
   data: []
 })
 
-const handleChangePage = (value) => {
-  table.value.query.page = value
-  handleTableData()
-}
-const handleChangeLimit = (value) => {
-  table.value.query.limit = value
-  handleTableData()
-}
-const handleSortChange = ({ column, prop, order }) => {
-  let orderSymbol = ''
-  if (order === 'descending') {
-    orderSymbol = '-'
-  } else if (order === 'ascending') {
-    orderSymbol = '+'
-  }
-  table.value.query.order = orderSymbol + prop
-  handleTableData()
-}
 const handleTableData = () => {
   getCategory(table.value.query).then((result) => {
-    table.value.data = result.data
-    table.value.total = result.total
+    const parentList = []
+    const childMap = {}
+    for (const item of result.data) {
+      if (item.parent < 1) {
+        parentList.push(item)
+      } else {
+        if (childMap[item.parent]) {
+          childMap[item.parent].push(item)
+        } else {
+          childMap[item.parent] = [item]
+        }
+      }
+    }
+    for (const i of parentList.keys()) {
+      const parentID = parentList[i].id
+      if (childMap[parentID]) {
+        parentList[i].children = childMap[parentID]
+      }
+    }
+    table.value.data = parentList
   })
 }
 
