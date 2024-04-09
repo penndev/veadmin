@@ -9,23 +9,21 @@
     </el-button>
     <el-table
       :data="table.data"
-      style="width: 100%"
       row-key="id"
       default-expand-all
     >
       <el-table-column
         prop="name"
         label="名称"
-        width="140"
       />
       <el-table-column
         prop="status"
         label="状态"
-        width="180"
       >
         <template #default="scope">
           <el-link
             :type="scope.row.status > 0 ? 'success' : 'danger'"
+            @click="handleDialogEditStatus(scope.row)"
           >
             {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '开启' : '关闭' }}
           </el-link>
@@ -34,23 +32,20 @@
       <el-table-column
         prop="order"
         label="排序"
-        width="180"
         sortable
       />
       <el-table-column
         prop="updatedAt"
         label="最近更新"
-        width="200"
       />
       <el-table-column
         prop="createdAt"
         label="创建日期"
-        width="200"
       />
       <el-table-column
-        fixed="right"
+        align="center"
         label="操作"
-        width="120"
+        min-width="120"
       >
         <template #default="scope">
           <el-button
@@ -207,6 +202,28 @@ const handleDialogEdit = (row) => {
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
   dialog.value.form = row
+}
+const handleDialogEditStatus = (row) => {
+  const action = () => {
+    updateCategory({
+      id: row.id,
+      status: !row.status
+    }).then((result) => {
+      row.status = !row.status
+      ElMessage.info(result)
+    })
+  }
+  if (row.status) {
+    ElMessageBox.confirm('请仔细确认是否下架 ' + row.name + ' ?', '警告', {
+      confirmButtonText: '下架',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      action()
+    })
+  } else {
+    action()
+  }
 }
 
 const handleSubmitForm = () => { // 提交数据
