@@ -59,6 +59,7 @@
         <template #default="scope">
           <el-link
             :type="scope.row.status > 0 ? 'success' : 'danger'"
+            @click="handleDialogEditStatus(scope.row)"
           >
             {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '开启' : '关闭' }}
           </el-link>
@@ -277,7 +278,28 @@ const handleSubmitForm = () => { // 提交数据
     }
   })
 }
-
+const handleDialogEditStatus = (row) => {
+  const action = () => {
+    updateTag({
+      id: row.id,
+      status: !row.status
+    }).then((result) => {
+      row.status = !row.status
+      ElMessage.info(result)
+    })
+  }
+  if (row.status) {
+    ElMessageBox.confirm('请仔细确认是否下架 ' + row.name + ' ?', '警告', {
+      confirmButtonText: '下架',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      action()
+    })
+  } else {
+    action()
+  }
+}
 const handleDialogDelete = (id) => {
   ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
     confirmButtonText: '删除',

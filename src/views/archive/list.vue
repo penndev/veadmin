@@ -120,6 +120,7 @@
         <template #default="scope">
           <el-link
             :type="scope.row.status > 0 ? 'success' : 'danger'"
+            @click="handleDialogEditStatus(scope.row)"
           >
             {{ scope.row.status > 0 ? scope.row.status > 1 ? scope.row.status : '上架' : '下架' }}
           </el-link>
@@ -275,23 +276,24 @@
         >
           {{ tag.ArchiveTag.name }}
         </el-tag>
-        <el-select
-          v-model="dialog.formTempSelectTag"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="搜索标签名称"
-          :remote-method="handleRemoteTagList"
-          size="small"
-          @change="handleRemoteTagSelect"
-        >
-          <el-option
-            v-for="item in dialog.vodTagList"
-            :key="item.id"
-            :label="item.name"
-            :value="item"
-          />
-        </el-select>
+        <el-col :span="8">
+          <el-select
+            v-model="dialog.formTempSelectTag"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="搜索标签名称"
+            :remote-method="handleRemoteTagList"
+            @change="handleRemoteTagSelect"
+          >
+            <el-option
+              v-for="item in dialog.vodTagList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
       </el-form-item>
       <br>
       <el-row :gutter="20">
@@ -440,7 +442,6 @@ const dialogRef = ref(null)
 const dialog = ref({
   visible: false,
   title: 'dialog',
-  doubanLoadingTitle: '点击获取',
   vodTypeList: [], // 分类的原始数据
   vodTypeDict: {}, // 分类的字典类型
   formTempSelectType: null, // 筛选选择的分类临时数据
@@ -495,12 +496,14 @@ const handleDialogAdd = () => {
   dialog.value.formAction = 'add'
   dialog.value.form = {}
 }
+
 const handleDialogEdit = (row) => {
   dialog.value.title = '修改资料-' + row.name
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
+
 const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
@@ -526,6 +529,29 @@ const handleSubmitForm = () => { // 提交数据
   })
 }
 
+const handleDialogEditStatus = (row) => {
+  const action = () => {
+    updateArchive({
+      id: row.id,
+      status: !row.status
+    }).then((result) => {
+      row.status = !row.status
+      ElMessage.info(result)
+    })
+  }
+  if (row.status) {
+    ElMessageBox.confirm('请仔细确认是否下架 ' + row.name + ' ?', '警告', {
+      confirmButtonText: '下架',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      action()
+    })
+  } else {
+    action()
+  }
+}
+
 const handleDialogDelete = (row) => {
   ElMessageBox.confirm('请仔细确认是否删除 ' + row.fileName + ' ?', '警告', {
     confirmButtonText: '删除',
@@ -547,8 +573,15 @@ const handleSelectType = () => {
     }
   })
 }
+
 handleSelectType()
 
 handleTableData()
 
 </script>
+
+<style>
+.el-table .el-table__cell {
+  position: static
+}
+</style>
