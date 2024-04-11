@@ -15,12 +15,14 @@
           style="max-width: 180px;"
         />
       </el-form-item>
-      <el-form-item label="上架状态">
+      <el-form-item
+        label="状态"
+        style="min-width: 180px;"
+      >
         <el-select
           v-model="table.query.status"
-          placeholder="上架状态"
           clearable
-          style="max-width: 150px;"
+          width="120px"
         >
           <el-option
             :key="0"
@@ -114,7 +116,7 @@
       </el-table-column>
 
       <el-table-column
-        label="上架状态"
+        label="状态"
         align="center"
       >
         <template #default="scope">
@@ -295,6 +297,15 @@
           </el-select>
         </el-col>
       </el-form-item>
+      <el-form-item
+        v-if="dialog.formAction == 'add'"
+        label="标签栏"
+        prop="status"
+      >
+        <el-text type="info">
+          存储后添加标签
+        </el-text>
+      </el-form-item>
       <br>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -302,7 +313,7 @@
             label="总集数"
             prop="total"
           >
-            <el-input v-model="dialog.form.total" />
+            <el-input-number v-model="dialog.form.total" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -481,12 +492,18 @@ const handleRemoteTagSelect = (value) => {
 }
 
 const handleDeleteTagMap = (id, tags) => {
-  deleteArchiveTag({ id }).then((result) => {
-    ElMessage.warning(result)
-    const index = tags.findIndex(tag => tag.id === id)
-    if (index !== -1) {
-      tags.splice(index, 1)
-    }
+  const index = tags.findIndex(tag => tag.id === id)
+  ElMessageBox.confirm('请仔细确认是否删除 ' + tags[index].ArchiveTag.name + ' ?', '警告', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteArchiveTag({ id }).then((result) => {
+      ElMessage.warning(result)
+      if (index !== -1) {
+        tags.splice(index, 1)
+      }
+    })
   })
 }
 
@@ -582,6 +599,6 @@ handleTableData()
 
 <style>
 .el-table .el-table__cell {
-  position: static
+  position: static !important;
 }
 </style>
