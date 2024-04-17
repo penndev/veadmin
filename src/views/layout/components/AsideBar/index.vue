@@ -45,9 +45,3 @@ watch(route, () => {
   }
 })
 </script>
-
-<style scoped>
-.el-menu {
-  border: 0;
-}
-</style>

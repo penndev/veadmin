@@ -106,6 +106,7 @@
       >
         <template #default="scope">
           <el-image
+            preview-teleported
             :src="scope.row.Pic"
             :zoom-rate="1.2"
             :preview-src-list="[scope.row.Pic]"
@@ -596,9 +597,3 @@ handleSelectType()
 handleTableData()
 
 </script>
-
-<style>
-.el-table .el-table__cell {
-  position: static !important;
-}
-</style>

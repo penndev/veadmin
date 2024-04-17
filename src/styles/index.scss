@@ -1,11 +1,6 @@
 // element-plus
 @import 'element-plus/dist/index.css';
 
-// // 优化element-ui
-// .el-scrollbar__wrap {
-//     overflow: visible;
-// }
-
 // 夜间模式
 @import 'element-plus/theme-chalk/dark/css-vars.css';
 
@@ -62,7 +57,8 @@
         .el-menu {
             --el-menu-bg-color: var(--ea-aside-color);
             --el-menu-text-color: var(--ea-aside-text-color);
-            --el-menu-hover-bg-color: var(--ea-aside-active-color)
+            --el-menu-hover-bg-color: var(--ea-aside-active-color);
+            --el-menu-border-color: var(--ea-aside-color)
         }
     }
 
