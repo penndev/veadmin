@@ -81,7 +81,7 @@
             {{ table.querySelect.status[scope.row.status] }}
           </el-link>
           <el-progress
-            v-if="scope.row.status==0 && scope.row.progress"
+            v-if="scope.row.status==1 && scope.row.progress"
             type="circle"
             :percentage="scope.row.progress"
             :width="60"
@@ -186,8 +186,9 @@ const table = ref({
   querySelect: {
     status: {
       '-1': '转码失败',
-      0: '转码中',
-      1: '转码成功'
+      0: '排队中',
+      1: '转码中',
+      2: '转码完成'
     }
   }
 })
@@ -266,11 +267,15 @@ const copyPath = (path) => {
 
 // 处理状态点击框
 const handleStatus = (row) => {
-  if (row.status === 0) {
+  if (row.status === 1) {
     progressTask({ id: row.id }).then(resp => {
       row.progress = Math.floor(resp.progress)
+      // 任务完成后则调整状态
+      if (resp.finishedOn > 1) {
+        row.status = 2
+      }
     })
-  } else if (row.status === 1) {
+  } else if (row.status === 2) {
     handlePlay(row.OutFile)
   }
 }
