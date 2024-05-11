@@ -8,17 +8,27 @@ import { wafcdn } from './modules/wafcdn'
 import { formatRouteItem, formatRouteList } from '@/utils'
 
 /**
- * 动态路由 router.addRoute() 不能通过 router.options.routes 获取到。https://github.com/vuejs/vue-router/issues/1859
- * 所以最有效率的解决办法是通过hide + beforeEach 来控制权限问题
- * - 参数介绍
- * path : 进行跳转
- * name : 进行权限验证
- * meta.white 进行白名单放行。
- * meta.hidden 控制是否展示
- * meta.title 为空则菜单也会隐藏。
- *  - 备注说明
- * 如果菜单children只有一个则子meta 菜单处理详见src\views\layout\components\AsideBar\MenuItem.vue
- * 通过配置src\stores\module\auth.js的routes是否包含name字符串来鉴权是否放行
+ * ==================================================================
+ * 动态路由说明
+ * > router.addRoute() 不能通过 router.options.routes 获取到。
+ * > https://github.com/vuejs/vue-router/issues/1859
+ * > 所以最有效率的解决办法是通过hide + beforeEach 来控制权限问题
+ * 
+ * > 菜单展示 src\views\layout\components\AsideBar\MenuItem.vue
+ * > 远程鉴权 src\stores\module\auth.js 的 routes 是否包含name 字符串来鉴权是否放行
+ * > 权限控制 src\router\auth.js
+ * 
+ * ==================================================================
+ * 对象参数介绍
+ * > 菜单展示 src\views\layout\components\AsideBar\MenuItem.vue 
+ * - path : 进行跳转
+ * - name : 进行权限验证
+ * - children: [] 子元素，用于菜单组，可以不存在。
+ * - meta
+ *  - white 进行白名单放行。
+ *  - hidden 控制是否展示
+ *  - title 为空则菜单也会隐藏。
+ *  - path 如果存在则表示外部地址 https://element-plus.org
  */
 
 const routes = [
