@@ -13,14 +13,14 @@ import { formatRouteItem, formatRouteList } from '@/utils'
  * > router.addRoute() 不能通过 router.options.routes 获取到。
  * > https://github.com/vuejs/vue-router/issues/1859
  * > 所以最有效率的解决办法是通过hide + beforeEach 来控制权限问题
- * 
+ *
  * > 菜单展示 src\views\layout\components\AsideBar\MenuItem.vue
  * > 远程鉴权 src\stores\module\auth.js 的 routes 是否包含name 字符串来鉴权是否放行
  * > 权限控制 src\router\auth.js
- * 
+ *
  * ==================================================================
  * 对象参数介绍
- * > 菜单展示 src\views\layout\components\AsideBar\MenuItem.vue 
+ * > 菜单展示 src\views\layout\components\AsideBar\MenuItem.vue
  * - path : 进行跳转
  * - name : 进行权限验证
  * - children: [] 子元素，用于菜单组，可以不存在。
