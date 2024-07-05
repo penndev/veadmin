@@ -48,7 +48,10 @@
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="captcha">
+          <el-form-item
+            ref="captchaForm"
+            prop="captcha"
+          >
             <div class="vPicBox">
               <el-input
                 v-model="formData.captcha"
@@ -98,13 +101,21 @@ const handleChangeLock = () => {
 
 // 图片验证码
 const captcha = ref('')
+
+let captchaExpired = Date.now()
 const handleChangeCaptcha = () => {
   getCaptcha().then((result) => {
     captcha.value = result.captchaURL
     formData.captchaID = result.captchaID
     formData.captcha = null
+    if (typeof (formData.captchaExpires) === 'number') {
+      captchaExpired = Date.now() + formData.captchaExpires * 1000
+    } else {
+      captchaExpired = Date.now() + 120 * 1000
+    }
   })
 }
+
 handleChangeCaptcha()
 
 // 用户登录验证相关
@@ -133,11 +144,18 @@ const rules = reactive({
 
 // 处理用户登录相关逻辑
 const loginForm = ref(null)
+const captchaForm = ref(null)
 const permission = authStore()
 const router = useRouter()
 const route = useRoute()
 
 const formSubmit = () => {
+  // 验证码过期触发失败
+  if (Date.now() > captchaExpired) {
+    captchaForm.value.validateState = 'error'
+    captchaForm.value.validateMessage = '验证码过期 请点击验证码刷新重试'
+    return
+  }
   loginForm.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       postLogin(formData).then((result) => {
@@ -151,8 +169,6 @@ const formSubmit = () => {
       }).catch(() => {
         handleChangeCaptcha()
       })
-    } else {
-      ElMessage.error('请输入正确的数据！')
     }
   })
 }
