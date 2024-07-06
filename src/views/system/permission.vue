@@ -75,11 +75,12 @@
       >
         <template #default="scope">
           <el-tag
-            v-for="(val,key) of scope.row.menu.split(',')"
+            v-for="(val,key) of scope.row.menu"
             :key="key"
             style="margin:1px"
           >
-            {{ val }}
+            <!-- 查询真正的名称并覆盖上？ -->
+            {{ routeMatch(val) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -119,7 +120,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDialogDelete(scope.row.id)"
+            @click="handleDialogDelete(scope.row)"
           >
             删除
           </el-button>
@@ -173,11 +174,38 @@
         />
       </el-form-item>
       <el-form-item
-        label="菜单"
+        label="前端菜单"
         prop="menu"
       >
-        <el-input v-model="dialog.form.menu" />
-        <small>输入前端开发中的路由名称用英文逗号分割！例 `Dashboard,SystemAdministrator | *` </small>
+        <el-select
+          v-model="dialog.form.menu"
+          filterable
+          placeholder="开放菜单"
+          multiple
+        >
+          <template v-for="item,index in router.options.routes">
+            <template v-if="item.meta">
+              <el-option
+                v-if="item.meta.title && (item.meta.path || item.path) && item.meta.hidden != true"
+                :key="index"
+                :label="item.meta.title + ' | ' + (item.meta.path ?? item.path)"
+                :value="item.meta.path ?? item.path"
+              />
+            </template>
+            <!-- 组 -->
+            <template v-if="item.children">
+              <template v-for="citem,cindex in item.children">
+                <el-option
+                  v-if="citem.meta && citem.meta.title && citem.path && citem.meta.hidden != true"
+                  :key="index + '-' + cindex"
+                  :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title + ' | ' + citem.path"
+                  :value="citem.path"
+                />
+              </template>
+            </template>
+          </template>
+        </el-select>
+        <br>
       </el-form-item>
       <br>
       <el-form-item
@@ -231,6 +259,18 @@ import { ref } from 'vue'
 // import api
 import { getSystemRole, postSystemRole, putSystemRole, deleteSystemRole } from '@/apis/system/permission'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const routers = router.getRoutes()
+
+const routeMatch = (path) => {
+  for (const item of routers) {
+    if (item.path === path) {
+      return item.meta.title ?? path
+    }
+  }
+}
 
 const table = ref({
   total: 0,
@@ -309,13 +349,13 @@ const handleDialogEdit = (row) => {
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+const handleDialogDelete = (row) => {
+  ElMessageBox.confirm(`请仔细确认是否删除 (${row.name}) ?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteSystemRole({ id }).then((result) => {
+    deleteSystemRole({ id: row.id }).then((result) => {
       ElMessage.warning(result)
       handleTableData()
     })

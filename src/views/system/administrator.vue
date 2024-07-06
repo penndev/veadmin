@@ -98,7 +98,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDialogDelete(scope.row.id)"
+            @click="handleDialogDelete(scope.row)"
           >
             删除
           </el-button>
@@ -152,27 +152,20 @@
         label="权限"
         prop="adminRoleId"
       >
-        <el-link
-          v-if="dialog.form.AdminRole"
-          type="primary"
-        >
-          {{ dialog.form.AdminRole.name }} [{{ dialog.form.adminRoleId }}] |
-        </el-link> &nbsp;
         <el-select
-          v-model="dialog.roleSelect.value"
+          v-model="dialog.form.adminRoleId"
           filterable
           remote
           remote-show-suffix
           placeholder="输入权限名称来搜索权限列表"
           :remote-method="handleRoleSelectSearch"
           :loading="dialog.roleSelect.loading"
-          @change="handleRoleSelectChange"
         >
           <el-option
             v-for="item in dialog.roleSelect.options"
             :key="item.id"
             :label="item.name"
-            :value="item"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
@@ -287,13 +280,17 @@ const handleDialogEdit = (row) => {
   dialog.value.formAction = 'edit'
   dialog.value.form = row
 }
-const handleDialogDelete = (id) => {
-  ElMessageBox.confirm('请仔细确认是否删除?', '警告', {
+const handleDialogDelete = (row) => {
+  if (row.id <= 1) {
+    ElMessage.warning('超级管理员不允许被编辑')
+    return
+  }
+  ElMessageBox.confirm(`请仔细确认是否删除管理员《${row.email}》 ?`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteSystemAdmin({ id }).then((result) => {
+    deleteSystemAdmin({ id: row.id }).then((result) => {
       ElMessage.warning(result)
       handleTableData()
     })
@@ -327,10 +324,6 @@ const handleSubmitForm = () => {
 const handleRoleSelectSearch = async (query) => {
   const roleList = await getSystemRole({ page: 1, limit: 20, name: query })
   dialog.value.roleSelect.options = roleList.data
-}
-const handleRoleSelectChange = async (val) => {
-  dialog.value.form.adminRoleId = val.id
-  dialog.value.form.AdminRole = val
 }
 
 handleTableData()
