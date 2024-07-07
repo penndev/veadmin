@@ -67,15 +67,12 @@
       </div>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item> 当前角色: Admin </el-dropdown-item>
-          <el-dropdown-item icon="avatar">
-            个人信息
-          </el-dropdown-item>
+          <ChangePasswd />
           <el-dropdown-item
             icon="reading-lamp"
             @click="handleLoginOut"
           >
-            登出
+            退出登录
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -88,6 +85,7 @@ import { authStore, layoutStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 import MenuSelect from './MenuSelect.vue'
+import ChangePasswd from './ChangePasswd.vue'
 
 const layout = layoutStore()
 const router = useRouter()
