@@ -54,33 +54,11 @@
     <div
       class="ea-icon ea-icon-search"
     >
-      <el-select
+      <MenuSelect
         filterable
         placeholder="搜索菜单"
         @change="selectMenu"
-      >
-        <template v-for="item,index in routes">
-          <template v-if="item.meta">
-            <el-option
-              v-if="item.meta.title && item.meta.hidden != true"
-              :key="index"
-              :label="item.meta.title"
-              :value="item.meta.path ?? item.path"
-            />
-          </template>
-          <!-- 组 -->
-          <template v-if="item.children">
-            <template v-for="citem,cindex in item.children">
-              <el-option
-                v-if="citem.meta && citem.meta.title && citem.meta.hidden != true"
-                :key="index + '-' + cindex"
-                :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title"
-                :value="citem.path"
-              />
-            </template>
-          </template>
-        </template>
-      </el-select>
+      />
     </div>
     <el-dropdown class="ea-dropdown">
       <div style="cursor: pointer;outline: none;">
@@ -109,6 +87,7 @@
 import { authStore, layoutStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
+import MenuSelect from './MenuSelect.vue'
 
 const layout = layoutStore()
 const router = useRouter()
@@ -151,7 +130,6 @@ watch(darkMode, () => {
 })
 
 // 菜单列表
-const routes = router.options.routes
 const selectMenu = (value) => {
   if (value.startsWith('http')) {
     window.open(value, '_bank')

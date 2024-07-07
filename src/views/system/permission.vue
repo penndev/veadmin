@@ -177,34 +177,12 @@
         label="前端菜单"
         prop="menu"
       >
-        <el-select
+        <MenuSelect
           v-model="dialog.form.menu"
           filterable
           placeholder="开放菜单"
           multiple
-        >
-          <template v-for="item,index in router.options.routes">
-            <template v-if="item.meta">
-              <el-option
-                v-if="item.meta.title && (item.meta.path || item.path) && item.meta.hidden != true"
-                :key="index"
-                :label="item.meta.title + ' | ' + (item.meta.path ?? item.path)"
-                :value="item.meta.path ?? item.path"
-              />
-            </template>
-            <!-- 组 -->
-            <template v-if="item.children">
-              <template v-for="citem,cindex in item.children">
-                <el-option
-                  v-if="citem.meta && citem.meta.title && citem.path && citem.meta.hidden != true"
-                  :key="index + '-' + cindex"
-                  :label="(item.meta ? (item.meta.title + '-') : '') + citem.meta.title + ' | ' + citem.path"
-                  :value="citem.path"
-                />
-              </template>
-            </template>
-          </template>
-        </el-select>
+        />
         <br>
       </el-form-item>
       <br>
@@ -212,32 +190,20 @@
         label="路由组"
         prop="route"
       >
-        <div
-          v-for="(val,key) of dialog.form.route"
-          :key="key"
-          style="margin-bottom: 8px;width: 100%;"
+        <el-select
+          v-model="dialog.form.route"
+          filterable
+          multiple
+          placeholder="后端访问路由组"
+          value-key="id"
         >
-          <el-link type="info">
-            路由-> {{ val.path }}
-          </el-link>
-              &nbsp;
-          <el-button
-            size="small"
-            type="info"
-            icon="Delete"
-            circle
-            @click="handleRouteDel(key)"
+          <el-option
+            v-for="(item,index) in dialog.routeValue"
+            :key="index"
+            :label="`${item.path} - [${item.method}]`"
+            :value="item"
           />
-        </div>
-        <el-input v-model="dialog.tempValue">
-          <template #append>
-            <el-button
-              icon="Plus"
-              @click="handleRouteAdd"
-            />
-          </template>
-        </el-input>
-        <small>输入后端开发预留的全路径部分接口地址！例 `/admin/add | *` </small>
+        </el-select>
       </el-form-item>
     </el-form>
 
@@ -257,12 +223,12 @@
 import { ref } from 'vue'
 
 // import api
-import { getSystemRole, postSystemRole, putSystemRole, deleteSystemRole } from '@/apis/system/permission'
+import { getSystemRole, postSystemRole, putSystemRole, deleteSystemRole, getSystemRoleRoute } from '@/apis/system/permission'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
+import MenuSelect from '@/views/layout/components/NavBar/MenuSelect.vue'
 
-const router = useRouter()
-const routers = router.getRoutes()
+const routers = useRouter().getRoutes()
 
 const routeMatch = (path) => {
   for (const item of routers) {
@@ -324,19 +290,24 @@ const dialog = ref({
     ]
   },
   formAction: 'add', // add|edit
-  tempValue: null
+  routeValue: []
 })
 
-const handleRouteDel = (value) => { // 清理路由json.
-  dialog.value.form.route.splice(value, 1)
+const handleRequireRoute = () => {
+  getSystemRoleRoute().then((result) => {
+    const items = result.data
+    // element select  对象bug，必须有唯一列
+    for (const item of items) {
+      item.id = item.path + '.' + item.method
+    }
+    dialog.value.routeValue = items
+  }).catch(_ => {
+    ElMessage.error('获取后端路由列表失败！')
+  })
 }
-const handleRouteAdd = () => { // 增加路由到json.
-  if (!dialog.value.form.route) {
-    dialog.value.form.route = []
-  }
-  dialog.value.form.route.push({ path: dialog.value.tempValue })
-  dialog.value.tempValue = ''
-}
+// 首先获取权限列表
+handleRequireRoute()
+
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'
   dialog.value.visible = true
@@ -364,6 +335,11 @@ const handleDialogDelete = (row) => {
 const handleSubmitForm = () => {
   // 提交数据
   dialogRef.value.validate((validate) => {
+    // handleRequireRoute 中增加的id剔除掉
+    for (const item of dialog.value.form.route) {
+      delete item.id
+    }
+
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
         postSystemRole(dialog.value.form).then((result) => {

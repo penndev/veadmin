@@ -31,3 +31,12 @@ export const deleteSystemRole = (params) => {
     params
   })
 }
+
+// 获取后台的路由列表
+export const getSystemRoleRoute = (params) => {
+  return service({
+    url: '/system/role/route',
+    method: 'get',
+    params
+  })
+}
