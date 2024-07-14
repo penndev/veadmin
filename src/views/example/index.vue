@@ -122,11 +122,9 @@
 
     <br>
 
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next"
+    <pagination
+      v-model:page-size="table.query.limit"
       :total="table.total"
-      :page-size="table.query.limit"
       @current-change="table.handleChangePage"
       @size-change="table.handleChangeLimit"
     />
@@ -173,6 +171,7 @@ import { ref } from 'vue'
 // import api
 import { getExample, postExample, putExample, deleteExample } from '@/apis/example'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import pagination from '@/components/pagination.vue'
 
 const tableRef = ref()
 

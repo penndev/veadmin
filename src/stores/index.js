@@ -6,5 +6,6 @@ stores.use(piniaPluginPersistedstate)
 
 export { default as layoutStore } from './module/layout'
 export { default as authStore } from './module/auth'
+export { default as paginationStore } from './module/pagination'
 
 export default stores
