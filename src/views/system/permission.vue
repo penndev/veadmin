@@ -92,10 +92,9 @@
           <el-tag
             v-for="(val,key) of scope.row.route"
             :key="key"
-            type="success"
             style="margin:1px"
           >
-            {{ val.path }}
+            {{ val.path }} - {{ val.method }}
           </el-tag>
         </template>
       </el-table-column>
@@ -228,10 +227,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import MenuSelect from '@/views/layout/components/NavBar/MenuSelect.vue'
 
-const routers = useRouter().getRoutes()
+const router = useRouter()
 
 const routeMatch = (path) => {
-  for (const item of routers) {
+  for (const item of router.getRoutes()) {
     if (item.path === path) {
       return item.meta.title ?? path
     }
@@ -315,9 +314,12 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
 }
 const handleDialogEdit = (row) => {
-  dialog.value.title = '创建数据'
+  dialog.value.title = '编辑数据'
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
+  for (const item of row.route) {
+    item.id = item.path + '.' + item.method
+  }
   dialog.value.form = row
 }
 const handleDialogDelete = (row) => {
