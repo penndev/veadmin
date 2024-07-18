@@ -11,16 +11,18 @@
 
 ## 快速上手
 
-> 使用`vue3`与`element-plus`作为基础框架。`vite`做打包工具，`pinia`做数据持久化，`axios`做api交互，功能齐全，容易上手。
+> 使用`vue3`与`element-plus`作为基础框架，`vite`做打包工具，`pinia`做数据持久化，`axios`做api交互。
 
-- **页面路由：** 在文件`src/router/index.js`中添加相应的菜单，和页面内容。参考example添加新的。 移除老的不需要的模块，删除menu中的菜单和views中的vue文件即可。
+- **页面路由：** 在[`src/router/index.js`](https://github.com/penndev/veadmin/blob/main/src/router/index.js#L56)中添加相应的菜单和页面内容，参考example添加新的。 移除老的不需要的模块，删除menu中的菜单和views中的vue文件即可。
 
-- **用户认证：** 用户登录`src/views/login/index.vue`中处理用户登录接口。当`permission`对象被赋值，则用户登录完成。在`src/utils/request.js`行中进行jwt api后端认证。
+- **用户登录** 在[`src/views/login/index.vue`](https://github.com/penndev/veadmin/blob/main/src/views/login/index.vue#L161)中处理用户登录接口。
 
-- **菜单鉴权：** 在用户登录接口 `permission.routes` 对象中设置所有放行的菜单（直接='*'则全放行），菜单权限根据`路由`中的`path`鉴权。 具体实现验证代码位于`src/router/auth.js`中进行菜单校验。
+- **菜单鉴权：** 在[`src/router/auth.js`](https://github.com/penndev/veadmin/blob/main/src/router/auth.js#L30) 验证菜单权限（直接='*'则全放行），菜单全部静态装载，根据权限判断是否展示。
+
+- **后端权限** [`src/utils/request.js`](https://github.com/penndev/veadmin/blob/main/src/utils/request.js#L20) 根据token进行后端权限验证。
 
 
-如果有疑问或者建议欢迎随时与我[交流](https://github.com/penndev/veadmin/issues/new)（24小时内回复）。
+如有疑问或建议欢迎随时与我互相[交流](mailto:pennilessfor@gmail.com?subject=veadmin)学习。
 
 ## 接口支持
 
