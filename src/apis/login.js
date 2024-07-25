@@ -11,7 +11,7 @@ export const postLogin = (data) => {
 
 export const changePasswd = (data) => {
   return service({
-    url: '/changepasswd',
+    url: '/change-passwd',
     method: 'put',
     data
   })
