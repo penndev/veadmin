@@ -1,8 +1,8 @@
 import service from '@/utils/request'
 
-export const getSystemAccesslog = (params) => {
+export const getSystemAccessLog = (params) => {
   return service({
-    url: '/system/admin/accesslog',
+    url: '/system/admin/access-log',
     method: 'get',
     params
   })

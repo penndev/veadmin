@@ -27,6 +27,7 @@
         <el-input
           v-model="dialog.form.passwd"
           type="password"
+          show-password
         />
       </el-form-item>
       <el-form-item
@@ -36,6 +37,7 @@
         <el-input
           v-model="dialog.form.newPasswd"
           type="password"
+          show-password
         />
       </el-form-item>
       <el-form-item
@@ -45,6 +47,7 @@
         <el-input
           v-model="dialog.form.conformPasswd"
           type="password"
+          show-password
         />
       </el-form-item>
     </el-form>

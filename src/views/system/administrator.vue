@@ -140,7 +140,11 @@
         label="密码"
         prop="passwd"
       >
-        <el-input v-model="dialog.form.passwd" />
+        <el-input
+          v-model="dialog.form.passwd"
+          type="password"
+          show-password
+        />
       </el-form-item>
       <el-form-item
         label="昵称"

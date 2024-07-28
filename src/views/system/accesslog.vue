@@ -98,7 +98,7 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { getSystemAccesslog } from '@/apis/system/accesslog'
+import { getSystemAccessLog } from '@/apis/system/access'
 
 const table = ref({
   total: 0,
@@ -133,7 +133,7 @@ const handleSortChange = ({ column, prop, order }) => {
   handleTableData()
 }
 const handleTableData = () => {
-  getSystemAccesslog(table.value.query).then((result) => {
+  getSystemAccessLog(table.value.query).then((result) => {
     table.value.data = result.data
     table.value.total = result.total
   })
