@@ -1,54 +1,54 @@
 <template>
   <!-- 顶部筛选框 -->
-  <div>
-    <el-form :inline="true">
-      <el-form-item label="名称">
-        <el-input
-          v-model="table.query.name"
-          placeholder="名称"
-          clearable
-        />
-      </el-form-item>
+  <el-form :inline="true">
+    <el-form-item label="名称">
+      <el-input
+        v-model="table.query.name"
+        placeholder="名称"
+        clearable
+      />
+    </el-form-item>
 
-      <el-form-item>
-        <el-button
-          type="primary"
-          icon="search"
-          @click="table.handleTableData"
-        >
-          查询
-        </el-button>
-        <el-button
-          type="info"
-          icon="Refresh"
-          @click="table.handleQueryRefresh"
-        >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="search"
+        @click="table.handleTableData"
+      >
+        查询
+      </el-button>
+      <el-button
+        type="info"
+        icon="Refresh"
+        @click="table.handleQueryRefresh"
+      >
+        重置
+      </el-button>
+    </el-form-item>
+  </el-form>
 
   <!-- 数据展示框 -->
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
-    <el-button
-      :icon="table.selectStat? 'SemiSelect':'Select'"
-      @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
-    />
-    <el-button
-      v-if="table.selectStat"
-      @click="table.handleInvertSelection"
-    >
-      反选
-    </el-button>
-    <el-button
-      type="primary"
-      icon="Plus"
-      @click="dialog.handleDialogAdd"
-    >
-      新增
-    </el-button>
+    <el-row>
+      <el-button
+        :icon="table.selectStat? 'SemiSelect':'Select'"
+        @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
+      />
+      <el-button
+        v-if="table.selectStat"
+        @click="table.handleInvertSelection"
+      >
+        反选
+      </el-button>
+      <el-button
+        type="primary"
+        icon="Plus"
+        @click="dialog.handleDialogAdd"
+      >
+        新增
+      </el-button>
+    </el-row>
 
     <!-- 数据table -->
     <el-table
@@ -71,13 +71,11 @@
       <el-table-column
         label="名称"
         prop="nickname"
-        width="160"
         align="center"
       />
 
       <el-table-column
         label="邮箱"
-        width="240"
       >
         <template #default="scope">
           <a target="_blank">{{ scope.row.email }}</a>
@@ -87,19 +85,16 @@
       <el-table-column
         prop="updatedAt"
         label="最近更新"
-        width="200"
       />
 
       <el-table-column
         prop="createdAt"
         label="创建日期"
-        width="200"
       />
 
       <el-table-column
         fixed="right"
         label="操作"
-        width="105"
       >
         <template #default="scope">
           <el-button
@@ -122,7 +117,7 @@
 
     <br>
 
-    <pagination
+    <Pagination
       v-model:page-size="table.query.limit"
       :total="table.total"
       @current-change="table.handleChangePage"
@@ -171,7 +166,7 @@ import { ref } from 'vue'
 // import api
 import { getExample, postExample, putExample, deleteExample } from '@/apis/example'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import pagination from '@/components/pagination.vue'
+import Pagination from '@/components/Pagination.vue'
 
 const tableRef = ref()
 

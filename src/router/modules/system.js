@@ -7,7 +7,7 @@ export const dashboard = {
   children: [
     {
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index.vue'),
+      component: () => import('@/views/dashboard.vue'),
       name: 'Dashboard',
       meta: { title: '仪表盘', icon: 'Odometer' }
     }

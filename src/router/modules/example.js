@@ -7,7 +7,7 @@ export const example = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/example/index.vue'),
+      component: () => import('@/views/example.vue'),
       name: 'exampleIndex',
       meta: { title: '示例列表', icon: 'Tickets' }
     }

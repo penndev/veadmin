@@ -6,116 +6,116 @@
 
 
 :root {
-    --ea-main-color: #ffffff;
-
-    --ea-aside-color: #191a23;
-    --ea-aside-text-color: #ffffff;
-    --ea-aside-active-color: #000000;
+  --ea-main-color: #ffffff;
+  --ea-aside-color: #191a23;
+  --ea-aside-text-color: #ffffff;
+  --ea-aside-active-color: #000000;
 }
 
 .dark {
-    --ea-main-color: #141414;
-
-    --ea-aside-color: #141414;
+  --ea-main-color: #141414;
+  --ea-aside-color: #141414;
 }
-
 
 .ea-layout {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 
-    // 侧边栏
-    .ea-aside {
-        width: 200px;
-        text-align: center;
-        background-color: var(--ea-aside-color);
-        height: 100vh;
+  // 侧边栏
+  .ea-aside {
+    width: 200px;
+    text-align: center;
+    background-color: var(--ea-aside-color);
+    height: 100vh;
 
-        .logo {
-            height: 60px;
-            align-items: center;
-            justify-content: center;
-            display: flex;
-            color: var(--ea-aside-text-color);
+    .logo {
+      height: 60px;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      color: var(--ea-aside-text-color);
 
-            .logo-img {
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                background-color: var(--ea-aside-text-color);
-            }
+      .logo-img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--ea-aside-text-color);
+      }
 
-            .logo-title {
-                width: auto;
-                display: inline-block;
-                font-weight: 600;
-                font-size: 20px;
-                padding-left: 10px;
-            }
-        }
-
-        .el-menu {
-            --el-menu-bg-color: var(--ea-aside-color);
-            --el-menu-text-color: var(--ea-aside-text-color);
-            --el-menu-hover-bg-color: var(--ea-aside-active-color);
-            --el-menu-border-color: var(--ea-aside-color)
-        }
+      .logo-title {
+        width: auto;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 20px;
+        padding-left: 10px;
+      }
     }
 
-    .ea-aside-collapse {
-        width: auto !important;
+    .el-menu {
+      --el-menu-bg-color: var(--ea-aside-color);
+      --el-menu-text-color: var(--ea-aside-text-color);
+      --el-menu-hover-bg-color: var(--ea-aside-active-color);
+      --el-menu-border-color: var(--ea-aside-color)
     }
+  }
 
-    .ea-select {
-        height: 100vh;
-        .ea-main {
-            background-color: var(--el-bg-color-page);
-            .ea-main-flow {
-                // 2px border 
-                height: calc(100vh - 102px); 
-                overflow: auto;
-            }
-            .ea-table {
-                background-color: var(--ea-main-color);
-            }
-        }
+  .ea-aside-collapse {
+    width: auto !important;
+  }
+
+  .ea-select {
+    height: 100vh;
+
+    .ea-main {
+      background-color: var(--el-bg-color-page);
+
+      .ea-main-flow {
+        height: calc(100vh - 102px);
+        overflow: auto;
+      }
+
+      .ea-table {
+        background-color: var(--ea-main-color);
+      }
     }
+  }
 
 }
 
-
+// 对小屏幕做优化
 @media screen and (max-width: 768px) {
-    .el-dialog {
-        width: 90%;
-    }
 
-    .el-main {
-        --el-main-padding: 6px;
-    }
+  .el-main {
+    --el-main-padding: 10px;
+  } 
 
-    .el-table .cell {
-        padding: 0 3px;
-    }
+  .el-dialog {
+    width: 90%;
+  }
 
-    .ea-aside-collapse {
-        display: none;
-    }
+  .el-table .cell {
+    padding: 0 3px;
+  }
 
-    .ea-aside-mask {
-        background: #000;
-        width: 100%;
-        top: 0;
-        opacity: 0.3;
-        height: 100%;
-        position: absolute;
-        z-index: 9999;
-    }
+  .ea-aside-collapse {
+    display: none;
+  }
 
-    .ea-aside {
-        z-index: 10000;
-        position: absolute;
-        height: 100%;
-        top: 0;
-    }
+  .ea-aside-mask {
+    background: #000;
+    width: 100%;
+    top: 0;
+    opacity: 0.3;
+    height: 100%;
+    position: absolute;
+    z-index: 9999;
+  }
+
+  .ea-aside {
+    z-index: 10000;
+    position: absolute;
+    height: 100%;
+    top: 0;
+  }
 
 }

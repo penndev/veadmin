@@ -41,7 +41,7 @@ const routes = [
   {
     name: 'login',
     path: '/login',
-    component: () => import('@/views/login/index.vue'),
+    component: () => import('@/views/login.vue'),
     meta: { white: true, hidden: true }
   }
 ]
@@ -57,7 +57,9 @@ if (import.meta.env.MODE === 'wafcdn') {
 }
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  // history: createMemoryHistory() //- http://localhost:5173/ 永远不变
+  // history: createWebHistory(), //- http://localhost:5173/dashboard 模拟真实路由
+  history: createWebHashHistory(), // - http://localhost:5173/#/dashboard hash模拟路由
   routes
 })
 
