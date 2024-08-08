@@ -314,7 +314,7 @@
 
 <script setup>
 import upload from './components/upload.vue'
-import play from '@/components/video.vue'
+import play from '@/components/Video.vue'
 import { ref } from 'vue'
 // import api
 import { listFile, updateFile, deleteFile, addTask, listTranscode } from '@/apis/video'

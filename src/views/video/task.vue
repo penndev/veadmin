@@ -166,7 +166,7 @@
 </template>
 
 <script setup>
-import play from '@/components/video.vue'
+import play from '@/components/Video.vue'
 import { ref } from 'vue'
 // import api
 import { listTask, deleteTask, progressTask } from '@/apis/video'

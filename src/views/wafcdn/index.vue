@@ -417,7 +417,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { authStore } from '@/stores'
 import { byteBPSFormat, dateFormat, fileSizeFormat } from '@/utils'
 
-import * as echarts from 'echarts'
+import { init } from 'echarts'
 
 const wsUrl = new URL(import.meta.env.VE_API_URL, window.location.href).origin.replace('http', 'ws').replace('https', 'wss')
 const wsssh = `${wsUrl}/ssh?token=${authStore().token}`
@@ -751,18 +751,18 @@ const chart = ref({
       chart.value.memoryEchart.setOption(memoryEchartOption)
     })
   },
-  handleNew: (row) => {
+  handleNew: (_) => {
     chart.value.visible = true
   },
   handleOpen: () => {
     if (chart.value.netEchart == null) {
-      chart.value.netEchart = echarts.init(netChart.value)
+      chart.value.netEchart = init(netChart.value)
     }
     if (chart.value.cpuEchart == null) {
-      chart.value.cpuEchart = echarts.init(cpuChart.value)
+      chart.value.cpuEchart = init(cpuChart.value)
     }
     if (chart.value.memoryEchart == null) {
-      chart.value.memoryEchart = echarts.init(memoryChart.value)
+      chart.value.memoryEchart = init(memoryChart.value)
     }
     chart.value.date[0] = new Date(new Date().getTime() - 86400000)
     chart.value.date[1] = new Date()
