@@ -38,11 +38,14 @@ const handleUpload = async (options) => {
     md5: fileMd5,
     size: options.file.size
   })
+  if (typeof upload.partCount !== 'number' || typeof upload.partSize !== 'number') {
+    throw new Error('服务器返回错误数据')
+  }
   //   处理文件上传
-  const countPart = Math.floor(options.file.size / upload.urate)
-  for (let currentPart = upload.ucount; currentPart <= countPart; currentPart += 1) {
-    const start = currentPart * upload.urate
-    const end = start + upload.urate
+  const countPart = Math.floor(options.file.size / upload.partSize)
+  for (let currentPart = upload.partCount; currentPart <= countPart; currentPart += 1) {
+    const start = currentPart * upload.partSize
+    const end = start + upload.partSize
     const uploadData = options.file.slice(start, end)
 
     const formData = new FormData()
@@ -58,10 +61,10 @@ const handleUploadCatch = async (options) => {
   try {
     await handleUpload(options)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     ElNotification({
       title: options.file.name,
-      message: error.response.data,
+      message: error.response?.data ?? error.message,
       type: 'error',
       duration: 0
     })
