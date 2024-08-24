@@ -57,9 +57,9 @@ if (import.meta.env.MODE === 'wafcdn') {
 }
 
 const router = createRouter({
-  // history: createMemoryHistory() //- http://localhost:5173/ 永远不变
-  // history: createWebHistory(), //- http://localhost:5173/dashboard 模拟真实路由
-  history: createWebHashHistory(), // - http://localhost:5173/#/dashboard hash模拟路由
+  // history: createMemoryHistory() // 内存模式 http://localhost:5173/ 内存路由,所有的变化都不在路由上展示
+  // history: createWebHistory(), // h5模式  - http://localhost:5173/dashboard 模拟真实路由,需要服务器重定向到html
+  history: createWebHashHistory(), // hash模式 - http://localhost:5173/#/dashboard 通过锚点实现路由
   routes
 })
 
