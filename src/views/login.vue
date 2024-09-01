@@ -238,7 +238,7 @@ const formSubmit = () => {
       .vPic {
         width: 33%;
         height: 38px;
-        background: #ccc;
+        background: #cccccc88;
 
         img {
           width: 100%;

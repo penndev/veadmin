@@ -21,14 +21,14 @@ const getRole = (path) => {
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta && to.meta.white === true) { // 放行白名单
-    document.title = import.meta.env.VE_NAME ?? '后台管理系统'
+    document.title = import.meta.env.VE_NAME
     next()
     return
   }
   // 用户登陆过
   if (getToken()) {
     if (getRole(to.path)) { // 验证权限
-      document.title = to.meta.title ?? '后台管理系统'
+      document.title = `${import.meta.env.VE_NAME}-${to.meta.title}`
       next()
     } else { // 提示权限不足
       try {
