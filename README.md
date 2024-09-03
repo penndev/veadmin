@@ -1,13 +1,17 @@
 <div align="center">
-    <h1>VEAdmin 微后台</h1>
+    <img src="https://raw.githubusercontent.com/penndev/veadmin/main/public/logo.svg" height="80px">
+    <h1>⚡️VEAdmin 微后台</h1>
     <img src="https://img.shields.io/github/stars/penndev/veadmin" />
     <img src="https://img.shields.io/github/languages/code-size/penndev/veadmin" />
     <img src="https://img.shields.io/github/license/penndev/veadmin" />
 </div>
 
-## 🎉 预览
+> 通用响应式后台管理模板，免费商用。
 
-[⚡️ VEAdmin 微后台 GitHub Pages 预览地址 ](https://penndev.github.io/veadmin) 免费商用，支持 PC、平板、手机。 (🔑mock api未验证账号密码例:admin 123456)
+## 🎉 预览
+GitHub Pages 预览 [https://penndev.github.io/veadmin](https://penndev.github.io/veadmin) <br>
+\> 用户名: admin <br>
+\> 密码: 123456 
 
 ## 快速上手
 
