@@ -99,6 +99,9 @@ const handleChangeLock = () => {
   lock.value = lock.value === 'lock' ? 'unlock' : 'lock'
 }
 
+// 默认验证码过期时间
+const captchaDefaultExpiredTime = 120 * 1000
+
 // 图片验证码
 const captcha = ref('')
 
@@ -111,7 +114,7 @@ const handleChangeCaptcha = () => {
     if (typeof (formData.captchaExpires) === 'number') {
       captchaExpired = Date.now() + formData.captchaExpires * 1000
     } else {
-      captchaExpired = Date.now() + 120 * 1000
+      captchaExpired = Date.now() + captchaDefaultExpiredTime
     }
   })
 }
