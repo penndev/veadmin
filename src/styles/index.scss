@@ -4,7 +4,6 @@
 // 夜间模式
 @import 'element-plus/theme-chalk/dark/css-vars.css';
 
-
 :root {
   --ea-main-color: #ffffff;
   --ea-aside-color: #191a23;
@@ -82,7 +81,7 @@
 
 }
 
-// 对小屏幕做优化
+// 对小屏幕优化
 @media screen and (max-width: 768px) {
 
   .el-main {
