@@ -88,8 +88,12 @@
     --el-main-padding: 10px;
   } 
 
+  // 兼容弹窗小窗口
   .el-dialog {
     width: 90%;
+  }
+  .el-drawer {
+    width: 100% !important;
   }
 
   .el-table .cell {

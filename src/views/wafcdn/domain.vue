@@ -78,13 +78,12 @@
   </el-main>
 
   <!-- 处理数据|新增编辑 -->
-  <el-dialog
+  <el-drawer
     v-model="dialog.visible"
     :title="dialog.title"
     :close-on-click-modal="false"
     destroy-on-close
-    close-on-press-escape
-    center
+    size="80%"
   >
     <el-form
       ref="dialogRef"
@@ -101,160 +100,200 @@
             <el-input v-model="dialog.formTmp.domain" />
           </el-form-item>
           <el-form-item
-            label="端口"
-            prop="port"
+            label="站点类型"
+            prop="type"
           >
-            <el-input-number v-model="dialog.formTmp.port" />
+            <el-select
+              v-model="dialog.formTmp.type"
+              placeholder="站点类型"
+            >
+              <el-option
+                key="proxy"
+                label="反向代理"
+                value="proxy"
+              />
+            </el-select>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane label="回源管理">
+
+        <el-tab-pane label="安全防护">
           <el-form-item
-            label="回源URL"
-            prop="backend.url"
+            label="开启访问限制"
+            prop="security.limit.status"
           >
-            <el-input v-model="dialog.formTmp.backend.url" />
-          </el-form-item>
-          <el-form-item
-            label="回源Host"
-            prop="backend.host"
-          >
-            <el-input v-model="dialog.formTmp.backend.host" />
-          </el-form-item>
-          <el-form-item label="回源请求头">
-            <template
-              v-for="(value,index) in dialog.formTmp.backend.req_header"
-              :key="index"
-            >
-              <el-col :span="11">
-                <el-input
-                  v-model="value.name"
-                  placeholder="名"
-                />
-              </el-col>
-              <el-col
-                :span="2"
-                style="text-align: center;"
-              >
-                <el-button
-                  icon="Minus"
-                  circle
-                  @click="dialog.formTmp.backend.req_header.splice(index,1)"
-                />
-              </el-col>
-              <el-col
-                :span="11"
-              >
-                <el-input
-                  v-model="value.value"
-                  placeholder="值"
-                />
-              </el-col>
-              <el-col
-                :span="24"
-                style="height: 5px;"
-              />
-            </template>
-            <el-button
-              type="primary"
-              icon="Plus"
-              circle
-              @click="dialog.formTmp.backend.req_header.push({name:'Name',value:'Value'})"
+            <el-switch
+              v-model="dialog.formTmp.security.limit.status"
+              inline-prompt
+              active-icon="Check"
+              inactive-icon="Close"
             />
           </el-form-item>
-          <el-form-item label="回源返回头">
-            <template
-              v-for="(value,index) in dialog.formTmp.backend.resp_header"
-              :key="index"
+          <el-card
+            v-if="dialog.formTmp.security.limit.status"
+            shadow="always"
+          >
+            <el-form-item
+              label="流量限速 k/s"
+              prop="security.limit.rate"
             >
-              <el-col :span="11">
-                <el-input
-                  v-model="value.name"
-                  placeholder="名"
-                />
-              </el-col>
-              <el-col
-                :span="2"
-                style="text-align: center;"
-              >
-                <el-button
-                  icon="Minus"
-                  circle
-                  @click="dialog.formTmp.backend.resp_header.splice(index,1)"
-                />
-              </el-col>
-              <el-col
-                :span="11"
-              >
-                <el-input
-                  v-model="value.value"
-                  placeholder="值"
-                />
-              </el-col>
-              <el-col
-                :span="24"
-                style="height: 5px;"
-              />
-            </template>
-            <el-button
-              type="primary"
-              icon="Plus"
-              circle
-              @click="dialog.formTmp.backend.resp_header.push({name:'Name',value:'Value'})"
+              <el-input-number v-model="dialog.formTmp.security.limit.rate" />
+            </el-form-item>
+            <el-form-item
+              label="请求速率"
+              prop="security.limit"
+            >
+              <el-card shadow="always">
+                在<el-input-number
+                  v-model="dialog.formTmp.security.limit.seconds"
+                  size="small"
+                />秒
+                最多请求<el-input-number
+                  v-model="dialog.formTmp.security.limit.queries"
+                  size="small"
+                />次
+              </el-card>
+            </el-form-item>
+          </el-card>
+          <br>
+          <el-form-item
+            label="开启接口验签"
+            prop="security.sign.status"
+          >
+            <el-switch
+              v-model="dialog.formTmp.security.sign.status"
+              inline-prompt
+              active-icon="Check"
+              inactive-icon="Close"
             />
           </el-form-item>
+          <el-card
+            v-if="dialog.formTmp.security.sign.status"
+            shadow="always"
+          >
+            <el-form-item
+              label="加密密钥"
+              prop="security.sign.key"
+            >
+              <el-input v-model="dialog.formTmp.security.sign.key" />
+            </el-form-item>
+            <el-form-item
+              label="加密方法"
+              prop="security.sign.method"
+            >
+              <el-select
+                v-model="dialog.formTmp.security.sign.method"
+                placeholder="加密方法"
+              >
+                <el-option
+                  key="HMAC_MD5"
+                  label="HMAC_MD5算法"
+                  value="HMAC_MD5"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="过期时间/参数名"
+              prop="security.sign.expire_args"
+            >
+              <el-input v-model="dialog.formTmp.security.sign.expire_args" />
+            </el-form-item>
+            <el-form-item
+              label="签名/参数名"
+              prop="security.sign.sign_args"
+            >
+              <el-input v-model="dialog.formTmp.security.sign.sign_args" />
+            </el-form-item>
+          </el-card>
         </el-tab-pane>
-        <el-tab-pane label="SSL">
-          <el-form-item
-            label="SSL端口"
-            prop="ssl.port"
+
+        <el-tab-pane label="返回头">
+          <el-row
+            v-for="(value,index) in dialog.formTmp.header"
+            :key="index"
+            :gutter="10"
+            style="margin: 12px auto;"
           >
-            <el-input-number v-model="dialog.formTmp.ssl.port" />
-          </el-form-item>
-          <el-row>
             <el-col :span="11">
-              <el-form-item
-                label="证书"
-                prop="ssl.crt"
-              >
-                <el-input
-                  v-model="dialog.formTmp.ssl.crt"
-                  rows="15"
-                  type="textarea"
-                  placeholder="crt证书文件"
-                />
-              </el-form-item>
+              <el-input
+                v-model="value.name"
+                placeholder="名"
+              />
             </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="密钥"
-                prop="ssl"
-              >
-                <el-input
-                  v-model="dialog.formTmp.ssl.key"
-                  placeholder="key私钥文件"
-                  rows="15"
-                  type="textarea"
-                />
-              </el-form-item>
+            <el-col
+              :span="11"
+            >
+              <el-input
+                v-model="value.value"
+                placeholder="值"
+              />
+            </el-col>
+            <el-col
+              :span="2"
+              style="text-align: center;"
+            >
+              <el-button
+                icon="Delete"
+                type="danger"
+                circle
+                @click="dialog.formTmp.header.splice(index,1)"
+              />
             </el-col>
           </el-row>
+          <el-button
+            type="primary"
+            icon="Plus"
+            circle
+            @click="dialog.formTmp.header.push({name:null,value:null})"
+          />
         </el-tab-pane>
-        <el-tab-pane label="缓存配置">
-          <el-form-item
-            label="缓存路径"
-            prop="cache.dir"
+        <!-- 反向代理配置 -->
+        <el-tab-pane
+          v-if="dialog.formTmp.type === 'proxy'"
+          label="反向代理"
+        >
+          <br>
+          <!-- 回源设置 -->
+          <el-card
+            shadow="always"
           >
-            <el-input v-model="dialog.formTmp.cache.dir" />
-          </el-form-item>
-          <el-form-item label="缓存规则">
-            <template
-              v-for="(value,index) in dialog.formTmp.cache.rule"
+            <template #header>
+              <div class="card-header">
+                <span>回源设置</span>
+              </div>
+            </template>
+            <el-form-item
+              label="主机"
+              prop="proxy.server"
+            >
+              <el-input v-model="dialog.formTmp.proxy.server" />
+            </el-form-item>
+            <el-form-item
+              label="Host"
+              prop="proxy.host"
+            >
+              <el-input v-model="dialog.formTmp.proxy.host" />
+            </el-form-item>
+            <div class="card-header">
+              <span>回源请求头</span>
+            </div>
+            <el-row
+              v-for="(value,index) in dialog.formTmp.proxy.header"
               :key="index"
+              :gutter="10"
             >
               <el-col :span="11">
                 <el-input
-                  v-model="value.path"
+                  v-model="value.name"
                   placeholder="名"
+                />
+              </el-col>
+
+              <el-col
+                :span="11"
+              >
+                <el-input
+                  v-model="value.value"
+                  placeholder="值"
                 />
               </el-col>
               <el-col
@@ -262,34 +301,167 @@
                 style="text-align: center;"
               >
                 <el-button
-                  icon="Minus"
+                  type="danger"
+                  icon="Delete"
                   circle
-                  @click="dialog.formTmp.cache.rule.splice(index,1)"
-                />
-              </el-col>
-              <el-col
-                :span="11"
-              >
-                <el-input-number
-                  v-model="value.time"
-                  placeholder="值(分钟)"
+                  @click="dialog.formTmp.proxy.header.splice(index,1)"
                 />
               </el-col>
               <el-col
                 :span="24"
                 style="height: 5px;"
               />
-            </template>
+            </el-row>
             <el-button
               type="primary"
               icon="Plus"
               circle
-              @click="dialog.formTmp.cache.rule.push({path:'/example',time:1440})"
+              @click="dialog.formTmp.proxy.header.push({name:null,value:null})"
             />
-          </el-form-item>
-        </el-tab-pane>
-        <el-tab-pane label="安全配置">
-          暂未开启
+          </el-card>
+
+          <br>
+          <el-card
+            shadow="always"
+          >
+            <template #header>
+              <div class="card-header">
+                <span>连接池</span>
+              </div>
+            </template>
+            <el-form-item
+              label="保活时间"
+              prop="proxy.keepalive_timeout"
+            >
+              <el-input v-model="dialog.formTmp.proxy.keepalive_timeout" />
+            </el-form-item>
+            <el-form-item
+              label="保活数量"
+              prop="proxy.keepalive_requests"
+            >
+              <el-input v-model="dialog.formTmp.proxy.keepalive_requests" />
+            </el-form-item>
+          </el-card>
+
+          <br>
+          <el-card
+            shadow="always"
+          >
+            <template #header>
+              <div class="card-header">
+                <span>缓存设置</span>
+              </div>
+            </template>
+
+            <el-row
+              v-for="(value,index) in dialog.formTmp.proxy.cache"
+              :key="index"
+              style="margin: 5px auto;"
+              :gutter="10"
+            >
+              <el-col :span="7">
+                <el-input
+                  v-model="value.ruth"
+                  placeholder="路径/regex"
+                />
+              </el-col>
+              <el-col :span="2">
+                <el-switch
+                  v-model="value.args"
+                  inline-prompt
+                  style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                  active-text="忽略GET参数"
+                  inactive-text="保留GET参数"
+                />
+              </el-col>
+              <el-col :span="3">
+                <el-input-number
+                  v-model="value.time"
+                  :controls="false"
+                  placeholder="时间/s"
+                />
+              </el-col>
+              <el-col :span="5">
+                <el-select
+                  v-model="value.Method"
+                  multiple
+                  placeholder="请求方法"
+                >
+                  <el-option
+                    key="GET"
+                    label="GET"
+                    value="GET"
+                  />
+                  <el-option
+                    key="POST"
+                    label="POST"
+                    value="POST"
+                  />
+                  <el-option
+                    key="PUT"
+                    label="PUT"
+                    value="PUT"
+                  />
+                  <el-option
+                    key="DELETE"
+                    label="DELETE"
+                    value="DELETE"
+                  />
+                  <el-option
+                    key="PATCH"
+                    label="PATCH"
+                    value="PATCH"
+                  />
+                  <el-option
+                    key="OPTIONS"
+                    label="OPTIONS"
+                    value="OPTIONS"
+                  />
+                  <el-option
+                    key="HEAD"
+                    label="HEAD"
+                    value="HEAD"
+                  />
+                </el-select>
+              </el-col>
+              <el-col :span="5">
+                <el-select
+                  v-model="value.status"
+                  multiple
+                  filterable
+                  allow-create
+                  default-first-option
+                  :reserve-keyword="false"
+                  placeholder="状态码"
+                >
+                  <el-option
+                    key="200"
+                    label="200"
+                    :value="200"
+                  />
+                </el-select>
+              </el-col>
+              <el-col
+                :span="2"
+                style="text-align: center;"
+              >
+                <el-button
+                  type="danger"
+                  icon="Delete"
+                  circle
+                  @click="dialog.formTmp.proxy.cache.splice(index,1)"
+                />
+              </el-col>
+              <el-divider />
+            </el-row>
+
+            <el-button
+              type="primary"
+              icon="Plus"
+              circle
+              @click="dialog.formTmp.proxy.cache.push({ruth:null,args: true, time:null, method:[], status:[]})"
+            />
+          </el-card>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -303,7 +475,7 @@
         >确定</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup>
@@ -340,23 +512,30 @@ const handleDialogAdd = () => {
   dialog.value.formAction = 'add'
   dialog.value.form = {}
   dialog.value.formTmp = {
-    domain: '',
-    port: null,
-    ssl: {
-      port: null,
-      crt: '',
-      key: ''
-    },
-    backend: {
-      url: '',
+    header: [],
+    type: 'proxy',
+    proxy: {
+      service: '',
       host: '',
-      req_header: [],
-      resp_header: []
+      keepalive_timeout: 0,
+      keepalive_requests: 0,
+      header: [],
+      cache: []
     },
-    cache: {
-      dir: '',
-      rule: [
-      ]
+    security: {
+      limit: {
+        status: false,
+        rate: 0,
+        queries: 0,
+        seconds: 0
+      },
+      sign: {
+        status: false,
+        method: '',
+        key: '',
+        expire_args: '',
+        sign_args: ''
+      }
     }
   }
 }
@@ -376,12 +555,11 @@ const handleSubmitForm = () => { // 提交数据
   dialogRef.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       if (dialog.value.formAction === 'add') {
-        dialog.value.formTmp.ssl.crt = btoa(dialog.value.formTmp.ssl.crt)
-        dialog.value.formTmp.ssl.key = btoa(dialog.value.formTmp.ssl.key)
-        table.value.data.push(dialog.value.formTmp)
+        // table.value.data.push(dialog.value.formTmp)
         putDomain(table.value.data).then((result) => {
           dialog.value.visible = false
           ElMessage.info('新增完成')
+          // 刷新是正解
         })
       } else if (dialog.value.formAction === 'edit') {
         dialog.value.formTmp.ssl.crt = btoa(dialog.value.formTmp.ssl.crt)
