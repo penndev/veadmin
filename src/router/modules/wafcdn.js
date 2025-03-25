@@ -19,6 +19,12 @@ export const wafcdn = {
       meta: { title: '状态总览', icon: 'Odometer' }
     },
     {
+      path: 'site',
+      component: () => import('@/views/wafcdn/site.vue'),
+      name: 'WafCdnSite',
+      meta: { title: '站点管理', icon: 'Menu' }
+    },
+    {
       path: 'domain',
       component: () => import('@/views/wafcdn/domain.vue'),
       name: 'WafCdnDomain',

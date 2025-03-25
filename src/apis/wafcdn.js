@@ -1,5 +1,75 @@
 import service from '@/utils/request'
 
+// 获取站点
+export const getSite = (params) => {
+  return service({
+    url: '/wafcdn/site',
+    method: 'get',
+    params
+  })
+}
+
+// 添加站点
+export const postSite = (data) => {
+  return service({
+    url: '/wafcdn/site',
+    method: 'post',
+    data
+  })
+}
+
+// 修改站点
+export const putSite = (data) => {
+  return service({
+    url: '/wafcdn/site',
+    method: 'put',
+    data
+  })
+}
+
+// 删除站点
+export const deleteSite = (params) => {
+  return service({
+    url: '/wafcdn/site',
+    method: 'delete',
+    params
+  })
+}
+
+export const getDomain = (params) => {
+  return service({
+    url: '/wafcdn/domain',
+    method: 'get',
+    params
+  })
+}
+
+export const postDomain = (data) => {
+  return service({
+    url: '/wafcdn/domain',
+    method: 'post',
+    data
+  })
+}
+
+export const putDomain = (data) => {
+  return service({
+    url: '/wafcdn/domain',
+    method: 'put',
+    data
+  })
+}
+
+export const deleteDomain = (params) => {
+  return service({
+    url: '/wafcdn/domain',
+    method: 'delete',
+    params
+  })
+}
+
+// ===============================
+
 // 上传文件前置检查
 export const stat = (params) => {
   return service({
@@ -7,22 +77,6 @@ export const stat = (params) => {
     method: 'get',
     params,
     viewLoading: false
-  })
-}
-
-export const getDomain = (params) => {
-  return service({
-    url: '/domain',
-    method: 'get',
-    params
-  })
-}
-
-export const putDomain = (data) => {
-  return service({
-    url: '/domain',
-    method: 'put',
-    data
   })
 }
 
