@@ -317,7 +317,8 @@
               label="主机"
               prop="proxy.server"
             >
-              <el-input v-model="dialog.form.proxy.server" />
+              <!-- <el-input v-model="dialog.form.proxy.server" /> -->
+              <input-server v-model="dialog.form.proxy.server" />
             </el-form-item>
             <el-form-item
               label="Host"
@@ -441,7 +442,7 @@
               </el-col>
               <el-col :span="5">
                 <el-select
-                  v-model="value.Method"
+                  v-model="value.method"
                   multiple
                   placeholder="请求方法"
                 >
@@ -471,14 +472,14 @@
                     value="PATCH"
                   />
                   <el-option
-                    key="OPTIONS"
-                    label="OPTIONS"
-                    value="OPTIONS"
-                  />
-                  <el-option
                     key="HEAD"
                     label="HEAD"
                     value="HEAD"
+                  />
+                  <el-option
+                    key="OPTIONS"
+                    label="OPTIONS"
+                    value="OPTIONS"
                   />
                 </el-select>
               </el-col>
@@ -542,6 +543,7 @@ import { ref } from 'vue'
 // import api
 import { getSite, postSite, putSite, deleteSite } from '@/apis/wafcdn'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import InputServer from './components/InputServer.vue'
 
 const table = ref({
   query: {
