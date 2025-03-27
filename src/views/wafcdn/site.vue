@@ -489,14 +489,25 @@
                   multiple
                   filterable
                   allow-create
-                  default-first-option
                   :reserve-keyword="false"
                   placeholder="状态码"
+                  @change="(values) => {
+                    const intValues = values.map(v => {
+                      const num = typeof v === 'string' ? parseInt(v, 10) : v;
+                      return isNaN(num) ? null : num;
+                    }).filter(v => v !== null);
+                    value.status = [...new Set(intValues)];
+                  }"
                 >
                   <el-option
                     key="200"
                     label="200"
                     :value="200"
+                  />
+                  <el-option
+                    key="301"
+                    label="301"
+                    :value="301"
                   />
                 </el-select>
               </el-col>
