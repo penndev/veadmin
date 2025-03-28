@@ -2,10 +2,10 @@
   <!-- 顶部筛选框 -->
   <div>
     <el-form :inline="true">
-      <el-form-item label="备注">
+      <el-form-item label="站点名称">
         <el-input
           v-model="table.query.remark"
-          placeholder="站点备注"
+          placeholder="站点名称"
           clearable
         />
       </el-form-item>

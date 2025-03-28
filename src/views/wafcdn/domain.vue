@@ -85,6 +85,54 @@
         sortable="custom"
       />
       <el-table-column
+        label="HTTPS"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tag :type="scope.row.ssl?'':'danger'">
+            {{ scope.row.ssl ? "启用":"禁用" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="强制HTTPS"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tag>{{ scope.row.sslforce ? "HTTP跳转HTTPS":"允许HTTP访问" }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="私钥"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tooltip
+            v-if="scope.row.privatekey"
+            raw-content
+            :content="'<pre>' + scope.row.privatekey + '</pre>'"
+            placement="top"
+          >
+            <el-link>查看密钥</el-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="证书"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tooltip
+            v-if="scope.row.publickey"
+            raw-content
+            :content="'<pre>' + scope.row.publickey+ '</pre>'"
+            placement="top"
+          >
+            <el-link>查看证书</el-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="updatedAt"
         label="最近更新"
       />
@@ -154,6 +202,56 @@
       >
         <el-input-number v-model="dialog.form.SiteId" />
       </el-form-item>
+      <el-form-item
+        label="HTTPS访问"
+        prop="ssl"
+      >
+        <el-switch
+          v-model="dialog.form.ssl"
+          inline-prompt
+          active-icon="Check"
+          inactive-icon="Close"
+        />
+      </el-form-item>
+      <el-form-item
+        label="强制HTTPS访问"
+        prop="ssl"
+      >
+        <el-switch
+          v-model="dialog.form.sslforce"
+          inline-prompt
+          active-icon="Check"
+          inactive-icon="Close"
+        />
+      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="私钥"
+            prop="privatekey"
+          >
+            <el-input
+              v-model="dialog.form.privatekey"
+              :autosize="{ minRows: 4, maxRows: 30}"
+              resize="vertical"
+              type="textarea"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="证书"
+            prop="publickey"
+          >
+            <el-input
+              v-model="dialog.form.publickey"
+              :autosize="{ minRows: 4, maxRows: 30}"
+              resize="vertical"
+              type="textarea"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <template #footer>
@@ -290,3 +388,10 @@ const dialog = ref({
 table.value.handleTableData()
 
 </script>
+
+<style scoped>
+.el-textarea__inner {
+  white-space: pre-wrap !important;
+  overflow-x: auto !important;
+}
+</style>

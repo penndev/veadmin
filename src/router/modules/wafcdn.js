@@ -6,29 +6,23 @@ export const wafcdn = {
   redirect: '/wafcdn/stat',
   meta: { title: 'WAFCDN', icon: 'Postcard' },
   children: [
+    // {
+    //   path: 'stat',
+    //   component: () => import('@/views/wafcdn/stat.vue'),
+    //   name: 'WafCdnStat',
+    //   meta: { title: '状态总览', icon: 'Odometer' }
+    // },
     {
-      path: 'index',
-      component: () => import('@/views/wafcdn/index.vue'),
-      name: 'WafCdnIndex',
-      meta: { title: '主控', icon: 'HelpFilled' }
-    },
-    {
-      path: 'stat',
-      component: () => import('@/views/wafcdn/stat.vue'),
-      name: 'WafCdnStat',
-      meta: { title: '状态总览', icon: 'Odometer' }
+      path: 'domain',
+      component: () => import('@/views/wafcdn/domain.vue'),
+      name: 'WafCdnDomain',
+      meta: { title: '域名管理', icon: 'Grid' }
     },
     {
       path: 'site',
       component: () => import('@/views/wafcdn/site.vue'),
       name: 'WafCdnSite',
       meta: { title: '站点管理', icon: 'Menu' }
-    },
-    {
-      path: 'domain',
-      component: () => import('@/views/wafcdn/domain.vue'),
-      name: 'WafCdnDomain',
-      meta: { title: '域名管理', icon: 'Grid' }
     },
     {
       path: 'cache',
