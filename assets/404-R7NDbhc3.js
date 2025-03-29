@@ -1,0 +1,1 @@
+import{_ as e,c as t,o,a as s}from"./index-RmgN8Hxi.js";const c={},n={style:{display:"flex","justify-content":"center","align-items":"center",height:"100vh"}},a=s("h1",{style:{display:"block",margin:"20px auto"}}," NotFound ",-1),_=[a];function r(i,d){return o(),t("div",n,_)}const f=e(c,[["render",r]]);export{f as default};
