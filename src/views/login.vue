@@ -168,6 +168,7 @@ const formSubmit = () => {
         }
         permission.token = result.token
         permission.routes = result.routes
+        permission.nickname = result.nickname ?? '未设置昵称'
         router.push(route.query.redirect ?? result.index ?? '/')
       }).catch(() => {
         handleChangeCaptcha()

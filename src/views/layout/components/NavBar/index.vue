@@ -62,7 +62,7 @@
     </div>
     <el-dropdown class="ea-dropdown">
       <div style="cursor: pointer;outline: none;">
-        <strong class="ea-dropdown-name">管理员 </strong>
+        <strong class="ea-dropdown-name">{{ auth.nickname }}</strong>
         <el-icon><arrow-down /></el-icon>
       </div>
       <template #dropdown>
