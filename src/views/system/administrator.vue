@@ -55,7 +55,7 @@
         min-width="160"
       />
       <el-table-column
-        prop="AdminRole.name"
+        prop="SysRole.name"
         label="权限"
         min-width="160"
       />
@@ -115,7 +115,7 @@
       @size-change="handleChangeLimit"
     />
   </el-main>
-
+  <!-- 新增编辑弹窗 -->
   <el-dialog
     v-model="dialog.visible"
     :title="dialog.title"
@@ -136,16 +136,92 @@
         <el-input v-model="dialog.form.email" />
       </el-form-item>
       <el-form-item
-        v-if="dialog.formAction == 'add'"
         label="密码"
         prop="passwd"
       >
         <el-input
+          v-if="dialog.resetPasswd == true || dialog.formAction == 'add'"
           v-model="dialog.form.passwd"
           type="password"
           show-password
-        />
+        >
+          <template
+            v-if="dialog.formAction == 'edit'"
+            #append
+          >
+            <el-button
+              size="small"
+              @click="dialog.resetPasswd = false"
+            >
+              取消
+            </el-button>
+          </template>
+        </el-input>
+        <el-button
+          v-if="dialog.formAction == 'edit' && dialog.resetPasswd == false"
+          size="small"
+          @click="dialog.resetPasswd = true"
+        >
+          重置密码
+        </el-button>
       </el-form-item>
+
+      <el-form-item
+        label="两步验证"
+      >
+        <el-switch v-model="dialog.form.otpStatus" /> &nbsp;
+        <div
+          v-if="dialog.form.otpStatus"
+          style="display: flex; align-items: center; gap: 10px;"
+        >
+          <el-input
+            v-model="dialog.form.otpTitle"
+            placeholder="验证器名称"
+          />
+          <el-popover
+            :visible="dialog.otp.visible"
+            width="400"
+          >
+            <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+              <p style="text-align: left; margin-bottom: 10px;">
+                <strong>使用的应用程序步骤介绍：</strong><br>
+                1. 下载并安装OTP验证器(Google Authenticator, 腾讯身份验证器等)<br>
+                2. 打开应用程序，点击“+”按钮添加新账户。<br>
+                3. 选择“扫描条形码”并使用手机扫描下方的二维码。<br>
+                4. 谷歌验证器会生成一个动态验证码，输入该验证码完成绑定。<br>
+              </p>
+              <img
+                v-if="dialog.otp.uri"
+                :src="`https://api.qrserver.com/v1/create-qr-code/?data=${dialog.otp.uri}&size=150x150`"
+                alt="验证器参数"
+                style="margin-bottom: 10px; border: 1px solid gray; border-radius: 5px;"
+              >
+              <el-input
+                v-model="dialog.otp.code"
+                type="number"
+                max="999999"
+                min="100000"
+                placeholder="请输入验证码"
+                style="margin-bottom: 10px;width: 200px;"
+              />
+              <el-button
+                type="primary"
+                @click="handleVerifyOtpSecret"
+              >
+                确认添加
+              </el-button>
+            </div>
+            <template #reference>
+              <el-button @click="handleAddOtpSecret">
+                添加
+              </el-button>
+            </template>
+          </el-popover>
+        </div>
+      </el-form-item>
+
+      <!-- <el-input v-model="dialog.form.otpSecret" /> -->
+
       <el-form-item
         label="昵称"
         prop="nickname"
@@ -154,10 +230,10 @@
       </el-form-item>
       <el-form-item
         label="权限"
-        prop="adminRoleId"
+        prop="SysRoleId"
       >
         <el-select
-          v-model="dialog.form.adminRoleId"
+          v-model="dialog.form.SysRoleId"
           filterable
           remote
           remote-show-suffix
@@ -203,7 +279,7 @@
 import { ref } from 'vue'
 
 // import api
-import { getSystemAdmin, postSystemAdmin, putSystemAdmin, deleteSystemAdmin } from '@/apis/system/administrator'
+import { getSystemAdmin, postSystemAdmin, putSystemAdmin, deleteSystemAdmin, getOTPSecret, verifyOTPSecret } from '@/apis/system/administrator'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getSystemRole } from '@/apis/system/permission'
 
@@ -257,17 +333,46 @@ const dialog = ref({
       { required: true, message: '邮箱', trigger: 'blur' },
       { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
     ],
-    adminRoleId: [
+    SysRoleId: [
       { required: true, message: '角色', trigger: 'blur' }
     ]
   },
   formAction: 'add', // add|edit
-  roleSelect: {
+  roleSelect: { // 权限数据辅助框
     value: null,
     loading: false,
     options: []
+  },
+  resetPasswd: false, // 是否重置密码
+  otp: { // 二维码数据
+    visible: false, // 是否显示两步验证
+    uri: '', // 二维码文本内容
+    code: null, // 二维码验证码
+    secret: null // 二维码密钥
   }
 })
+const handleAddOtpSecret = () => { // 发送请求添加两步验证
+  getOTPSecret({
+    topic: import.meta.env.VE_NAME,
+    title: dialog.value.form.otpTitle
+  }).then((result) => {
+    dialog.value.otp.secret = result.secret
+    dialog.value.otp.uri = result.uri
+    dialog.value.otp.visible = true
+  })
+}
+const handleVerifyOtpSecret = () => { // 验证两步验证
+  if (dialog.value.otp.code == null) {
+    ElMessage.error('请输入验证码')
+    return
+  }
+  verifyOTPSecret({ code: dialog.value.otp.code, secret: dialog.value.otp.secret }).then((result) => {
+    console.log(result)
+    ElMessage.success('验证成功')
+    dialog.value.otp.visible = false
+    dialog.value.form.otpSecret = dialog.value.otp.secret
+  })
+}
 const handleDialogAdd = () => {
   dialog.value.title = '创建数据'
   dialog.value.visible = true
@@ -275,11 +380,11 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
 }
 const handleDialogEdit = (row) => {
-  if (row.adminRoleId < 1) {
+  if (row.SysRoleId < 1) {
     ElMessage.warning('超级管理员不允许被编辑')
     return
   }
-  dialog.value.title = '创建数据'
+  dialog.value.title = `编辑数据(${row.id})`
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
   dialog.value.form = row

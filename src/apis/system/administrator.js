@@ -31,3 +31,20 @@ export const deleteSystemAdmin = (params) => {
     params
   })
 }
+
+// 密码验证器生成与校验是否合规
+export const getOTPSecret = (params) => {
+  return service({
+    url: '/otp/secret',
+    method: 'get',
+    params
+  })
+}
+
+export const verifyOTPSecret = (data) => {
+  return service({
+    url: '/otp/secret',
+    method: 'put',
+    data
+  })
+}
