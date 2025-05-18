@@ -169,7 +169,11 @@
       <el-form-item
         label="两步验证"
       >
-        <el-switch v-model="dialog.form.otpStatus" /> &nbsp;
+        <el-switch
+          v-model="dialog.form.otpStatus"
+          :active-value="1"
+          :inactive-value="0"
+        /> &nbsp;
         <div
           v-if="dialog.form.otpStatus"
           style="display: flex; align-items: center; gap: 10px;"

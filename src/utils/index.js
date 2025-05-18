@@ -126,3 +126,14 @@ export const formatRouteList = (routes) => {
   }
   return routeList
 }
+
+/**
+ * 模拟其他语言的 sleep 函数
+ * @param ms 毫秒
+ * @returns promise
+ */
+export const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}

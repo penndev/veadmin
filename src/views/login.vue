@@ -88,10 +88,10 @@
 import { authStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 // import 接口
 import { getCaptcha } from '@/apis/captcha'
-import { postLogin } from '@/apis/login'
+import { postLogin, postOTPLogin } from '@/apis/login'
 
 // 密码展示效果
 const lock = ref('lock')
@@ -152,6 +152,41 @@ const permission = authStore()
 const router = useRouter()
 const route = useRoute()
 
+// 登录成功后处理 多次使用，拆分为函数
+const formLoginAction = (result) => {
+  if (typeof result.token === 'undefined') {
+    ElMessage.error('登录失败，未获取到token！')
+    return
+  }
+  permission.token = result.token
+  permission.routes = result.routes
+  permission.nickname = result.nickname ?? '未设置昵称'
+  router.push(route.query.redirect ?? result.index ?? '/')
+}
+
+// otp验证器验证
+// 将自己设置为一个函数失败后自己再次调用自己
+const formLoginOTP = (result) => {
+  ElMessageBox.prompt(`请输入验证器(${result.otpTitle})的密钥`, '两步验证', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    inputPattern: /^[0-9]{6}$/,
+    inputErrorMessage: '请输入6位数字'
+  }).then(({ value }) => {
+    postOTPLogin({ code: value, id: result.id }).then((resultOTP) => {
+      formLoginAction(resultOTP)
+    }).catch(async () => {
+      // await sleep(500)
+      // formLoginOTP(result)
+    })
+  }).catch(() => {
+    ElMessage({
+      type: 'info',
+      message: '请稍后重新登录'
+    })
+  })
+}
+
 const formSubmit = () => {
   // 验证码过期触发失败
   if (Date.now() > captchaExpired) {
@@ -162,14 +197,12 @@ const formSubmit = () => {
   loginForm.value.validate((validate) => {
     if (validate) { // 判断表单是否验证通过。
       postLogin(formData).then((result) => {
-        if (typeof result.token === 'undefined') {
-          ElMessage.error('登录失败，未获取到token！')
-          return
+        // 判断是否需要谷歌验证器登录
+        if (result.otpStatus === 1) {
+          formLoginOTP(result)
+        } else {
+          formLoginAction(result)
         }
-        permission.token = result.token
-        permission.routes = result.routes
-        permission.nickname = result.nickname ?? '未设置昵称'
-        router.push(route.query.redirect ?? result.index ?? '/')
       }).catch(() => {
         handleChangeCaptcha()
       })
