@@ -1,1 +1,0 @@
-import{s as t}from"./index-BaZCf7GY.js";const o=e=>t({url:"/system/role",method:"get",params:e}),r=e=>t({url:"/system/role",method:"post",data:e}),l=e=>t({url:"/system/role",method:"put",data:e}),m=e=>t({url:"/system/role",method:"delete",params:e}),u=e=>t({url:"/system/role/route",method:"get",params:e});export{u as a,l as b,m as d,o as g,r as p};
