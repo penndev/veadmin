@@ -384,10 +384,10 @@ const handleDialogAdd = () => {
   dialog.value.form = {}
 }
 const handleDialogEdit = (row) => {
-  if (row.SysRoleId < 1) {
-    ElMessage.warning('超级管理员不允许被编辑')
-    return
-  }
+  // if (row.SysRoleId < 1) {
+  //   ElMessage.warning('超级管理员不允许被编辑')
+  //   return
+  // }
   dialog.value.title = `编辑数据(${row.id})`
   dialog.value.visible = true
   dialog.value.formAction = 'edit'
