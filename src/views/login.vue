@@ -1,5 +1,5 @@
 <template>
-  <div id="userLayout">
+  <div id="loginLayout">
     <div class="login_panel">
       <div class="login_panel_form">
         <div class="login_panel_form_title">
@@ -214,8 +214,8 @@ const formSubmit = () => {
 
 <style lang="scss" scoped>
 
-#userLayout {
-  background-image: url("@/assets/login/login_background.jpg");
+#loginLayout {
+  background-image: url("@/assets/login/login_background.png");
   background-size: cover;
   width: 100%;
   height: 100%;
@@ -228,7 +228,7 @@ const formSubmit = () => {
   .login_panel {
     width: 96vw;
     height: 100%;
-    background-color: rgba(255, 255, 255, .8);
+    opacity: 0.8;
     backdrop-filter: blur(5px);
     border-radius: 10px;
     display: flex;
@@ -245,7 +245,7 @@ const formSubmit = () => {
 
     .login_panel_form {
       width: 420px;
-      background-color: #fff;
+      background-color: var(--ea-main-color);
       padding: 40px 40px 40px 40px;
       border-radius: 10px;
       box-shadow: 2px 3px 7px rgba(0, 0, 0, .2);
