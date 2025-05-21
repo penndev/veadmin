@@ -6,7 +6,7 @@
     修改密码
   </el-dropdown-item>
 
-  <el-dialog
+  <el-drawer
     v-model="dialog.visible"
     :title="dialog.title"
     :close-on-click-modal="false"
@@ -19,6 +19,8 @@
       ref="dialogRef"
       :model="dialog.form"
       :rules="dialog.formRule"
+      label-width="auto"
+      label-position="left"
     >
       <el-form-item
         label="密码"
@@ -61,7 +63,7 @@
         >确定</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup>

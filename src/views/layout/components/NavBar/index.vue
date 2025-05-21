@@ -68,6 +68,7 @@
       <template #dropdown>
         <el-dropdown-menu>
           <ChangePasswd />
+          <EditOTP />
           <el-dropdown-item
             icon="reading-lamp"
             @click="handleLoginOut"
@@ -86,6 +87,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 import MenuSelect from './MenuSelect.vue'
 import ChangePasswd from './ChangePasswd.vue'
+import EditOTP from './EditOTP.vue'
 
 const layout = layoutStore()
 const router = useRouter()
@@ -129,9 +131,13 @@ watch(darkMode, () => {
 
 // 菜单列表
 const selectMenu = (value) => {
-  if (value.startsWith('http')) {
-    window.open(value, '_bank')
-  } else {
+  // 验证是否是网址链接
+  try {
+    const url = new URL(value)
+    if (url.protocol.startsWith('http')) {
+      window.open(value, '_blank')
+    }
+  } catch (e) {
     router.push({ path: value })
   }
 }
