@@ -1,10 +1,10 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export default defineStore('pagination', {
+export default defineStore("pagination", {
   state: () => {
     return {
-      data: {}
-    }
+      data: {},
+    };
   },
-  persist: true // 配置持久化
-})
+  persist: true, // 配置持久化
+});

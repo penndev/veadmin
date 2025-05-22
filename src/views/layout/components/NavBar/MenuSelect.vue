@@ -1,6 +1,6 @@
 <template>
   <el-select>
-    <template v-for="item,index in router.options.routes">
+    <template v-for="(item, index) in router.options.routes">
       <template v-if="item.meta">
         <el-option
           v-if="item.meta?.title && item.meta?.hidden != true"
@@ -11,11 +11,18 @@
       </template>
       <!-- 组 -->
       <template v-if="item.children">
-        <template v-for="childItem,childIndex in item.children">
+        <template v-for="(childItem, childIndex) in item.children">
           <el-option
-            v-if="childItem.meta && childItem.meta?.title && childItem.meta?.hidden != true"
+            v-if="
+              childItem.meta &&
+              childItem.meta?.title &&
+              childItem.meta?.hidden != true
+            "
             :key="index + '-' + childIndex"
-            :label="(item.meta?.title ? (item.meta?.title + '-') : '') + childItem.meta?.title"
+            :label="
+              (item.meta?.title ? item.meta?.title + '-' : '') +
+              childItem.meta?.title
+            "
             :value="childItem.path"
           />
         </template>
@@ -25,7 +32,7 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 </script>

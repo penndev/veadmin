@@ -1,7 +1,7 @@
 // @ts-check
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export default defineStore('layout', {
+export default defineStore("layout", {
   state: () => {
     return {
       /**
@@ -9,8 +9,8 @@ export default defineStore('layout', {
        * true->收缩
        * false->展示
        */
-      collapse: false
-    }
+      collapse: false,
+    };
   },
-  persist: true // 配置持久化
-})
+  persist: true, // 配置持久化
+});

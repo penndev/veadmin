@@ -1,13 +1,6 @@
 <template>
-  <el-col
-    :xs="xs"
-    :sm="sm"
-    :lg="lg"
-  >
-    <div
-      class="card-panel"
-      :style="{ '--icon-color': iconColor }"
-    >
+  <el-col :xs="xs" :sm="sm" :lg="lg">
+    <div class="card-panel" :style="{ '--icon-color': iconColor }">
       <div class="card-panel-icon">
         <el-icon>
           <component :is="icon" />
@@ -26,37 +19,36 @@
 </template>
 
 <script setup>
-
 defineProps({
   xs: {
     type: Number,
-    default: 12
+    default: 12,
   },
   sm: {
     type: Number,
-    default: 12
+    default: 12,
   },
   lg: {
     type: Number,
-    default: 12
+    default: 12,
   },
   title: {
     type: String,
-    default: ''
+    default: "",
   },
   text: {
     type: [String, Number],
-    default: ''
+    default: "",
   },
   icon: {
     type: String,
-    default: ''
+    default: "",
   },
   iconColor: {
     type: String,
-    default: '#666'
-  }
-})
+    default: "#666",
+  },
+});
 </script>
 
 <style lang="scss" scoped>

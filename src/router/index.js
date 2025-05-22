@@ -1,11 +1,11 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from "vue-router";
 
-import { dashboard, system } from './modules/system'
-import { video, archive } from './modules/video'
-import { example, icon } from './modules/example'
-import { wafcdn } from './modules/wafcdn'
+import { dashboard, system } from "./modules/system";
+import { video, archive } from "./modules/video";
+import { example, icon } from "./modules/example";
+import { wafcdn } from "./modules/wafcdn";
 
-import { formatRouteItem, formatRouteList } from '@/utils'
+import { formatRouteItem, formatRouteList } from "@/utils";
 
 /**
  * ==================================================================
@@ -33,34 +33,44 @@ import { formatRouteItem, formatRouteList } from '@/utils'
 
 const routes = [
   {
-    name: 'notFound',
-    path: '/:pathMatch(.*)*',
-    component: () => import('@/views/layout/404.vue'),
-    meta: { white: true, hidden: true }
+    name: "notFound",
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/views/layout/404.vue"),
+    meta: { white: true, hidden: true },
   },
   {
-    name: 'login',
-    path: '/login',
-    component: () => import('@/views/login.vue'),
-    meta: { white: true, hidden: true }
-  }
-]
+    name: "login",
+    path: "/login",
+    component: () => import("@/views/login.vue"),
+    meta: { white: true, hidden: true },
+  },
+];
 
 // 提供动态编译。编译阶段确定打包路由是否等于
 // > wafcdn === wafcdn 来使 rollup来优化代码
-if (import.meta.env.MODE === 'wafcdn') {
-  wafcdn.path = '/'
-  wafcdn.redirect = import.meta.env.VE_INDEX ?? '/stat'
-  routes.push(formatRouteItem(wafcdn, '/'))
+if (import.meta.env.MODE === "wafcdn") {
+  wafcdn.path = "/";
+  wafcdn.redirect = import.meta.env.VE_INDEX ?? "/stat";
+  routes.push(formatRouteItem(wafcdn, "/"));
 } else {
-  routes.push(...formatRouteList([dashboard, system, archive, video, wafcdn, example, icon]))
+  routes.push(
+    ...formatRouteList([
+      dashboard,
+      system,
+      archive,
+      video,
+      wafcdn,
+      example,
+      icon,
+    ]),
+  );
 }
 
 const router = createRouter({
   // history: createMemoryHistory() // 内存模式 http://localhost:5173/ 内存路由,所有的变化都不在路由上展示
   // history: createWebHistory(), // h5模式  - http://localhost:5173/dashboard 模拟真实路由,需要服务器重定向到html
   history: createWebHashHistory(), // hash模式 - http://localhost:5173/#/dashboard 通过锚点实现路由
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

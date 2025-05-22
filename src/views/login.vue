@@ -3,24 +3,12 @@
     <div class="login_panel">
       <div class="login_panel_form">
         <div class="login_panel_form_title">
-          <img
-            class="login_panel_form_title_logo"
-            src="/logo.svg"
-          >
-          <div class="login_panel_form_title_p">
-            用户登录
-          </div>
+          <img class="login_panel_form_title_logo" src="/logo.svg" />
+          <div class="login_panel_form_title_p">用户登录</div>
         </div>
-        <el-form
-          ref="loginForm"
-          :rules="rules"
-          :model="formData"
-        >
+        <el-form ref="loginForm" :rules="rules" :model="formData">
           <el-form-item prop="username">
-            <el-input
-              v-model="formData.username"
-              placeholder="请输入用户名"
-            >
+            <el-input v-model="formData.username" placeholder="请输入用户名">
               <template #suffix>
                 <span class="input-icon">
                   <el-icon>
@@ -39,19 +27,13 @@
               <template #suffix>
                 <a class="input-icon">
                   <el-icon>
-                    <component
-                      :is="lock"
-                      @click="handleChangeLock"
-                    />
+                    <component :is="lock" @click="handleChangeLock" />
                   </el-icon>
                 </a>
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item
-            ref="captchaForm"
-            prop="captcha"
-          >
+          <el-form-item ref="captchaForm" prop="captcha">
             <div class="vPicBox">
               <el-input
                 v-model="formData.captcha"
@@ -59,11 +41,7 @@
                 style="width: 60%"
               />
               <div class="vPic">
-                <img
-                  alt="验证码"
-                  :src="captcha"
-                  @click="handleChangeCaptcha"
-                >
+                <img alt="验证码" :src="captcha" @click="handleChangeCaptcha" />
               </div>
             </div>
           </el-form-item>
@@ -71,7 +49,7 @@
             <el-button
               type="primary"
               size="large"
-              style="width: 46%;"
+              style="width: 46%"
               @click="formSubmit"
             >
               登 录
@@ -85,135 +63,140 @@
 </template>
 
 <script setup>
-import { authStore } from '@/stores'
-import { useRouter, useRoute } from 'vue-router'
-import { ref, reactive } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { authStore } from "@/stores";
+import { useRouter, useRoute } from "vue-router";
+import { ref, reactive } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 // import 接口
-import { getCaptcha } from '@/apis/captcha'
-import { postLogin, postOTPLogin } from '@/apis/login'
+import { getCaptcha } from "@/apis/captcha";
+import { postLogin, postOTPLogin } from "@/apis/login";
 
 // 密码展示效果
-const lock = ref('lock')
+const lock = ref("lock");
 const handleChangeLock = () => {
-  lock.value = lock.value === 'lock' ? 'unlock' : 'lock'
-}
+  lock.value = lock.value === "lock" ? "unlock" : "lock";
+};
 
 // 默认验证码过期时间
-const captchaDefaultExpiredTime = 120 * 1000
+const captchaDefaultExpiredTime = 120 * 1000;
 
 // 图片验证码
-const captcha = ref('')
+const captcha = ref("");
 
-let captchaExpired = Date.now()
+let captchaExpired = Date.now();
 const handleChangeCaptcha = () => {
   getCaptcha().then((result) => {
-    captcha.value = result.captchaURL
-    formData.captchaID = result.captchaID
-    formData.captcha = null
-    if (typeof (formData.captchaExpires) === 'number') {
-      captchaExpired = Date.now() + formData.captchaExpires * 1000
+    captcha.value = result.captchaURL;
+    formData.captchaID = result.captchaID;
+    formData.captcha = null;
+    if (typeof formData.captchaExpires === "number") {
+      captchaExpired = Date.now() + formData.captchaExpires * 1000;
     } else {
-      captchaExpired = Date.now() + captchaDefaultExpiredTime
+      captchaExpired = Date.now() + captchaDefaultExpiredTime;
     }
-  })
-}
+  });
+};
 
-handleChangeCaptcha()
+handleChangeCaptcha();
 
 // 用户登录验证相关
 
 const formData = reactive({
-  username: '',
-  password: '',
-  captchaID: '',
-  captcha: ''
-})
+  username: "",
+  password: "",
+  captchaID: "",
+  captcha: "",
+});
 
 const rules = reactive({
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, message: '用户名最少为5个字符', trigger: 'blur' }
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 5, message: "用户名最少为5个字符", trigger: "blur" },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码最少为6个字符', trigger: 'blur' }
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, message: "密码最少为6个字符", trigger: "blur" },
   ],
   captcha: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-    { len: 4, message: '验证码长度为四位', trigger: 'change' }
-  ]
-})
+    { required: true, message: "请输入验证码", trigger: "blur" },
+    { len: 4, message: "验证码长度为四位", trigger: "change" },
+  ],
+});
 
 // 处理用户登录相关逻辑
-const loginForm = ref(null)
-const captchaForm = ref(null)
-const permission = authStore()
-const router = useRouter()
-const route = useRoute()
+const loginForm = ref(null);
+const captchaForm = ref(null);
+const permission = authStore();
+const router = useRouter();
+const route = useRoute();
 
 // 登录成功后处理 多次使用，拆分为函数
 const formLoginAction = (result) => {
-  if (typeof result.token === 'undefined') {
-    ElMessage.error('登录失败，未获取到token！')
-    return
+  if (typeof result.token === "undefined") {
+    ElMessage.error("登录失败，未获取到token！");
+    return;
   }
-  permission.token = result.token
-  permission.routes = result.routes
-  permission.nickname = result.nickname ?? '未设置昵称'
-  router.push(route.query.redirect ?? result.index ?? '/')
-}
+  permission.token = result.token;
+  permission.routes = result.routes;
+  permission.nickname = result.nickname ?? "未设置昵称";
+  router.push(route.query.redirect ?? result.index ?? "/");
+};
 
 // otp验证器验证
 // 将自己设置为一个函数失败后自己再次调用自己
 const formLoginOTP = (result) => {
-  ElMessageBox.prompt(`请输入验证器(${result.otpTitle})的密钥`, '两步验证', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
+  ElMessageBox.prompt(`请输入验证器(${result.otpTitle})的密钥`, "两步验证", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
     inputPattern: /^[0-9]{6}$/,
-    inputErrorMessage: '请输入6位数字'
-  }).then(({ value }) => {
-    postOTPLogin({ code: value, id: result.id }).then((resultOTP) => {
-      formLoginAction(resultOTP)
-    }).catch(async () => {
-      // await sleep(500)
-      // formLoginOTP(result)
-    })
-  }).catch(() => {
-    ElMessage({
-      type: 'info',
-      message: '请稍后重新登录'
-    })
+    inputErrorMessage: "请输入6位数字",
   })
-}
+    .then(({ value }) => {
+      postOTPLogin({ code: value, id: result.id })
+        .then((resultOTP) => {
+          formLoginAction(resultOTP);
+        })
+        .catch(async () => {
+          // await sleep(500)
+          // formLoginOTP(result)
+        });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "请稍后重新登录",
+      });
+    });
+};
 
 const formSubmit = () => {
   // 验证码过期触发失败
   if (Date.now() > captchaExpired) {
-    captchaForm.value.validateState = 'error'
-    captchaForm.value.validateMessage = '验证码过期 请点击验证码刷新重试'
-    return
+    captchaForm.value.validateState = "error";
+    captchaForm.value.validateMessage = "验证码过期 请点击验证码刷新重试";
+    return;
   }
   loginForm.value.validate((validate) => {
-    if (validate) { // 判断表单是否验证通过。
-      postLogin(formData).then((result) => {
-        // 判断是否需要谷歌验证器登录
-        if (result.otpStatus === 1) {
-          formLoginOTP(result)
-        } else {
-          formLoginAction(result)
-        }
-      }).catch(() => {
-        handleChangeCaptcha()
-      })
+    if (validate) {
+      // 判断表单是否验证通过。
+      postLogin(formData)
+        .then((result) => {
+          // 判断是否需要谷歌验证器登录
+          if (result.otpStatus === 1) {
+            formLoginOTP(result);
+          } else {
+            formLoginAction(result);
+          }
+        })
+        .catch(() => {
+          handleChangeCaptcha();
+        });
     }
-  })
-}
-
+  });
+};
 </script>
 
 <style lang="scss" scoped>
-
 #loginLayout {
   background-image: url("@/assets/login/login_background.png");
   background-size: cover;
@@ -248,7 +231,7 @@ const formSubmit = () => {
       background-color: var(--ea-main-color);
       padding: 40px 40px 40px 40px;
       border-radius: 10px;
-      box-shadow: 2px 3px 7px rgba(0, 0, 0, .2);
+      box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.2);
 
       .login_panel_form_title {
         display: flex;

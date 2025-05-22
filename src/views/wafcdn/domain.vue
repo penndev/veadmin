@@ -2,11 +2,7 @@
   <!-- 顶部筛选框 -->
   <el-form :inline="true">
     <el-form-item label="名称">
-      <el-input
-        v-model="table.query.name"
-        placeholder="名称"
-        clearable
-      />
+      <el-input v-model="table.query.name" placeholder="名称" clearable />
     </el-form-item>
     <el-form-item label="站点ID">
       <el-input
@@ -17,18 +13,10 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button
-        type="primary"
-        icon="search"
-        @click="table.handleTableData"
-      >
+      <el-button type="primary" icon="search" @click="table.handleTableData">
         查询
       </el-button>
-      <el-button
-        type="info"
-        icon="Refresh"
-        @click="table.handleQueryRefresh"
-      >
+      <el-button type="info" icon="Refresh" @click="table.handleQueryRefresh">
         重置
       </el-button>
     </el-form-item>
@@ -39,20 +27,17 @@
     <!-- 数据操作按钮 -->
     <el-row>
       <el-button
-        :icon="table.selectStat? 'SemiSelect':'Select'"
-        @click="(table.selectStat = !table.selectStat)?'':tableRef.clearSelection()"
+        :icon="table.selectStat ? 'SemiSelect' : 'Select'"
+        @click="
+          (table.selectStat = !table.selectStat)
+            ? ''
+            : tableRef.clearSelection()
+        "
       />
-      <el-button
-        v-if="table.selectStat"
-        @click="table.handleInvertSelection"
-      >
+      <el-button v-if="table.selectStat" @click="table.handleInvertSelection">
         反选
       </el-button>
-      <el-button
-        type="primary"
-        icon="Plus"
-        @click="dialog.handleDialogAdd"
-      >
+      <el-button type="primary" icon="Plus" @click="dialog.handleDialogAdd">
         新增
       </el-button>
     </el-row>
@@ -63,49 +48,25 @@
       :data="table.data"
       @sort-change="table.handleSortChange"
     >
-      <el-table-column
-        v-if="table.selectStat"
-        type="selection"
-        width="50"
-      />
-      <el-table-column
-        label="ID"
-        prop="id"
-        width="80"
-        sortable="custom"
-      />
-      <el-table-column
-        label="域名"
-        prop="name"
-        align="center"
-      />
-      <el-table-column
-        label="站点ID"
-        prop="SiteId"
-        sortable="custom"
-      />
-      <el-table-column
-        label="HTTPS"
-        align="center"
-      >
+      <el-table-column v-if="table.selectStat" type="selection" width="50" />
+      <el-table-column label="ID" prop="id" width="80" sortable="custom" />
+      <el-table-column label="域名" prop="name" align="center" />
+      <el-table-column label="站点ID" prop="SiteId" sortable="custom" />
+      <el-table-column label="HTTPS" align="center">
         <template #default="scope">
-          <el-tag :type="scope.row.ssl?'':'danger'">
-            {{ scope.row.ssl ? "启用":"禁用" }}
+          <el-tag :type="scope.row.ssl ? '' : 'danger'">
+            {{ scope.row.ssl ? "启用" : "禁用" }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        label="强制HTTPS"
-        align="center"
-      >
+      <el-table-column label="强制HTTPS" align="center">
         <template #default="scope">
-          <el-tag>{{ scope.row.sslforce ? "HTTP跳转HTTPS":"允许HTTP访问" }}</el-tag>
+          <el-tag>{{
+            scope.row.sslforce ? "HTTP跳转HTTPS" : "允许HTTP访问"
+          }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        label="私钥"
-        align="center"
-      >
+      <el-table-column label="私钥" align="center">
         <template #default="scope">
           <el-tooltip
             v-if="scope.row.privatekey"
@@ -117,35 +78,23 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column
-        label="证书"
-        align="center"
-      >
+      <el-table-column label="证书" align="center">
         <template #default="scope">
           <el-tooltip
             v-if="scope.row.publickey"
             raw-content
-            :content="'<pre>' + scope.row.publickey+ '</pre>'"
+            :content="'<pre>' + scope.row.publickey + '</pre>'"
             placement="top"
           >
             <el-link>查看证书</el-link>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="updatedAt"
-        label="最近更新"
-      />
+      <el-table-column prop="updatedAt" label="最近更新" />
 
-      <el-table-column
-        prop="createdAt"
-        label="创建日期"
-      />
+      <el-table-column prop="createdAt" label="创建日期" />
 
-      <el-table-column
-        fixed="right"
-        label="操作"
-      >
+      <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button
             link
@@ -165,7 +114,7 @@
       </el-table-column>
     </el-table>
 
-    <br>
+    <br />
 
     <Pagination
       v-model:page-size="table.query.limit"
@@ -190,22 +139,13 @@
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-form-item
-        label="域名"
-        prop="name"
-      >
+      <el-form-item label="域名" prop="name">
         <el-input v-model="dialog.form.name" />
       </el-form-item>
-      <el-form-item
-        label="绑定站点"
-        prop="SiteId"
-      >
+      <el-form-item label="绑定站点" prop="SiteId">
         <el-input-number v-model="dialog.form.SiteId" />
       </el-form-item>
-      <el-form-item
-        label="HTTPS访问"
-        prop="ssl"
-      >
+      <el-form-item label="HTTPS访问" prop="ssl">
         <el-switch
           v-model="dialog.form.ssl"
           inline-prompt
@@ -213,10 +153,7 @@
           inactive-icon="Close"
         />
       </el-form-item>
-      <el-form-item
-        label="强制HTTPS访问"
-        prop="ssl"
-      >
+      <el-form-item label="强制HTTPS访问" prop="ssl">
         <el-switch
           v-model="dialog.form.sslforce"
           inline-prompt
@@ -226,26 +163,20 @@
       </el-form-item>
       <el-row>
         <el-col :span="12">
-          <el-form-item
-            label="私钥"
-            prop="privatekey"
-          >
+          <el-form-item label="私钥" prop="privatekey">
             <el-input
               v-model="dialog.form.privatekey"
-              :autosize="{ minRows: 4, maxRows: 30}"
+              :autosize="{ minRows: 4, maxRows: 30 }"
               resize="vertical"
               type="textarea"
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item
-            label="证书"
-            prop="publickey"
-          >
+          <el-form-item label="证书" prop="publickey">
             <el-input
               v-model="dialog.form.publickey"
-              :autosize="{ minRows: 4, maxRows: 30}"
+              :autosize="{ minRows: 4, maxRows: 30 }"
               resize="vertical"
               type="textarea"
             />
@@ -257,24 +188,23 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="dialog.handleSubmitForm"
-        >确定</el-button>
+        <el-button type="primary" @click="dialog.handleSubmitForm"
+          >确定</el-button
+        >
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 // import api
-import { getDomain, postDomain, putDomain, deleteDomain } from '@/apis/wafcdn'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import Pagination from '@/components/Pagination.vue'
+import { getDomain, postDomain, putDomain, deleteDomain } from "@/apis/wafcdn";
+import { ElMessage, ElMessageBox } from "element-plus";
+import Pagination from "@/components/Pagination.vue";
 
-const tableRef = ref()
+const tableRef = ref();
 
 const table = ref({
   selectStat: false,
@@ -283,110 +213,111 @@ const table = ref({
     limit: 20,
     page: 1,
     order: null,
-    name: null
+    name: null,
   },
   data: [],
   handleTableData: () => {
     getDomain(table.value.query).then((result) => {
-      table.value.data = result.data
-      table.value.total = result.total
-    })
+      table.value.data = result.data;
+      table.value.total = result.total;
+    });
   },
-  handleQueryRefresh: (value) => {
-    table.value.query.name = null
-    table.value.query.order = null
-    table.value.handleTableData()
+  handleQueryRefresh: () => {
+    table.value.query.name = null;
+    table.value.query.order = null;
+    table.value.handleTableData();
   },
   handleChangePage: (value) => {
-    table.value.query.page = value
-    table.value.handleTableData()
+    table.value.query.page = value;
+    table.value.handleTableData();
   },
   handleChangeLimit: (value) => {
-    table.value.query.limit = value
-    table.value.handleTableData()
+    table.value.query.limit = value;
+    table.value.handleTableData();
   },
-  handleSortChange: ({ column, prop, order }) => {
-    let orderSymbol = ''
-    if (order === 'descending') {
-      orderSymbol = '-'
-    } else if (order === 'ascending') {
-      orderSymbol = '+'
+  handleSortChange: ({ _, prop, order }) => {
+    let orderSymbol = "";
+    if (order === "descending") {
+      orderSymbol = "-";
+    } else if (order === "ascending") {
+      orderSymbol = "+";
     }
-    table.value.query.order = orderSymbol + prop
-    table.value.handleTableData()
+    table.value.query.order = orderSymbol + prop;
+    table.value.handleTableData();
   },
   handleInvertSelection: () => {
     table.value.data.forEach((row) => {
-      tableRef.value.toggleRowSelection(row)
-    })
-  }
-})
+      tableRef.value.toggleRowSelection(row);
+    });
+  },
+});
 
 // dialog 的 element 实例
-const dialogRef = ref(null)
+const dialogRef = ref(null);
 
 const dialog = ref({
   visible: false,
-  title: 'dialog',
+  title: "dialog",
   form: {},
   formRule: {
     name: [
-      { required: true, message: '域名', trigger: 'blur' },
-      { min: 3, message: '域名名最少为3个字符', trigger: 'blur' }
-    ]
+      { required: true, message: "域名", trigger: "blur" },
+      { min: 3, message: "域名名最少为3个字符", trigger: "blur" },
+    ],
   },
-  formAction: 'add', // add|edit
+  formAction: "add", // add|edit
   handleDialogAdd: () => {
-    dialog.value.title = '创建数据'
-    dialog.value.visible = true
-    dialog.value.formAction = 'add'
-    dialog.value.form = {}
+    dialog.value.title = "创建数据";
+    dialog.value.visible = true;
+    dialog.value.formAction = "add";
+    dialog.value.form = {};
   },
   handleDialogEdit: (row) => {
-    dialog.value.title = '编辑数据'
-    dialog.value.visible = true
-    dialog.value.formAction = 'edit'
-    dialog.value.form = row
+    dialog.value.title = "编辑数据";
+    dialog.value.visible = true;
+    dialog.value.formAction = "edit";
+    dialog.value.form = row;
   },
-  handleSubmitForm: () => { // 提交数据
+  handleSubmitForm: () => {
+    // 提交数据
     dialogRef.value.validate((validate) => {
-      if (validate) { // 判断表单是否验证通过。
-        if (dialog.value.formAction === 'add') {
+      if (validate) {
+        // 判断表单是否验证通过。
+        if (dialog.value.formAction === "add") {
           postDomain(dialog.value.form).then((result) => {
-            dialog.value.visible = false
-            ElMessage.info(result)
-            table.value.handleTableData()
-          })
-        } else if (dialog.value.formAction === 'edit') {
+            dialog.value.visible = false;
+            ElMessage.info(result);
+            table.value.handleTableData();
+          });
+        } else if (dialog.value.formAction === "edit") {
           putDomain(dialog.value.form).then((result) => {
-            dialog.value.visible = false
-            ElMessage.info(result)
-            table.value.handleTableData()
-          })
+            dialog.value.visible = false;
+            ElMessage.info(result);
+            table.value.handleTableData();
+          });
         } else {
-          ElMessage.error('提交错误')
+          ElMessage.error("提交错误");
         }
       } else {
-        ElMessage.error('请输入正确的数据！')
+        ElMessage.error("请输入正确的数据！");
       }
-    })
+    });
   },
   handleDialogDelete: (id) => {
-    ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, '警告', {
-      confirmButtonText: '删除',
-      cancelButtonText: '取消',
-      type: 'warning'
+    ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, "警告", {
+      confirmButtonText: "删除",
+      cancelButtonText: "取消",
+      type: "warning",
     }).then(() => {
       deleteDomain({ id }).then((result) => {
-        ElMessage.warning(result)
-        table.value.handleTableData()
-      })
-    })
-  }
-})
+        ElMessage.warning(result);
+        table.value.handleTableData();
+      });
+    });
+  },
+});
 
-table.value.handleTableData()
-
+table.value.handleTableData();
 </script>
 
 <style scoped>

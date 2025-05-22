@@ -12,14 +12,8 @@
       :class="{ 'ea-aside-collapse': layout.collapse }"
     >
       <div class="logo">
-        <img
-          class="logo-img"
-          src="/logo.svg"
-        >
-        <h2
-          v-if="!layout.collapse"
-          class="logo-title"
-        >
+        <img class="logo-img" src="/logo.svg" />
+        <h2 v-if="!layout.collapse" class="logo-title">
           {{ title }}
         </h2>
       </div>
@@ -50,18 +44,17 @@
 </template>
 
 <script setup>
-import { AsideBar, NavBar, HistoryBar } from './components'
-import { layoutStore } from '@/stores'
+import { AsideBar, NavBar, HistoryBar } from "./components";
+import { layoutStore } from "@/stores";
 // 加载网络请求时要打开loading dialog 防止多操作
-import { viewLoading } from '@/stores/reactive'
+import { viewLoading } from "@/stores/reactive";
 
 // 通用组件布局
-const layout = layoutStore()
+const layout = layoutStore();
 
 const handleCollapse = () => {
-  layout.collapse = !layout.collapse
-}
+  layout.collapse = !layout.collapse;
+};
 
-const title = import.meta.env.VE_NAME
-
+const title = import.meta.env.VE_NAME;
 </script>

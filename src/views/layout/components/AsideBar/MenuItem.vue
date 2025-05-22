@@ -19,10 +19,7 @@
 
     <!-- 2,优先处理单菜单，不存在children 则属于单菜单 -->
     <template v-else-if="!item.children">
-      <el-menu-item
-        v-if="handleShow(item.path)"
-        :index="item.path"
-      >
+      <el-menu-item v-if="handleShow(item.path)" :index="item.path">
         <el-icon v-if="item.meta.icon">
           <component :is="item.meta.icon" />
         </el-icon>
@@ -34,10 +31,7 @@
 
     <!-- 菜单组，需要嵌套循环 -->
     <template v-else-if="item.children">
-      <el-sub-menu
-        v-if="handleShow(item.path)"
-        :index="item.path"
-      >
+      <el-sub-menu v-if="handleShow(item.path)" :index="item.path">
         <template #title>
           <el-icon v-if="item.meta.icon">
             <component :is="item.meta.icon" />
@@ -63,7 +57,11 @@
   </template>
   <!-- 处理特殊layout单路由 -->
   <template
-    v-else-if="item.children && item.children.length == 1 && handleShow(item.children[0].path)"
+    v-else-if="
+      item.children &&
+      item.children.length == 1 &&
+      handleShow(item.children[0].path)
+    "
   >
     <el-menu-item :index="item.children[0].path">
       <el-icon v-if="item.children[0].meta.icon">
@@ -76,24 +74,23 @@
   </template>
 </template>
 <script setup>
-
 const props = defineProps({
   item: { type: Object, default: () => ({}) },
   allow: {
     type: [String, Array],
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
 const handleShow = (path) => {
-  if (props.allow === '*') {
-    return true
+  if (props.allow === "*") {
+    return true;
   } else {
-    return props.allow.includes(path)
+    return props.allow.includes(path);
   }
-}
+};
 
 const handleOpen = (url) => {
-  window.open(url, '_bank')
-}
+  window.open(url, "_bank");
+};
 </script>

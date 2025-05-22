@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import replace from '@rollup/plugin-replace'
-import eslint from 'vite-plugin-eslint'
-import { resolve } from 'path'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import replace from "@rollup/plugin-replace";
+import eslint from "vite-plugin-eslint";
+import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,16 +12,16 @@ export default defineConfig(({ mode }) => {
       eslint({ fix: true }),
       replace({
         preventAssignment: false,
-        'import.meta.env.MODE': JSON.stringify(mode)
-      })
+        "import.meta.env.MODE": JSON.stringify(mode),
+      }),
     ],
     resolve: {
       alias: {
-        '@': resolve(__dirname, './src'),
-        path: 'path-browserify'
-      }
+        "@": resolve(__dirname, "./src"),
+        path: "path-browserify",
+      },
     },
-    envPrefix: ['VITE', 'VE'],
-    base: ''
-  }
-})
+    envPrefix: ["VITE", "VE"],
+    base: "",
+  };
+});
