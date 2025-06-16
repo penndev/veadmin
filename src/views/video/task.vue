@@ -132,7 +132,7 @@ import { ref } from "vue";
 // import api
 import { listTask, deleteTask, progressTask } from "@/apis/video";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { byteFormat } from "penndev";
+import { byteFormat } from "penndev/utils";
 
 const table = ref({
   total: 0,
