@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "module": "es2020",
+    "moduleResolution": "bundler",
     "jsx": "preserve",
     "baseUrl": "./",
     "paths": {

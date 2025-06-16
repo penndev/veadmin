@@ -62,7 +62,7 @@
       </el-table-column>
       <el-table-column label="文件大小" align="center">
         <template #default="scope">
-          <el-link>{{ fileSizeFormat(scope.row.Size) }}</el-link>
+          <el-link>{{ byteFormat(scope.row.Size) }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="访问日期" align="center">
@@ -107,7 +107,7 @@ import { ref } from "vue";
 // import api
 import { getCache, deleteCache } from "@/apis/wafcdn";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { fileSizeFormat, dateFormat } from "@/utils";
+import { byteFormat, dateFormat } from "penndev/utils";
 
 const tableRef = ref();
 

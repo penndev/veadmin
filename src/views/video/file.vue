@@ -74,7 +74,7 @@
             码率 {{ scope.row.videoBitrate }}
           </el-tag>
           <el-tag class="ea-tag" type="success">
-            大小 {{ fileSizeFormat(scope.row.fileSize) }}
+            大小 {{ byteFormat(scope.row.fileSize) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -243,7 +243,7 @@ import {
   listTranscode,
 } from "@/apis/video";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { fileSizeFormat, timeFormat } from "@/utils";
+import { byteFormat, timeFormat } from "penndev/utils";
 
 const table = ref({
   total: 0,

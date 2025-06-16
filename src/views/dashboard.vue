@@ -7,7 +7,7 @@
       icon="FolderOpened"
       icon-color="#40c9c6"
       title="文件大小"
-      :text="fileSizeFormat(panelGroup.fileSize ?? 0)"
+      :text="byteFormat(panelGroup.fileSize ?? 0)"
     />
 
     <PanelCard
@@ -27,7 +27,7 @@
       icon="DocumentCopy"
       icon-color="#fac858"
       title="任务数量"
-      :text="fileSizeFormat(panelGroup.taskTotal ?? 0)"
+      :text="byteFormat(panelGroup.taskTotal ?? 0)"
     />
 
     <PanelCard
@@ -60,7 +60,7 @@
 <script setup>
 // import 接口
 import { getDashboardTotal } from "@/apis/dashboard";
-import { fileSizeFormat } from "@/utils";
+import { byteFormat } from "penndev/utils";
 import PanelCard from "@/components/PanelCard.vue";
 import { ref, onMounted } from "vue";
 import { init } from "echarts";

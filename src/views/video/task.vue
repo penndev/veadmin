@@ -76,7 +76,7 @@
       <el-table-column label="输出文件路径" min-width="260" align="center">
         <template #default="scope">
           <el-link @click="copyPath(scope.row.outFile)">
-            {{ scope.row.outFile }} [{{ fileSizeFormat(scope.row.outSize) }}]
+            {{ scope.row.outFile }} [{{ byteFormat(scope.row.outSize) }}]
           </el-link>
         </template>
       </el-table-column>
@@ -132,7 +132,7 @@ import { ref } from "vue";
 // import api
 import { listTask, deleteTask, progressTask } from "@/apis/video";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { fileSizeFormat } from "@/utils";
+import { byteFormat } from "penndev";
 
 const table = ref({
   total: 0,
