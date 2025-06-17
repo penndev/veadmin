@@ -1,1 +1,0 @@
-import{_ as t,c as o,o as s,a as n}from"./index-9i0__rqG.js";const a={},c={style:{display:"flex","justify-content":"center","align-items":"center",height:"100vh"}};function r(i,e){return s(),o("div",c,e[0]||(e[0]=[n("h1",{style:{display:"block",margin:"20px auto"}},"NotFound",-1)]))}const _=t(a,[["render",r]]);export{_ as default};
