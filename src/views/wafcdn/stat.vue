@@ -84,7 +84,7 @@
 import { stat } from "@/apis/wafcdn";
 import * as echarts from "echarts";
 import { ref, onMounted, onUnmounted } from "vue";
-import { byteBPSFormat, dateFormat, fileSizeFormat } from "@/utils/index";
+import { byteBPSFormat, timeFormat, fileSizeFormat } from "@/utils/index";
 
 const table = ref({
   cpu: {
@@ -168,7 +168,7 @@ const handleReFlushStat = () => {
     table.value.disk.used = fileSizeFormat(result.disk.used);
     table.value.disk.total = fileSizeFormat(result.disk.total);
     // 配置
-    table.value.conf.time = dateFormat("Y-m-d H:i:s", result.conf.time);
+    table.value.conf.time = timeFormat("Y-m-d H:i:s", result.conf.time);
     table.value.conf.version = result.conf.version;
     // 缓存文件
     table.value.file.today = result.file.today;

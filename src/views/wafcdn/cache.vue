@@ -67,14 +67,14 @@
       </el-table-column>
       <el-table-column label="访问日期" align="center">
         <template #default="scope">
-          <el-link>{{ dateFormat("Y-m-d H:i:s", scope.row.Accessed) }}</el-link>
+          <el-link>{{ timeFormat("Y-m-d H:i:s", scope.row.Accessed) }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="过期时间" align="center">
         <template #default="scope">
           <el-tooltip :content="'创建：' + scope.row.CreatedAt" placement="top">
             <el-link>{{
-              dateFormat("Y-m-d H:i:s", scope.row.Expired)
+              timeFormat("Y-m-d H:i:s", scope.row.Expired)
             }}</el-link>
           </el-tooltip>
         </template>
@@ -107,7 +107,7 @@ import { ref } from "vue";
 // import api
 import { getCache, deleteCache } from "@/apis/wafcdn";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { byteFormat, dateFormat } from "penndev/utils";
+import { byteFormat, timeFormat } from "penndev/utils";
 
 const tableRef = ref();
 
