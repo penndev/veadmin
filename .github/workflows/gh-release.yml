@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
+  Release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,11 +20,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Build
-        run: | 
-            npm install
-            npm run build:wafcdn
-            tar -zcf dist dist-wafcdn.tar.gz
-
+        run: |
+          npm install
+          npm run build:wafcdn
+      - name: Archive
+        run: tar -zcf dist dist-wafcdn.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v2
         with:

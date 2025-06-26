@@ -2,10 +2,8 @@ name: gh-pages
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-    
+    branches: ["main"]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +11,7 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
-      - uses: actions/checkout@v4 
+      - uses: actions/checkout@v4
       - name: Setup Nodejs ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -22,9 +20,17 @@ jobs:
         run: |
           npm install
           npm run build
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Upload static site to Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-        
+          path: ./dist # 就是之前 peaceiris 的 publish_dir
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
