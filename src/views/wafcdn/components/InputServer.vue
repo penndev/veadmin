@@ -17,12 +17,9 @@
       v-model="port"
       placeholder="端口"
       type="number"
-      :min="1"
-      :max="65535"
       style="width: 80px"
       @input="updateFullUrl"
     />
-
     <el-tag v-if="showFullUrl" type="info" style="margin-left: 12px">
       完整URL: {{ modelValue }}
     </el-tag>
@@ -30,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -43,30 +40,35 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
+// 解析URL到各个部分
 const protocol = ref("");
 const domain = ref("");
 const port = ref("");
-
-// 解析URL到各个部分
 const parseUrl = (url) => {
-  if (!url) return;
-
+  console.log(url);
   try {
     const urlObj = new URL(url);
     protocol.value = urlObj.protocol;
     domain.value = urlObj.hostname;
-    port.value = urlObj.port || 80;
+    if (urlObj.port == "") {
+      if (protocol.value == "http:") {
+        port.value = "80";
+      } else {
+        port.value = "443";
+      }
+    } else {
+      port.value = urlObj.port;
+    }
   } catch {
     // 如果URL无效，使用默认值
     protocol.value = "http:";
     domain.value = "";
-    port.value = "";
+    port.value = 80;
   }
 };
 
-// 更新完整URL
+// 更新完整URL到父级
+const emit = defineEmits(["update:modelValue"]);
 const updateFullUrl = () => {
   const url = protocol.value + "//" + domain.value + ":" + port.value;
   emit("update:modelValue", url);
@@ -76,12 +78,4 @@ const updateFullUrl = () => {
 onMounted(() => {
   parseUrl(props.modelValue);
 });
-
-// 监听外部URL变化
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    parseUrl(newVal);
-  },
-);
 </script>

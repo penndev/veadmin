@@ -101,7 +101,7 @@
       background
       layout="total, sizes, prev, pager, next"
       :total="table.total"
-      :page-size="table.query.limit"
+      :default-page-size="table.query.limit"
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />

@@ -68,6 +68,31 @@ export const deleteDomain = (params) => {
   });
 };
 
+export const getCache = (params) => {
+  return service({
+    url: "/wafcdn/cache",
+    method: "get",
+    params,
+  });
+};
+
+export const deleteCache = (params) => {
+  return service({
+    url: "/wafcdn/cache",
+    method: "delete",
+    params,
+    paramsSerializer: function handleQuery(query) {
+      return Object.entries(query)
+        .map(([key, value], _) =>
+          Array.isArray(value)
+            ? `${key}=${value.join("&" + key + "=")}`
+            : `${key}=${value}`,
+        )
+        .join("&");
+    },
+  });
+};
+
 // ===============================
 
 // 上传文件前置检查
@@ -77,22 +102,6 @@ export const stat = (params) => {
     method: "get",
     params,
     viewLoading: false,
-  });
-};
-
-export const getCache = (params) => {
-  return service({
-    url: "/cache",
-    method: "get",
-    params,
-  });
-};
-
-export const deleteCache = (params) => {
-  return service({
-    url: "/cache",
-    method: "delete",
-    params,
   });
 };
 

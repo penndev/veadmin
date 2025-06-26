@@ -51,32 +51,19 @@
     <!-- 数据table -->
     <el-table ref="tableRef" :data="table.data" @sort-change="handleSortChange">
       <el-table-column v-if="table.selectStat" type="selection" width="50" />
-      <el-table-column label="站点" prop="SiteID" />
-
-      <el-table-column label="路径" align="center">
-        <template #default="scope">
-          <el-tooltip :content="scope.row.File" placement="top">
-            <el-link>{{ scope.row.Path }}</el-link>
+      <el-table-column label="ID" prop="id" />
+      <el-table-column label="站点ID" prop="site_id" />
+      <el-table-column label="方法" prop="method"> </el-table-column>
+      <el-table-column prop="路径" label="请求地址">
+        <template #default="{ row }">
+          <el-tooltip placement="top" :content="row.uri" effect="dark">
+            <el-text truncated>{{ row.uri }}</el-text>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="文件大小" align="center">
+      <el-table-column label="缓存日期" align="center">
         <template #default="scope">
-          <el-link>{{ byteFormat(scope.row.Size) }}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="访问日期" align="center">
-        <template #default="scope">
-          <el-link>{{ timeFormat("Y-m-d H:i:s", scope.row.Accessed) }}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="过期时间" align="center">
-        <template #default="scope">
-          <el-tooltip :content="'创建：' + scope.row.CreatedAt" placement="top">
-            <el-link>{{
-              timeFormat("Y-m-d H:i:s", scope.row.Expired)
-            }}</el-link>
-          </el-tooltip>
+          <el-link>{{ timeFormat("Y-m-d H:i:s", scope.row.time) }}</el-link>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="65">
@@ -87,14 +74,12 @@
         </template>
       </el-table-column>
     </el-table>
-
     <br />
-
     <el-pagination
       background
       layout="total, sizes, prev, pager, next"
       :total="table.total"
-      :page-size="table.query.limit"
+      :default-page-size="table.query.limit"
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />
@@ -164,12 +149,12 @@ const handleTableData = () => {
 };
 
 const handleDialogDelete = (row) => {
-  ElMessageBox.confirm(`请仔细确认是否删除数据[${row.File}]?`, "警告", {
+  ElMessageBox.confirm(`请仔细确认是否删除数据[${row.id}]?`, "警告", {
     confirmButtonText: "删除",
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteCache({ file: row.File }).then((result) => {
+    deleteCache({ ids: [row.id] }).then((result) => {
       ElMessage.warning(result);
       handleTableData();
     });
@@ -178,19 +163,16 @@ const handleDialogDelete = (row) => {
 
 const handleDeleteMore = () => {
   const rows = tableRef.value.getSelectionRows();
-  let files = "";
+  let ids = [];
   rows.forEach((row) => {
-    if (files !== "") {
-      files += ",";
-    }
-    files += row.File;
+    ids.push(row.id);
   });
-  ElMessageBox.confirm(`请仔细确认是否删除 ${rows.length} 条数据?`, "警告", {
+  ElMessageBox.confirm(`请仔细确认是否删除 ${ids.length} 条数据?`, "警告", {
     confirmButtonText: "删除",
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteCache({ file: files }).then((result) => {
+    deleteCache({ ids }).then((result) => {
       ElMessage.warning(result);
       handleTableData();
     });

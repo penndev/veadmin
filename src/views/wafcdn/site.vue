@@ -75,7 +75,7 @@
       background
       layout="total, sizes, prev, pager, next"
       :total="table.total"
-      :page-size="table.query.limit"
+      :default-page-size="table.query.limit"
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />
@@ -209,7 +209,6 @@
               </div>
             </template>
             <el-form-item label="主机" prop="proxy.server">
-              <!-- <el-input v-model="dialog.form.proxy.server" /> -->
               <input-server v-model="dialog.form.proxy.server" />
             </el-form-item>
             <el-form-item label="Host" prop="proxy.host">
@@ -257,15 +256,15 @@
                 <span>连接池</span>
               </div>
             </template>
-            <el-form-item label="保活时间" prop="proxy.keepalive_timeout">
+            <el-form-item label="连接数" prop="proxy.keepalive_requests">
               <el-input-number
-                v-model="dialog.form.proxy.keepalive_timeout"
+                v-model="dialog.form.proxy.keepalive_requests"
                 :controls="false"
               />
             </el-form-item>
-            <el-form-item label="保活数量" prop="proxy.keepalive_requests">
+            <el-form-item label="超时时间" prop="proxy.keepalive_timeout">
               <el-input-number
-                v-model="dialog.form.proxy.keepalive_requests"
+                v-model="dialog.form.proxy.keepalive_timeout"
                 :controls="false"
               />
             </el-form-item>
@@ -296,8 +295,8 @@
                     --el-switch-on-color: #13ce66;
                     --el-switch-off-color: #ff4949;
                   "
-                  active-text="忽略GET参数"
-                  inactive-text="保留GET参数"
+                  active-text="保留GET参数"
+                  inactive-text="忽略GET参数"
                 />
               </el-col>
               <el-col :span="3">

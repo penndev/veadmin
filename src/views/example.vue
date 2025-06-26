@@ -79,7 +79,7 @@
     <br />
 
     <Pagination
-      v-model:page-size="table.query.limit"
+      v-model:default-page-size="table.query.limit"
       :total="table.total"
       @current-change="table.handleChangePage"
       @size-change="table.handleChangeLimit"

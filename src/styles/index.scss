@@ -81,6 +81,11 @@
 
 }
 
+// 优化部分style
+.el-popper {
+  max-width: 80%;
+}
+
 // 对小屏幕优化
 @media screen and (max-width: 768px) {
 

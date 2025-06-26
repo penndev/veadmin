@@ -69,9 +69,9 @@
       <el-table-column label="私钥" align="center">
         <template #default="scope">
           <el-tooltip
-            v-if="scope.row.privatekey"
+            v-if="scope.row.privateKey"
             raw-content
-            :content="'<pre>' + scope.row.privatekey + '</pre>'"
+            :content="'<pre>' + scope.row.privateKey + '</pre>'"
             placement="top"
           >
             <el-link>查看密钥</el-link>
@@ -81,9 +81,9 @@
       <el-table-column label="证书" align="center">
         <template #default="scope">
           <el-tooltip
-            v-if="scope.row.publickey"
+            v-if="scope.row.publicKey"
             raw-content
-            :content="'<pre>' + scope.row.publickey + '</pre>'"
+            :content="'<pre>' + scope.row.publicKey + '</pre>'"
             placement="top"
           >
             <el-link>查看证书</el-link>
@@ -117,7 +117,7 @@
     <br />
 
     <Pagination
-      v-model:page-size="table.query.limit"
+      v-model:default-page-size="table.query.limit"
       :total="table.total"
       @current-change="table.handleChangePage"
       @size-change="table.handleChangeLimit"
@@ -163,9 +163,9 @@
       </el-form-item>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="私钥" prop="privatekey">
+          <el-form-item label="私钥" prop="privateKey">
             <el-input
-              v-model="dialog.form.privatekey"
+              v-model="dialog.form.privateKey"
               :autosize="{ minRows: 4, maxRows: 30 }"
               resize="vertical"
               type="textarea"
@@ -173,9 +173,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="证书" prop="publickey">
+          <el-form-item label="证书" prop="publicKey">
             <el-input
-              v-model="dialog.form.publickey"
+              v-model="dialog.form.publicKey"
               :autosize="{ minRows: 4, maxRows: 30 }"
               resize="vertical"
               type="textarea"

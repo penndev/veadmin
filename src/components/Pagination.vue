@@ -2,7 +2,7 @@
   <el-pagination
     background
     layout="total, sizes, prev, pager, next"
-    :page-size="pageSize"
+    :default-page-size="pageSize"
     @size-change="handleChangeLimit"
   />
 </template>
