@@ -1,0 +1,31 @@
+name: Main
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build
+        run: | 
+            npm install
+            npm run build:wafcdn
+            tar -zcf dist dist-wafcdn.tar.gz
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist-wafcdn.tar.gz

@@ -50,7 +50,7 @@ const routes = [
 // > wafcdn === wafcdn 来使 rollup来优化代码
 if (import.meta.env.MODE === "wafcdn") {
   wafcdn.path = "/";
-  wafcdn.redirect = import.meta.env.VE_INDEX ?? "/stat";
+  wafcdn.redirect = "/domain";
   routes.push(formatRouteItem(wafcdn, "/"));
 } else {
   routes.push(

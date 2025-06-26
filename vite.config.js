@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => {
       eslint({ fix: true }),
       replace({
         preventAssignment: false,
-        // 通过静态打包的方式来缩小文件的大小
+        // 通过静态打包的方式来排除不需要的文件
+        // 因为动态打包会将所有的依赖都打包到一起
         "import.meta.env.MODE": JSON.stringify(mode),
       }),
     ],

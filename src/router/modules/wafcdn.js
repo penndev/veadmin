@@ -3,15 +3,9 @@ import Layout from "@/views/layout/index.vue";
 export const wafcdn = {
   path: "/wafcdn",
   component: Layout,
-  redirect: "/wafcdn/stat",
+  redirect: "/wafcdn/domain",
   meta: { title: "WAFCDN", icon: "Postcard" },
   children: [
-    // {
-    //   path: 'stat',
-    //   component: () => import('@/views/wafcdn/stat.vue'),
-    //   name: 'WafCdnStat',
-    //   meta: { title: '状态总览', icon: 'Odometer' }
-    // },
     {
       path: "domain",
       component: () => import("@/views/wafcdn/domain.vue"),
