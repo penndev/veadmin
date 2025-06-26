@@ -92,7 +92,7 @@ import { ref } from "vue";
 // import api
 import { getCache, deleteCache } from "@/apis/wafcdn";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { byteFormat, timeFormat } from "penndev/utils";
+import { timeFormat } from "penndev/utils";
 
 const tableRef = ref();
 
