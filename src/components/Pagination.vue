@@ -1,9 +1,8 @@
 <template>
   <el-pagination
-    background
     layout="total, sizes, prev, pager, next"
     :default-page-size="pageSize"
-    @size-change="handleChangeLimit"
+    @update:page-size="handleChangeLimit"
   />
 </template>
 
@@ -14,7 +13,11 @@ import { useRoute } from "vue-router";
 const pagination = paginationStore();
 
 const route = useRoute();
-const pageSize = defineModel("pageSize", { type: Number, required: true });
+const pageSize = defineModel("pageSize", {
+  type: Number,
+  required: false,
+  default: 20,
+});
 
 // 从初始化读取值
 if (
