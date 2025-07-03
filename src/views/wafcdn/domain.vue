@@ -200,7 +200,12 @@
 import { ref } from "vue";
 
 // import api
-import { getDomain, postDomain, putDomain, deleteDomain } from "@/apis/wafcdn";
+import {
+  getDomain,
+  postDomain,
+  putDomain,
+  deleteDomain,
+} from "@/apis/wafcdn/domain";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Pagination from "@/components/Pagination.vue";
 

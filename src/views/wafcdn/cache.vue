@@ -21,11 +21,19 @@
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-button
-      type="primary"
-      size="small"
-      :icon="table.selectStat ? 'SemiSelect' : 'Select'"
-      @click="table.selectStat = !table.selectStat"
+      :icon="table.selectStat ? 'Select' : 'SemiSelect'"
+      @click="
+        (table.selectStat = !table.selectStat) ? '' : tableRef.clearSelection()
+      "
     />
+
+    <el-button
+      v-if="table.selectStat"
+      size="small"
+      @click="tableRef.toggleAllSelection"
+    >
+      全选/全不选
+    </el-button>
     <el-button
       v-if="table.selectStat"
       size="small"
@@ -90,7 +98,7 @@
 import { ref } from "vue";
 
 // import api
-import { getCache, deleteCache } from "@/apis/wafcdn";
+import { getCache, deleteCache } from "@/apis/wafcdn/cache";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { timeFormat } from "penndev/utils";
 

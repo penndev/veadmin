@@ -1,8 +1,10 @@
 <template>
   <!-- 顶部筛选框 -->
   <div>
+    <OpenResty />
+    <br />
     <el-form :inline="true">
-      <el-form-item label="站点名称">
+      <el-form-item>
         <el-input
           v-model="table.query.remark"
           placeholder="站点名称"
@@ -71,11 +73,9 @@
 
     <br />
 
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next"
+    <Pagination
+      v-model:default-page-size="table.query.limit"
       :total="table.total"
-      :default-page-size="table.query.limit"
       @current-change="handleChangePage"
       @size-change="handleChangeLimit"
     />
@@ -389,9 +389,11 @@
 import { ref } from "vue";
 
 // import api
-import { getSite, postSite, putSite, deleteSite } from "@/apis/wafcdn";
+import { getSite, postSite, putSite, deleteSite } from "@/apis/wafcdn/site";
 import { ElMessage, ElMessageBox } from "element-plus";
 import InputServer from "./components/InputServer.vue";
+import Pagination from "@/components/Pagination.vue";
+import OpenResty from "./components/OpenResty.vue";
 
 const table = ref({
   query: {
@@ -400,6 +402,7 @@ const table = ref({
     remark: null,
   },
   data: [],
+  total: 0,
 });
 
 const handleChangePage = (value) => {

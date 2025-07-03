@@ -20,13 +20,16 @@
     <!-- 数据操作按钮 -->
     <el-row>
       <el-button
-        :icon="table.selectStat ? 'SemiSelect' : 'Select'"
+        :icon="table.selectStat ? 'Select' : 'SemiSelect'"
         @click="
           (table.selectStat = !table.selectStat)
             ? ''
             : tableRef.clearSelection()
         "
       />
+      <el-button v-if="table.selectStat" @click="tableRef.toggleAllSelection">
+        全选/全不选
+      </el-button>
       <el-button v-if="table.selectStat" @click="table.handleInvertSelection">
         反选
       </el-button>
@@ -170,6 +173,11 @@ const table = ref({
     }
     table.value.query.order = orderSymbol + prop;
     table.value.handleTableData();
+  },
+  handleAllSelection: () => {
+    table.value.data.forEach((row) => {
+      tableRef.value.toggleAllSelection(row);
+    });
   },
   handleInvertSelection: () => {
     table.value.data.forEach((row) => {

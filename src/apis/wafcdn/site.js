@@ -81,6 +81,7 @@ export const deleteCache = (params) => {
     url: "/wafcdn/cache",
     method: "delete",
     params,
+    // 覆盖默认的http参数get数组处理的问题。
     paramsSerializer: function handleQuery(query) {
       return Object.entries(query)
         .map(([key, value], _) =>
