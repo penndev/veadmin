@@ -2,11 +2,11 @@
   <el-card>
     <el-popover
       :content="statusData.versionInfo"
-      class="box-item"
-      placement="bottom"
+      width="80%"
+      placement="bottom-start"
     >
       <template #reference
-        ><el-tag effect="dark" type="success"
+        ><el-tag effect="dark" type="success" @click="loadStatus"
           >{{ statusData.version }}
         </el-tag></template
       >
@@ -56,7 +56,7 @@ const loadReload = () => {
 const loadStatus = () => {
   status({}).then((result) => {
     statusData.value.version = result.version;
-    statusData.value.version = result.info;
+    statusData.value.versionInfo = result.info;
     statusData.value.status = result.status;
   });
 };
