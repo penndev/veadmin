@@ -21,25 +21,16 @@
 
 > 使用`vue3`与`element-plus`作为基础框架，`vite`做打包工具，`pinia`做数据持久化，`axios`做api交互，`echarts`做图表数据展现。
 
-
 - PC 平板 移动设备适配
-
 - 菜单与权限管理
-
-- 两步验证（OTP）
-
 - 菜单搜索
-
 - 全屏模式
-
 - 暗夜模式
+- OTP校验
 
+...
 
-
-....
-
-
-已假设读者有足够的开发经验，如有疑问或建议欢迎随时与我互相[交流](mailto:pennilessfor@gmail.com?subject=veadmin)学习。
+如有疑问或建议欢迎随时与我互相[交流](mailto:pennilessfor@gmail.com?subject=veadmin)学习。
 
 ## 接口支持
 - mock接口： 免费托管在了 [postman](https://www.postman.com/)。

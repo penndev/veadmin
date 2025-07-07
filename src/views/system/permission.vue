@@ -82,7 +82,7 @@
 
     <br />
 
-    <el-pagination
+    <el-pagination-plus
       background
       layout="total, sizes, prev, pager, next"
       :total="table.total"

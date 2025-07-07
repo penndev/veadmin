@@ -2,6 +2,9 @@
   <!-- 顶部筛选框 -->
   <div>
     <el-form :inline="true">
+      <el-form-item label="站点">
+        <el-input-number v-model="table.query.site_id" placeholder="站点ID" />
+      </el-form-item>
       <el-form-item label="路径">
         <el-input v-model="table.query.path" placeholder="/url" clearable />
       </el-form-item>
@@ -83,7 +86,7 @@
       </el-table-column>
     </el-table>
     <br />
-    <el-pagination
+    <el-pagination-plus
       background
       layout="total, sizes, prev, pager, next"
       :total="table.total"

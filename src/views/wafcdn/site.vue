@@ -73,7 +73,7 @@
 
     <br />
 
-    <Pagination
+    <el-pagination-plus
       v-model:default-page-size="table.query.limit"
       :total="table.total"
       @current-change="handleChangePage"
@@ -392,7 +392,6 @@ import { ref } from "vue";
 import { getSite, postSite, putSite, deleteSite } from "@/apis/wafcdn/site";
 import { ElMessage, ElMessageBox } from "element-plus";
 import InputServer from "./components/InputServer.vue";
-import Pagination from "@/components/Pagination.vue";
 import OpenResty from "./components/OpenResty.vue";
 
 const table = ref({

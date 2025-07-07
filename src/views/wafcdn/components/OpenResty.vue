@@ -12,7 +12,7 @@
       >
     </el-popover>
     <el-tag type="primary" link v-if="statusData.status"> 已启动 </el-tag>
-    <el-tag type="error" link v-else>停止</el-tag>
+    <el-tag type="danger" link v-else>停止</el-tag>
     <el-button type="primary" @click="loadStart" link>启动</el-button>
     <el-button type="primary" @click="loadStop" link>停止</el-button>
     <el-button type="primary" @click="loadReload" link>重载</el-button>

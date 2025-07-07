@@ -25,3 +25,19 @@ export const deleteCache = (params) => {
     },
   });
 };
+
+export const getCacheDelete = (params) => {
+  return service({
+    url: "/wafcdn/cache/delete/list",
+    method: "get",
+    params,
+  });
+};
+
+export const putCacheDelete = (params) => {
+  return service({
+    url: "/wafcdn/cache/delete/list",
+    method: "put",
+    params,
+  });
+};

@@ -17,26 +17,6 @@
 
   <!-- 数据展示框 -->
   <el-main class="ea-table">
-    <!-- 数据操作按钮 -->
-    <el-row>
-      <el-button
-        :icon="table.selectStat ? 'Select' : 'SemiSelect'"
-        @click="
-          (table.selectStat = !table.selectStat)
-            ? ''
-            : tableRef.clearSelection()
-        "
-      />
-      <el-button v-if="table.selectStat" @click="tableRef.toggleAllSelection">
-        全选/全不选
-      </el-button>
-      <el-button v-if="table.selectStat" @click="table.handleInvertSelection">
-        反选
-      </el-button>
-      <el-button type="primary" icon="Plus" @click="dialog.handleDialogAdd">
-        新增
-      </el-button>
-    </el-row>
     <!-- 数据table -->
     <el-table
       ref="tableRef"
@@ -45,34 +25,22 @@
     >
       <el-table-column v-if="table.selectStat" type="selection" width="50" />
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
-      <el-table-column label="名称" prop="nickname" align="center" />
-      <el-table-column label="邮箱">
-        <template #default="scope">
-          <a target="_blank">{{ scope.row.email }}</a>
-        </template>
-      </el-table-column>
-      <el-table-column prop="updatedAt" label="最近更新" />
+      <el-table-column label="站点ID" prop="site_id" align="center" />
+      <el-table-column label="域名" prop="host" align="center" />
+      <el-table-column label="客户端IP" prop="remote_addr" align="center" />
+      <el-table-column-truncated label="访问来源" prop="http_referer" />
+      <el-table-column-truncated label="访问设备" prop="http_user_agent" />
+      <el-table-column label="请求网址" prop="request" align="center" />
+      <el-table-column label="请求方法" prop="request_method" align="center" />
+      <el-table-column label="请求时间" prop="request_time" align="center" />
+      <el-table-column label="响应状态" prop="status" align="center" />
+      <el-table-column label="请求大小" prop="bytes_received" align="center" />
+      <el-table-column label="返回大小" prop="bytes_sent" align="center" />
       <el-table-column prop="createdAt" label="创建日期" />
-      <el-table-column fixed="right" label="操作">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="dialog.handleDialogEdit(scope.row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="dialog.handleDialogDelete(scope.row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
+
     <br />
+
     <el-pagination-plus
       v-model:default-page-size="table.query.limit"
       :total="table.total"
@@ -114,15 +82,7 @@
 
 <script setup>
 import { ref } from "vue";
-
-// import api
-import {
-  getExample,
-  postExample,
-  putExample,
-  deleteExample,
-} from "@/apis/example";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { getLog } from "@/apis/wafcdn/log";
 
 const tableRef = ref();
 
@@ -137,7 +97,7 @@ const table = ref({
   },
   data: [],
   handleTableData: () => {
-    getExample(table.value.query).then((result) => {
+    getLog(table.value.query).then((result) => {
       table.value.data = result.data;
       table.value.total = result.total;
     });
@@ -202,43 +162,6 @@ const dialog = ref({
     dialog.value.visible = true;
     dialog.value.formAction = "edit";
     dialog.value.form = row;
-  },
-  handleSubmitForm: () => {
-    // 提交数据
-    dialogRef.value.validate((validate) => {
-      if (validate) {
-        // 判断表单是否验证通过。
-        if (dialog.value.formAction === "add") {
-          postExample(dialog.value.form).then((result) => {
-            dialog.value.visible = false;
-            ElMessage.info(result);
-            table.value.handleTableData();
-          });
-        } else if (dialog.value.formAction === "edit") {
-          putExample(dialog.value.form).then((result) => {
-            dialog.value.visible = false;
-            ElMessage.info(result);
-            table.value.handleTableData();
-          });
-        } else {
-          ElMessage.error("提交错误");
-        }
-      } else {
-        ElMessage.error("请输入正确的数据！");
-      }
-    });
-  },
-  handleDialogDelete: (id) => {
-    ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, "警告", {
-      confirmButtonText: "删除",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(() => {
-      deleteExample({ id }).then((result) => {
-        ElMessage.warning(result);
-        table.value.handleTableData();
-      });
-    });
   },
 });
 

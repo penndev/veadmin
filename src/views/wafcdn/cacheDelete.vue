@@ -4,7 +4,6 @@
     <el-form-item label="名称">
       <el-input v-model="table.query.name" placeholder="名称" clearable />
     </el-form-item>
-
     <el-form-item>
       <el-button type="primary" icon="search" @click="table.handleTableData">
         查询
@@ -16,28 +15,14 @@
   </el-form>
 
   <!-- 数据展示框 -->
+  <!-- 数据table -->
   <el-main class="ea-table">
-    <!-- 数据操作按钮 -->
     <el-row>
-      <el-button
-        :icon="table.selectStat ? 'Select' : 'SemiSelect'"
-        @click="
-          (table.selectStat = !table.selectStat)
-            ? ''
-            : tableRef.clearSelection()
-        "
-      />
-      <el-button v-if="table.selectStat" @click="tableRef.toggleAllSelection">
-        全选/全不选
-      </el-button>
-      <el-button v-if="table.selectStat" @click="table.handleInvertSelection">
-        反选
-      </el-button>
       <el-button type="primary" icon="Plus" @click="dialog.handleDialogAdd">
-        新增
+        新建任务
       </el-button>
     </el-row>
-    <!-- 数据table -->
+    <br />
     <el-table
       ref="tableRef"
       :data="table.data"
@@ -45,32 +30,10 @@
     >
       <el-table-column v-if="table.selectStat" type="selection" width="50" />
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
-      <el-table-column label="名称" prop="nickname" align="center" />
-      <el-table-column label="邮箱">
-        <template #default="scope">
-          <a target="_blank">{{ scope.row.email }}</a>
-        </template>
-      </el-table-column>
-      <el-table-column prop="updatedAt" label="最近更新" />
+      <el-table-column label="站点" prop="site_id" />
+      <el-table-column label="路径" prop="uri" />
+      <el-table-column label="日志" prop="log" />
       <el-table-column prop="createdAt" label="创建日期" />
-      <el-table-column fixed="right" label="操作">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="dialog.handleDialogEdit(scope.row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="dialog.handleDialogDelete(scope.row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <br />
     <el-pagination-plus
@@ -96,11 +59,13 @@
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="dialog.form.email" />
+      <el-form-item label="站点" prop="site_id">
+        <el-input-number v-model="dialog.form.site_id" />
+      </el-form-item>
+      <el-form-item label="链接" prop="uri">
+        <el-input v-model="dialog.form.uri" />
       </el-form-item>
     </el-form>
-
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialog.visible = false">取消</el-button>
@@ -114,15 +79,8 @@
 
 <script setup>
 import { ref } from "vue";
-
-// import api
-import {
-  getExample,
-  postExample,
-  putExample,
-  deleteExample,
-} from "@/apis/example";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { getCacheDelete, putCacheDelete } from "@/apis/wafcdn/cache";
+import { ElMessage } from "element-plus";
 
 const tableRef = ref();
 
@@ -137,7 +95,7 @@ const table = ref({
   },
   data: [],
   handleTableData: () => {
-    getExample(table.value.query).then((result) => {
+    getCacheDelete(table.value.query).then((result) => {
       table.value.data = result.data;
       table.value.total = result.total;
     });
@@ -185,10 +143,8 @@ const dialog = ref({
   title: "dialog",
   form: {},
   formRule: {
-    email: [
-      { required: true, message: "邮箱", trigger: "blur" },
-      { min: 5, message: "用户名最少为5个字符", trigger: "blur" },
-    ],
+    site_id: [{ required: true, message: "站点ID", trigger: "blur" }],
+    url: [{ required: true, message: "任务链接", trigger: "blur" }],
   },
   formAction: "add", // add|edit
   handleDialogAdd: () => {
@@ -197,47 +153,19 @@ const dialog = ref({
     dialog.value.formAction = "add";
     dialog.value.form = {};
   },
-  handleDialogEdit: (row) => {
-    dialog.value.title = "编辑数据";
-    dialog.value.visible = true;
-    dialog.value.formAction = "edit";
-    dialog.value.form = row;
-  },
   handleSubmitForm: () => {
     // 提交数据
     dialogRef.value.validate((validate) => {
       if (validate) {
         // 判断表单是否验证通过。
-        if (dialog.value.formAction === "add") {
-          postExample(dialog.value.form).then((result) => {
-            dialog.value.visible = false;
-            ElMessage.info(result);
-            table.value.handleTableData();
-          });
-        } else if (dialog.value.formAction === "edit") {
-          putExample(dialog.value.form).then((result) => {
-            dialog.value.visible = false;
-            ElMessage.info(result);
-            table.value.handleTableData();
-          });
-        } else {
-          ElMessage.error("提交错误");
-        }
+        putCacheDelete(dialog.value.form).then((result) => {
+          dialog.value.visible = false;
+          ElMessage.info(result);
+          table.value.handleTableData();
+        });
       } else {
         ElMessage.error("请输入正确的数据！");
       }
-    });
-  },
-  handleDialogDelete: (id) => {
-    ElMessageBox.confirm(`请仔细确认是否删除数据[${id}]?`, "警告", {
-      confirmButtonText: "删除",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(() => {
-      deleteExample({ id }).then((result) => {
-        ElMessage.warning(result);
-        table.value.handleTableData();
-      });
     });
   },
 });

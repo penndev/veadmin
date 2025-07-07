@@ -116,7 +116,7 @@
 
     <br />
 
-    <Pagination
+    <el-pagination-plus
       v-model:default-page-size="table.query.limit"
       :total="table.total"
       @current-change="table.handleChangePage"
@@ -207,7 +207,6 @@ import {
   deleteDomain,
 } from "@/apis/wafcdn/domain";
 import { ElMessage, ElMessageBox } from "element-plus";
-import Pagination from "@/components/Pagination.vue";
 
 const tableRef = ref();
 
