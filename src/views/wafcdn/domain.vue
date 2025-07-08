@@ -72,7 +72,6 @@
             v-if="scope.row.privateKey"
             raw-content
             :content="'<pre>' + scope.row.privateKey + '</pre>'"
-            placement="top"
           >
             <el-link>查看密钥</el-link>
           </el-tooltip>
@@ -84,7 +83,6 @@
             v-if="scope.row.publicKey"
             raw-content
             :content="'<pre>' + scope.row.publicKey + '</pre>'"
-            placement="top"
           >
             <el-link>查看证书</el-link>
           </el-tooltip>

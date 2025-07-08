@@ -32,7 +32,8 @@
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
       <el-table-column label="站点" prop="site_id" />
       <el-table-column label="路径" prop="uri" />
-      <el-table-column label="日志" prop="log" />
+      <el-table-column label="完成状态" prop="status" />
+      <el-table-column-truncated label="日志" prop="log" />
       <el-table-column prop="createdAt" label="创建日期" />
     </el-table>
     <br />

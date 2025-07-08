@@ -34,10 +34,10 @@ export const getCacheDelete = (params) => {
   });
 };
 
-export const putCacheDelete = (params) => {
+export const putCacheDelete = (data) => {
   return service({
     url: "/wafcdn/cache/delete/list",
     method: "put",
-    params,
+    data,
   });
 };
