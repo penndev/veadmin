@@ -54,7 +54,7 @@
       <el-table-column label="站点ID" prop="SiteId" sortable="custom" />
       <el-table-column label="HTTPS" align="center">
         <template #default="scope">
-          <el-tag :type="scope.row.ssl ? '' : 'danger'">
+          <el-tag :type="scope.row.ssl ? 'info' : 'danger'">
             {{ scope.row.ssl ? "启用" : "禁用" }}
           </el-tag>
         </template>
@@ -62,7 +62,7 @@
       <el-table-column label="强制HTTPS" align="center">
         <template #default="scope">
           <el-tag>{{
-            scope.row.sslforce ? "HTTP跳转HTTPS" : "允许HTTP访问"
+            scope.row.sslForce ? "HTTP跳转HTTPS" : "允许HTTP访问"
           }}</el-tag>
         </template>
       </el-table-column>
@@ -153,7 +153,7 @@
       </el-form-item>
       <el-form-item label="强制HTTPS访问" prop="ssl">
         <el-switch
-          v-model="dialog.form.sslforce"
+          v-model="dialog.form.sslForce"
           inline-prompt
           active-icon="Check"
           inactive-icon="Close"

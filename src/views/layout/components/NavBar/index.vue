@@ -77,7 +77,7 @@ watch(route, () => {
 
 const handleLoginOut = () => {
   auth.token = null;
-  router.push({ name: "login" });
+  router.push({ name: "login", query: { redirect: route.path } });
 };
 
 const handleCollapse = () => {

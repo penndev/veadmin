@@ -32,7 +32,7 @@ import { ref } from "vue";
 const statusData = ref({
   version: "加载中...",
   versionInfo: "详细信息正在加载中...",
-  status: false,
+  status: true,
 });
 
 const loadStart = () => {

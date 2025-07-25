@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar style="height: calc(100vh - 60px)">
+  <el-scrollbar style="height: calc(100vh - 110px)">
     <el-menu
       unique-opened
       :collapse="layout.collapse"
@@ -15,6 +15,12 @@
       />
     </el-menu>
   </el-scrollbar>
+  <div style="height: 50px; display: flex; flex-direction: column">
+    <el-link href="https://github.com/penndev/veadmin" target="_blank"
+      >Mode: {{ mode }}</el-link
+    >
+    <el-link target="_blank">Build: {{ build }}</el-link>
+  </div>
 </template>
 
 <script setup>
@@ -34,6 +40,9 @@ const auth = authStore();
 
 // 菜单列表
 const routes = router.options.routes;
+
+const mode = import.meta.env.MODE;
+const build = import.meta.env.BUILD;
 
 // 当前活动的菜单
 const active = ref(route.path);

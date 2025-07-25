@@ -108,65 +108,7 @@
         </el-tab-pane>
 
         <el-tab-pane label="安全防护">
-          <el-form-item label="开启访问限制" prop="security.limit.status">
-            <el-switch
-              v-model="dialog.form.security.limit.status"
-              inline-prompt
-              active-icon="Check"
-              inactive-icon="Close"
-            />
-          </el-form-item>
-          <el-card v-if="dialog.form.security.limit.status" shadow="always">
-            <el-form-item label="流量限速 k/s" prop="security.limit.rate">
-              <el-input-number v-model="dialog.form.security.limit.rate" />
-            </el-form-item>
-            <el-form-item label="请求速率" prop="security.limit">
-              <el-card shadow="always">
-                在<el-input-number
-                  v-model="dialog.form.security.limit.seconds"
-                  size="small"
-                />秒 最多请求<el-input-number
-                  v-model="dialog.form.security.limit.queries"
-                  size="small"
-                />次
-              </el-card>
-            </el-form-item>
-          </el-card>
-          <br />
-          <el-form-item label="开启接口验签" prop="security.sign.status">
-            <el-switch
-              v-model="dialog.form.security.sign.status"
-              inline-prompt
-              active-icon="Check"
-              inactive-icon="Close"
-            />
-          </el-form-item>
-          <el-card v-if="dialog.form.security.sign.status" shadow="always">
-            <el-form-item label="加密密钥" prop="security.sign.key">
-              <el-input v-model="dialog.form.security.sign.key" />
-            </el-form-item>
-            <el-form-item label="加密方法" prop="security.sign.method">
-              <el-select
-                v-model="dialog.form.security.sign.method"
-                placeholder="加密方法"
-              >
-                <el-option
-                  key="HMAC_MD5"
-                  label="HMAC_MD5算法"
-                  value="HMAC_MD5"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="过期时间/参数名"
-              prop="security.sign.expire_args"
-            >
-              <el-input v-model="dialog.form.security.sign.expire_args" />
-            </el-form-item>
-            <el-form-item label="签名/参数名" prop="security.sign.sign_args">
-              <el-input v-model="dialog.form.security.sign.sign_args" />
-            </el-form-item>
-          </el-card>
+          <SiteSecurity v-model="dialog.form.security" />
         </el-tab-pane>
 
         <el-tab-pane label="返回头">
@@ -200,178 +142,7 @@
         </el-tab-pane>
         <!-- 反向代理配置 -->
         <el-tab-pane v-if="dialog.form.type === 'proxy'" label="反向代理">
-          <br />
-          <!-- 回源设置 -->
-          <el-card shadow="always">
-            <template #header>
-              <div class="card-header">
-                <span>回源设置</span>
-              </div>
-            </template>
-            <el-form-item label="主机" prop="proxy.server">
-              <input-server v-model="dialog.form.proxy.server" />
-            </el-form-item>
-            <el-form-item label="Host" prop="proxy.host">
-              <el-input v-model="dialog.form.proxy.host" />
-            </el-form-item>
-            <div class="card-header">
-              <span>回源请求头</span>
-            </div>
-            <el-row
-              v-for="(value, index) in dialog.form.proxy.header"
-              :key="index"
-              :gutter="10"
-            >
-              <el-col :span="11">
-                <el-input v-model="value.name" placeholder="名" />
-              </el-col>
-
-              <el-col :span="11">
-                <el-input v-model="value.value" placeholder="值" />
-              </el-col>
-              <el-col :span="2" style="text-align: center">
-                <el-button
-                  type="danger"
-                  icon="Delete"
-                  circle
-                  @click="dialog.form.proxy.header.splice(index, 1)"
-                />
-              </el-col>
-              <el-col :span="24" style="height: 5px" />
-            </el-row>
-            <el-button
-              type="primary"
-              icon="Plus"
-              circle
-              @click="
-                dialog.form.proxy.header.push({ name: null, value: null })
-              "
-            />
-          </el-card>
-
-          <br />
-          <el-card shadow="always">
-            <template #header>
-              <div class="card-header">
-                <span>连接池</span>
-              </div>
-            </template>
-            <el-form-item label="连接数" prop="proxy.keepalive_requests">
-              <el-input-number
-                v-model="dialog.form.proxy.keepalive_requests"
-                :controls="false"
-              />
-            </el-form-item>
-            <el-form-item label="超时时间" prop="proxy.keepalive_timeout">
-              <el-input-number
-                v-model="dialog.form.proxy.keepalive_timeout"
-                :controls="false"
-              />
-            </el-form-item>
-          </el-card>
-
-          <br />
-          <el-card shadow="always">
-            <template #header>
-              <div class="card-header">
-                <span>缓存设置</span>
-              </div>
-            </template>
-
-            <el-row
-              v-for="(value, index) in dialog.form.proxy.cache"
-              :key="index"
-              style="margin: 5px auto"
-              :gutter="10"
-            >
-              <el-col :span="7">
-                <el-input v-model="value.ruth" placeholder="路径/regex" />
-              </el-col>
-              <el-col :span="2">
-                <el-switch
-                  v-model="value.args"
-                  inline-prompt
-                  style="
-                    --el-switch-on-color: #13ce66;
-                    --el-switch-off-color: #ff4949;
-                  "
-                  active-text="保留GET参数"
-                  inactive-text="忽略GET参数"
-                />
-              </el-col>
-              <el-col :span="3">
-                <el-input-number
-                  v-model="value.time"
-                  :controls="false"
-                  placeholder="缓存时间/s"
-                />
-              </el-col>
-              <el-col :span="5">
-                <el-select
-                  v-model="value.method"
-                  multiple
-                  placeholder="请求方法"
-                >
-                  <el-option key="GET" label="GET" value="GET" />
-                  <el-option key="POST" label="POST" value="POST" />
-                  <el-option key="PUT" label="PUT" value="PUT" />
-                  <el-option key="DELETE" label="DELETE" value="DELETE" />
-                  <el-option key="PATCH" label="PATCH" value="PATCH" />
-                  <el-option key="HEAD" label="HEAD" value="HEAD" />
-                  <el-option key="OPTIONS" label="OPTIONS" value="OPTIONS" />
-                </el-select>
-              </el-col>
-              <el-col :span="5">
-                <el-select
-                  v-model="value.status"
-                  multiple
-                  filterable
-                  allow-create
-                  :reserve-keyword="false"
-                  placeholder="状态码"
-                  @change="
-                    (values) => {
-                      const intValues = values
-                        .map((v) => {
-                          const num =
-                            typeof v === 'string' ? parseInt(v, 10) : v;
-                          return isNaN(num) ? null : num;
-                        })
-                        .filter((v) => v !== null);
-                      value.status = [...new Set(intValues)];
-                    }
-                  "
-                >
-                  <el-option key="200" label="200" :value="200" />
-                  <el-option key="301" label="301" :value="301" />
-                </el-select>
-              </el-col>
-              <el-col :span="2" style="text-align: center">
-                <el-button
-                  type="danger"
-                  icon="Delete"
-                  circle
-                  @click="dialog.form.proxy.cache.splice(index, 1)"
-                />
-              </el-col>
-              <el-divider />
-            </el-row>
-
-            <el-button
-              type="primary"
-              icon="Plus"
-              circle
-              @click="
-                dialog.form.proxy.cache.push({
-                  ruth: null,
-                  args: true,
-                  time: null,
-                  method: [],
-                  status: [],
-                })
-              "
-            />
-          </el-card>
+          <SiteProxy v-model="dialog.form.proxy" />
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -391,8 +162,9 @@ import { ref } from "vue";
 // import api
 import { getSite, postSite, putSite, deleteSite } from "@/apis/wafcdn/site";
 import { ElMessage, ElMessageBox } from "element-plus";
-import InputServer from "./components/InputServer.vue";
 import OpenResty from "./components/OpenResty.vue";
+import SiteSecurity from "./components/SiteSecurity.vue";
+import SiteProxy from "./components/SiteProxy.vue";
 
 const table = ref({
   query: {
@@ -437,6 +209,7 @@ const dialog = ref({
 });
 
 const handleDialogAdd = () => {
+  console.log(dialog.value);
   dialog.value.title = "绑定新域名";
   dialog.value.visible = true;
   dialog.value.formAction = "add";
@@ -465,12 +238,13 @@ const handleDialogAdd = () => {
         expire_args: null,
         sign_args: null,
       },
+      cors: {},
     },
   };
 };
 
 const handleDialogEdit = (row) => {
-  dialog.value.title = "修改 " + row.domain + " 的配置";
+  dialog.value.title = "修改 " + row.remark + " 的配置";
   dialog.value.visible = true;
   dialog.value.formAction = "edit";
   // 对对象进行copy
