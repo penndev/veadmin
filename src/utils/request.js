@@ -2,10 +2,8 @@ import axios from "axios";
 import { authStore } from "@/stores";
 import { viewLoading } from "@/stores/reactive";
 import { ElMessage, ElMessageBox } from "element-plus";
-// import router from "@/router";
-import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
-const route = useRoute();
+import router from "@/router";
+import { useRoute } from "vue-router";
 
 const service = axios.create({
   baseURL: import.meta.env.VE_API_URL,
@@ -59,6 +57,7 @@ service.interceptors.response.use(
             type: "warning",
           },
         ).then(() => {
+          const route = useRoute();
           router.push({ name: "login", query: { redirect: route.path } });
         });
         break;

@@ -1,4 +1,29 @@
 <template>
+  <!-- 开启IP限制 -->
+  <el-form-item label="开启IP限制" prop="security.ip.status">
+    <el-switch
+      v-model="security.ip.status"
+      inline-prompt
+      active-icon="Check"
+      inactive-icon="Close"
+    />
+  </el-form-item>
+  <el-card v-if="security.ip.status" shadow="always">
+    <el-divider />
+    <IPRegionSelect v-model="security.ip.region"> </IPRegionSelect>
+    <el-divider />
+    <el-switch
+      size="large"
+      v-model="security.ip.allowed"
+      inline-prompt
+      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+      active-text="允许以上地区访问"
+      inactive-text="限制以上地区访问"
+    />
+    <el-divider />
+  </el-card>
+  <br />
+
   <!-- 开启接口验签 -->
   <el-form-item label="开启速率限制" prop="security.limit.status">
     <el-switch
@@ -95,5 +120,7 @@
 </template>
 
 <script setup>
+import IPRegionSelect from "./IPRegionSelect.vue";
+
 const security = defineModel();
 </script>

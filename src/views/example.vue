@@ -176,6 +176,7 @@ const table = ref({
     });
   },
 });
+table.value.handleTableData();
 
 // dialog 的 element 实例
 const dialogRef = ref(null);
@@ -241,6 +242,4 @@ const dialog = ref({
     });
   },
 });
-
-table.value.handleTableData();
 </script>
