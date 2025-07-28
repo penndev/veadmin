@@ -60,12 +60,9 @@
 
     <!-- 右侧：按钮 -->
     <el-col :style="{ flex: '0 0 auto' }">
-      <el-button
-        type="primary"
-        icon="Plus"
-        circle
-        @click="model.push(region)"
-      />
+      <el-button type="primary" icon="Plus" circle @click="add()" />
+
+      <el-button type="info" icon="Refresh" circle @click="reset()" />
     </el-col>
   </el-row>
 </template>
@@ -73,27 +70,57 @@
 import { getIpregion } from "@/apis/wafcdn/ipregion";
 import { ref, watch } from "vue";
 
+// 处理默认数据展示
+const model = defineModel();
+model.value ??= [];
+
 const options = ref([]);
 
 const current = ref("");
 
-const region = ref("");
+const region = ref({
+  Country: "",
+  Province: "",
+  City: "",
+  County: "",
+  ISP: "",
+});
 
 const load = () => {
-  getIpregion({ region: region.value }).then((result) => {
+  getIpregion(region.value).then((result) => {
     options.value = result.data;
   });
 };
 
 watch(current, () => {
-  console.log("网址进行了改变", current);
-  region.value += region.value == "" ? current.value : "-" + current.value;
+  if (region.value.Country == "") {
+    region.value.Country = current.value;
+  } else {
+    if (region.value.Province == "") {
+      region.value.Province = current.value;
+    } else {
+      if (region.value.City == "") {
+        region.value.City = current.value;
+      } else {
+        region.value.County = current.value;
+      }
+    }
+  }
+  options.value = [];
   load();
 });
 
-load();
+const reset = () => {
+  for (const item in region.value) {
+    region.value[item] = "";
+  }
+  current.value = "";
+};
 
-// 处理默认数据展示
-const model = defineModel();
-model.value ??= [];
+const add = () => {
+  model.value.push(JSON.parse(JSON.stringify(region.value)));
+  reset();
+};
+
+load();
 </script>
