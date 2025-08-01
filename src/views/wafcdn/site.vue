@@ -43,7 +43,15 @@
       <el-table-column label="备注" prop="remark" align="center" />
       <el-table-column label="返回头" align="center">
         <template #default="scope">
-          <pre>{{ JSON.stringify(scope.row.header, 4) }}</pre>
+          <el-popover placement="top" trigger="hover" width="350">
+            <template #reference>
+              <el-button type="primary" plain>查看</el-button>
+            </template>
+            <div v-for="(item, index) in scope.row.header" :key="index">
+              <span>{{ item.name }}: {{ item.value }}</span>
+            </div>
+          </el-popover>
+          <!-- <pre>{{ JSON.stringify(scope.row.header, 4) }}</pre> -->
         </template>
       </el-table-column>
       <el-table-column label="反向代理" align="center" width="300">

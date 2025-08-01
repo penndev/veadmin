@@ -36,7 +36,7 @@ const port = ref("");
 const url = defineModel();
 onMounted(() => {
   try {
-    const urlObj = new URL(url);
+    const urlObj = new URL(url.value);
     protocol.value = urlObj.protocol;
     domain.value = urlObj.hostname;
     port.value = urlObj.port;

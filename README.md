@@ -13,7 +13,7 @@
 
 ## ⚡️预览
 
-> GitHub Pages:  [ https://penndev.github.io/veadmin](https://penndev.github.io/veadmin) <br>
+> GitHub Pages:  [https://penndev.github.io/veadmin](https://penndev.github.io/veadmin) <br>
 \> 用户名: `admin` <br>
 \> 密码: `123456`
 
@@ -40,5 +40,5 @@
 *以上均实现了本项目的api需求可做开发参考*
 
 ## 🙏致谢
-- [vue-element-admin ](https://github.com/PanJiaChen/vue-element-admin) 曾节约我大量的开发时间成本。
+- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 曾节约我大量的开发时间成本。
 - [gin-vue-admin](https://github.com/flipped-aurora/gin-vue-admin) 给予我UI与配色的启发。
