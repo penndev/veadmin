@@ -97,7 +97,9 @@ const dialog = ref({
   visible: false,
   title: "dialog",
   form: {},
-  formRule: {},
+  formRule: {
+    remark: [{ required: true, message: "必须备注站点", trigger: "blur" }],
+  },
   formAction: "add", // add|edit
 });
 

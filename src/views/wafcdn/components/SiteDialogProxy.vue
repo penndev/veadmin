@@ -49,11 +49,26 @@
         <span>连接池</span>
       </div>
     </template>
-    <el-form-item label="连接数" prop="proxy.keepalive_requests">
-      <el-input-number v-model="proxy.keepalive_requests" :controls="false" />
+    <el-form-item
+      label="连接数"
+      prop="proxy.keepalive_requests"
+      :rules="[{ required: true, message: '必须设置连接数10-10000' }]"
+    >
+      <el-input-number
+        :min="10"
+        :max="10000"
+        v-model="proxy.keepalive_requests"
+        :controls="false"
+      />
     </el-form-item>
     <el-form-item label="超时时间" prop="proxy.keepalive_timeout">
-      <el-input-number v-model="proxy.keepalive_timeout" :controls="false" />
+      <el-input-number
+        :min="5"
+        :max="300"
+        v-model="proxy.keepalive_timeout"
+        :controls="false"
+      />
+      /秒
     </el-form-item>
   </el-card>
 

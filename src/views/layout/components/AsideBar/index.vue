@@ -15,11 +15,14 @@
       />
     </el-menu>
   </el-scrollbar>
-  <div style="height: 50px; display: flex; flex-direction: column">
-    <el-link href="https://github.com/penndev/veadmin" target="_blank"
-      >Mode: {{ mode }}</el-link
-    >
-    <el-link target="_blank">Build: {{ build }}</el-link>
+  <div
+    v-if="!layout.collapse"
+    style="height: 50px; display: flex; flex-direction: column"
+  >
+    <el-link href="https://github.com/penndev/veadmin" target="_blank">
+      Mode: {{ mode }}
+    </el-link>
+    <el-text>Build: {{ build }}</el-text>
   </div>
 </template>
 
