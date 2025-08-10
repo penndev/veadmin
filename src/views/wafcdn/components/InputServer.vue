@@ -32,8 +32,9 @@ const protocol = ref("");
 const domain = ref("");
 const port = ref("");
 
-// 初始化时解析URL
 const url = defineModel();
+
+// 初始化时解析URL
 onMounted(() => {
   try {
     const urlObj = new URL(url.value);
@@ -46,16 +47,15 @@ onMounted(() => {
     domain.value = "";
     port.value = 80;
   }
-});
-
-watch(protocol, () => {
-  protocol.value == "http:" ? (port.value = "80") : (port.value = "443");
-  url.value = protocol.value + "//" + domain.value + ":" + port.value;
-});
-watch(port, () => {
-  url.value = protocol.value + "//" + domain.value + ":" + port.value;
-});
-watch(domain, () => {
-  url.value = protocol.value + "//" + domain.value + ":" + port.value;
+  watch(protocol, () => {
+    protocol.value == "http:" ? (port.value = "80") : (port.value = "443");
+    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+  });
+  watch(port, () => {
+    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+  });
+  watch(domain, () => {
+    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+  });
 });
 </script>

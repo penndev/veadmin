@@ -1,10 +1,30 @@
 <template>
   <!-- 顶部筛选框 -->
   <el-form :inline="true">
-    <el-form-item label="名称">
-      <el-input v-model="table.query.name" placeholder="名称" clearable />
+    <el-form-item label="站点">
+      <el-input-number
+        v-model="table.query.site_id"
+        placeholder="SiteID"
+        clearable
+      />
     </el-form-item>
-
+    <el-form-item label="域名">
+      <el-input v-model="table.query.host" placeholder="域名" clearable />
+    </el-form-item>
+    <el-form-item label="请求IP">
+      <el-input
+        v-model="table.query.remote_addr"
+        placeholder="IP地址"
+        clearable
+      />
+    </el-form-item>
+    <el-form-item label="请求URL">
+      <el-input
+        v-model="table.query.request"
+        placeholder="请求路径"
+        clearable
+      />
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" icon="search" @click="table.handleTableData">
         查询
@@ -94,6 +114,10 @@ const table = ref({
     page: 1,
     order: null,
     name: null,
+    site_id: null,
+    host: null,
+    request: null,
+    remote_addr: null, //请求IP
   },
   data: [],
   handleTableData: () => {
