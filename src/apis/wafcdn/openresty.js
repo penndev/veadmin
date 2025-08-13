@@ -2,7 +2,7 @@ import service from "@/utils/request";
 
 export const status = (params) => {
   return service({
-    url: "/wafcdn/openrsty/status",
+    url: "/wafcdn/openresty/status",
     method: "get",
     params,
   });
@@ -10,7 +10,7 @@ export const status = (params) => {
 
 export const start = (params) => {
   return service({
-    url: "/wafcdn/openrsty/start",
+    url: "/wafcdn/openresty/start",
     method: "put",
     params,
   });
@@ -18,7 +18,7 @@ export const start = (params) => {
 
 export const stop = (params) => {
   return service({
-    url: "/wafcdn/openrsty/stop",
+    url: "/wafcdn/openresty/stop",
     method: "put",
     params,
   });
@@ -26,7 +26,7 @@ export const stop = (params) => {
 
 export const reload = (params) => {
   return service({
-    url: "/wafcdn/openrsty/reload",
+    url: "/wafcdn/openresty/reload",
     method: "put",
     params,
   });

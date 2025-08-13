@@ -67,7 +67,7 @@
   </el-row>
 </template>
 <script setup>
-import { getIpregion } from "@/apis/wafcdn/ipregion";
+import { getIPRegion } from "@/apis/wafcdn/ipRegion";
 import { ref, watch } from "vue";
 
 // 处理默认数据展示
@@ -87,7 +87,7 @@ const region = ref({
 });
 
 const load = () => {
-  getIpregion(region.value).then((result) => {
+  getIPRegion(region.value).then((result) => {
     options.value = result.data;
   });
 };
