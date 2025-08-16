@@ -28,7 +28,7 @@ export const changePasswd = (data) => {
 
 export const changeOTP = (data) => {
   return service({
-    url: "/change-OTP",
+    url: "/change-otp",
     method: "put",
     data,
   });
