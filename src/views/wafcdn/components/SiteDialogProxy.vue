@@ -61,14 +61,17 @@
         :controls="false"
       />
     </el-form-item>
-    <el-form-item label="超时时间" prop="proxy.keepalive_timeout">
+    <el-form-item
+      label="超时时间/秒"
+      prop="proxy.keepalive_timeout"
+      :rules="[{ required: true, message: '必须设置超时时间5-300秒' }]"
+    >
       <el-input-number
         :min="5"
         :max="300"
         v-model="proxy.keepalive_timeout"
         :controls="false"
       />
-      /秒
     </el-form-item>
   </el-card>
 
@@ -80,6 +83,18 @@
       </div>
     </template>
 
+    <el-form-item label="缓存PURGE方法清理" prop="proxy.cache_purge">
+      <el-switch
+        v-model="proxy.cache_purge"
+        :active-value="1"
+        active-text="允许快捷清理"
+        :inactive-value="0"
+        inactive-text="不允许清理"
+      />
+    </el-form-item>
+
+    <el-divider />
+    <el-text>缓存时间提示：</el-text>
     <el-tag>时/秒: 3600</el-tag> &nbsp; <el-tag>周/秒: 86400</el-tag> &nbsp;
     <el-tag>月/秒: 604800</el-tag> &nbsp;
     <el-tag>年/秒: 31536000</el-tag> &nbsp;

@@ -41,6 +41,9 @@ onMounted(() => {
     protocol.value = urlObj.protocol;
     domain.value = urlObj.hostname;
     port.value = urlObj.port;
+    if (!port.value) {
+      port.value = protocol.value === "http:" ? "80" : "443";
+    }
   } catch {
     // 如果URL无效，使用默认值
     protocol.value = "http:";
