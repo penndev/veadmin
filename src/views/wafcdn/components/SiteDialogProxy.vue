@@ -83,12 +83,15 @@
       </div>
     </template>
 
-    <el-form-item label="缓存PURGE方法清理" prop="proxy.cache_purge">
+    <el-form-item
+      label="缓存快捷清理[HTTP METHOD PURGE]"
+      prop="proxy.cache_purge"
+    >
       <el-switch
         v-model="proxy.cache_purge"
-        :active-value="1"
+        :active-value="true"
         active-text="允许快捷清理"
-        :inactive-value="0"
+        :inactive-value="false"
         inactive-text="不允许清理"
       />
     </el-form-item>

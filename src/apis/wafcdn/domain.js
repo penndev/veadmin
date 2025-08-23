@@ -31,3 +31,12 @@ export const deleteDomain = (params) => {
     params,
   });
 };
+
+// 申请免费证书
+export const postAcme = (data) => {
+  return service({
+    url: "/wafcdn/domain/acme",
+    method: "post",
+    data,
+  });
+};

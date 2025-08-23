@@ -1,8 +1,11 @@
 <template>
   <!-- 顶部筛选框 -->
   <el-form :inline="true">
-    <el-form-item label="名称">
-      <el-input v-model="table.query.name" placeholder="名称" clearable />
+    <el-form-item label="域名">
+      <el-input v-model="table.query.domain" placeholder="域名" clearable />
+    </el-form-item>
+    <el-form-item label="备注">
+      <el-input v-model="table.query.remark" placeholder="备注" clearable />
     </el-form-item>
     <el-form-item label="站点ID">
       <el-input
@@ -26,17 +29,6 @@
   <el-main class="ea-table">
     <!-- 数据操作按钮 -->
     <el-row>
-      <el-button
-        :icon="table.selectStat ? 'SemiSelect' : 'Select'"
-        @click="
-          (table.selectStat = !table.selectStat)
-            ? ''
-            : tableRef.clearSelection()
-        "
-      />
-      <el-button v-if="table.selectStat" @click="table.handleInvertSelection">
-        反选
-      </el-button>
       <el-button type="primary" icon="Plus" @click="dialog.handleDialogAdd">
         新增
       </el-button>
@@ -50,48 +42,43 @@
     >
       <el-table-column v-if="table.selectStat" type="selection" width="50" />
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
-      <el-table-column label="域名" prop="name" align="center" />
+      <el-table-column label="域名" prop="domain" align="center" />
+      <el-table-column label="备注" prop="remark" align="center" />
       <el-table-column label="站点ID" prop="SiteId" sortable="custom" />
-      <el-table-column label="HTTPS" align="center">
+      <el-table-column label="SSL证书配置" align="center">
         <template #default="scope">
-          <el-tag :type="scope.row.ssl ? 'info' : 'danger'">
-            {{ scope.row.ssl ? "启用" : "禁用" }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="强制HTTPS" align="center">
-        <template #default="scope">
-          <el-tag>{{
-            scope.row.sslForce ? "HTTP跳转HTTPS" : "允许HTTP访问"
-          }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="私钥" align="center">
-        <template #default="scope">
-          <el-tooltip
-            v-if="scope.row.privateKey"
-            raw-content
-            :content="'<pre>' + scope.row.privateKey + '</pre>'"
-          >
-            <el-link>查看密钥</el-link>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column label="证书" align="center">
-        <template #default="scope">
-          <el-tooltip
-            v-if="scope.row.publicKey"
-            raw-content
-            :content="'<pre>' + scope.row.publicKey + '</pre>'"
-          >
-            <el-link>查看证书</el-link>
-          </el-tooltip>
+          <div>
+            <span>状态:</span>
+            <el-text :type="scope.row.ssl ? 'success' : 'danger'">
+              {{ scope.row.ssl ? "启用" : "禁用" }}
+            </el-text>
+          </div>
+          <div>
+            <span>跳转:</span>
+            <el-text>
+              {{ scope.row.sslForce ? "HTTP跳转HTTPS" : "允许HTTP访问" }}
+            </el-text>
+          </div>
+          <div>
+            <span>邮箱:</span>
+            <span>
+              {{ scope.row.sslEmail || "未设置" }}
+            </span>
+          </div>
+          <div>
+            <el-popover width="400">
+              <template #reference>
+                <el-link size="small">查看证书详情</el-link>
+              </template>
+              <template #default>
+                <pre>{{ JSON.stringify(scope.row.certInfo, null, 2) }}</pre>
+              </template>
+            </el-popover>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="updatedAt" label="最近更新" />
-
       <el-table-column prop="createdAt" label="创建日期" />
-
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button
@@ -100,6 +87,13 @@
             @click="dialog.handleDialogEdit(scope.row)"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="table.handleAcmeAction(scope.row)"
+          >
+            申请免费证书
           </el-button>
           <el-button
             link
@@ -137,13 +131,16 @@
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-form-item label="域名" prop="name">
-        <el-input v-model="dialog.form.name" />
+      <el-form-item label="域名" prop="domain">
+        <el-input v-model="dialog.form.domain" />
+      </el-form-item>
+      <el-form-item label="域名备注" prop="remark">
+        <el-input v-model="dialog.form.remark" />
       </el-form-item>
       <el-form-item label="绑定站点" prop="SiteId">
         <el-input-number v-model="dialog.form.SiteId" />
       </el-form-item>
-      <el-form-item label="HTTPS访问" prop="ssl">
+      <el-form-item label="HTTPS状态" prop="ssl">
         <el-switch
           v-model="dialog.form.ssl"
           inline-prompt
@@ -151,13 +148,16 @@
           inactive-icon="Close"
         />
       </el-form-item>
-      <el-form-item label="强制HTTPS访问" prop="ssl">
+      <el-form-item label="强制HTTPS访问" prop="sslForce">
         <el-switch
           v-model="dialog.form.sslForce"
           inline-prompt
           active-icon="Check"
           inactive-icon="Close"
         />
+      </el-form-item>
+      <el-form-item label="证书邮箱" prop="sslEmail">
+        <el-input v-model="dialog.form.sslEmail" />
       </el-form-item>
       <el-row>
         <el-col :span="12">
@@ -203,6 +203,7 @@ import {
   postDomain,
   putDomain,
   deleteDomain,
+  postAcme,
 } from "@/apis/wafcdn/domain";
 import { ElMessage, ElMessageBox } from "element-plus";
 
@@ -250,6 +251,19 @@ const table = ref({
   handleInvertSelection: () => {
     table.value.data.forEach((row) => {
       tableRef.value.toggleRowSelection(row);
+    });
+  },
+  handleAcmeAction: (row) => {
+    // 申请免费证书
+    ElMessageBox.confirm(`请仔细确认是否申请免费证书[${row.name}]?`, "警告", {
+      confirmButtonText: "申请",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(() => {
+      postAcme(row).then((result) => {
+        ElMessage.success(result);
+        table.value.handleTableData();
+      });
     });
   },
 });
