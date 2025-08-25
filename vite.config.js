@@ -16,7 +16,9 @@ export default defineConfig(({ mode }) => {
         preventAssignment: false,
         // 通过静态打包的方式来排除不需要的文件
         // 因为动态打包会将所有的依赖都打包到一起
-        "import.meta.env.MODE": `"${mode}|${pkg.version}"`,
+        "import.meta.env.MODE": `"${mode}"`,
+        // 展示编译信息
+        "import.meta.env.VERSION": `"${mode}|${pkg.version}"`,
         "import.meta.env.BUILD": `"${timeFormat("Y-m-d H:i:s")}"`,
       }),
     ],

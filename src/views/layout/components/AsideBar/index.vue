@@ -20,7 +20,7 @@
     style="height: 50px; display: flex; flex-direction: column"
   >
     <el-link href="https://github.com/penndev/veadmin" target="_blank">
-      Mode: {{ mode }}
+      Version: {{ version }}
     </el-link>
     <el-text>Build: {{ build }}</el-text>
   </div>
@@ -44,7 +44,7 @@ const auth = authStore();
 // 菜单列表
 const routes = router.options.routes;
 
-const mode = import.meta.env.MODE;
+const version = import.meta.env.VERSION;
 const build = import.meta.env.BUILD;
 
 // 当前活动的菜单
