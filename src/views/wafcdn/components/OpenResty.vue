@@ -38,18 +38,21 @@ const statusData = ref({
 const loadStart = () => {
   start().then((result) => {
     ElMessage.warning(result);
+    loadStatus();
   });
 };
 
 const loadStop = () => {
   stop().then((result) => {
     ElMessage.warning(result);
+    loadStatus();
   });
 };
 
 const loadReload = () => {
   reload().then((result) => {
     ElMessage.warning(result);
+    loadStatus();
   });
 };
 

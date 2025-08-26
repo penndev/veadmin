@@ -1,11 +1,11 @@
 <template>
   <!-- 顶部筛选框 -->
   <el-form :inline="true">
-    <el-form-item label="域名">
-      <el-input v-model="table.query.domain" placeholder="域名" clearable />
-    </el-form-item>
     <el-form-item label="备注">
       <el-input v-model="table.query.remark" placeholder="备注" clearable />
+    </el-form-item>
+    <el-form-item label="域名">
+      <el-input v-model="table.query.domain" placeholder="域名" clearable />
     </el-form-item>
     <el-form-item label="站点ID">
       <el-input
@@ -42,8 +42,8 @@
     >
       <el-table-column v-if="table.selectStat" type="selection" width="50" />
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
-      <el-table-column label="域名" prop="domain" align="center" />
       <el-table-column label="备注" prop="remark" align="center" />
+      <el-table-column label="域名" prop="domain" align="center" />
       <el-table-column label="站点ID" prop="SiteId" sortable="custom" />
       <el-table-column label="SSL证书配置" align="center">
         <template #default="scope">
@@ -81,27 +81,24 @@
       <el-table-column prop="createdAt" label="创建日期" />
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="dialog.handleDialogEdit(scope.row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="table.handleAcmeAction(scope.row)"
-          >
-            申请免费证书
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="dialog.handleDialogDelete(scope.row.id)"
-          >
-            删除
-          </el-button>
+          <div>
+            <el-link type="primary" @click="dialog.handleDialogEdit(scope.row)">
+              编辑
+            </el-link>
+          </div>
+          <div>
+            <el-link type="primary" @click="table.handleAcmeAction(scope.row)">
+              ACME证书
+            </el-link>
+          </div>
+          <div>
+            <el-link
+              type="danger"
+              @click="dialog.handleDialogDelete(scope.row.id)"
+            >
+              删除
+            </el-link>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -128,14 +125,23 @@
     <el-form
       ref="dialogRef"
       label-position="left"
+      label-width="auto"
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-form-item label="域名" prop="domain">
-        <el-input v-model="dialog.form.domain" />
-      </el-form-item>
       <el-form-item label="域名备注" prop="remark">
         <el-input v-model="dialog.form.remark" />
+      </el-form-item>
+      <el-form-item label="域名" prop="domain">
+        <el-input v-model="dialog.form.domain" placeholder="请输入域名" />
+      </el-form-item>
+      <el-form-item label="域名泛解析" prop="wildcard">
+        <el-switch
+          v-model="dialog.form.wildcard"
+          inline-prompt
+          active-icon="Check"
+          inactive-icon="Close"
+        />
       </el-form-item>
       <el-form-item label="绑定站点" prop="SiteId">
         <el-input-number v-model="dialog.form.SiteId" />
@@ -148,39 +154,42 @@
           inactive-icon="Close"
         />
       </el-form-item>
-      <el-form-item label="强制HTTPS访问" prop="sslForce">
-        <el-switch
-          v-model="dialog.form.sslForce"
-          inline-prompt
-          active-icon="Check"
-          inactive-icon="Close"
-        />
-      </el-form-item>
-      <el-form-item label="证书邮箱" prop="sslEmail">
-        <el-input v-model="dialog.form.sslEmail" />
-      </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="私钥" prop="privateKey">
-            <el-input
-              v-model="dialog.form.privateKey"
-              :autosize="{ minRows: 4, maxRows: 30 }"
-              resize="vertical"
-              type="textarea"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="证书" prop="publicKey">
-            <el-input
-              v-model="dialog.form.publicKey"
-              :autosize="{ minRows: 4, maxRows: 30 }"
-              resize="vertical"
-              type="textarea"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
+
+      <div v-if="dialog.form.ssl">
+        <el-form-item label="强制HTTPS访问" prop="sslForce">
+          <el-switch
+            v-model="dialog.form.sslForce"
+            inline-prompt
+            active-icon="Check"
+            inactive-icon="Close"
+          />
+        </el-form-item>
+        <el-form-item label="证书邮箱" prop="sslEmail">
+          <el-input v-model="dialog.form.sslEmail" />
+        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="私钥" label-position="right" prop="privateKey">
+              <el-input
+                v-model="dialog.form.privateKey"
+                :autosize="{ minRows: 4, maxRows: 30 }"
+                resize="vertical"
+                type="textarea"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证书" label-position="right" prop="publicKey">
+              <el-input
+                v-model="dialog.form.publicKey"
+                :autosize="{ minRows: 4, maxRows: 30 }"
+                resize="vertical"
+                type="textarea"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
     </el-form>
 
     <template #footer>
@@ -255,7 +264,7 @@ const table = ref({
   },
   handleAcmeAction: (row) => {
     // 申请免费证书
-    ElMessageBox.confirm(`请仔细确认是否申请免费证书[${row.name}]?`, "警告", {
+    ElMessageBox.confirm(`请仔细确认是否申请免费证书[${row.domain}]?`, "警告", {
       confirmButtonText: "申请",
       cancelButtonText: "取消",
       type: "warning",

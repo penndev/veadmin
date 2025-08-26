@@ -36,7 +36,7 @@
       <el-table-column label="绑定域名" align="center">
         <template #default="scope">
           <p v-for="item of scope.row.Domains" :key="item.id">
-            {{ item.name }}
+            {{ (item.wildcard ? "*." : "") + item.domain }}
           </p>
         </template>
       </el-table-column>

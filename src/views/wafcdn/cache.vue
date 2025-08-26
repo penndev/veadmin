@@ -8,7 +8,9 @@
       <el-form-item label="路径">
         <el-input v-model="table.query.path" placeholder="/url" clearable />
       </el-form-item>
-
+      <el-form-item label="路径">
+        <el-input v-model="table.query.path" placeholder="/url" clearable />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="search" @click="handleTableData">
           查询
@@ -65,7 +67,7 @@
       <el-table-column label="ID" prop="id" />
       <el-table-column label="站点ID" prop="site_id" />
       <el-table-column label="方法" prop="method"> </el-table-column>
-      <el-table-column prop="路径" label="请求地址">
+      <el-table-column label="请求地址">
         <template #default="{ row }">
           <el-tooltip placement="top" :content="row.uri" effect="dark">
             <el-text truncated>{{ row.uri }}</el-text>
@@ -77,6 +79,7 @@
           <el-link>{{ timeFormat("Y-m-d H:i:s", scope.row.time) }}</el-link>
         </template>
       </el-table-column>
+      <el-table-column label="文件" prop="path"> </el-table-column>
       <el-table-column fixed="right" label="操作" width="65">
         <template #default="scope">
           <el-button link type="danger" @click="handleDialogDelete(scope.row)">
