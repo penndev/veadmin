@@ -65,6 +65,12 @@
     <el-form-item label="加密方法" prop="security.sign.method">
       <el-select v-model="security.sign.method" placeholder="加密方法">
         <el-option key="HMAC_MD5" label="HMAC_MD5算法" value="HMAC_MD5" />
+        <el-option key="HMAC_SHA1" label="HMAC_SHA1算法" value="HMAC_SHA1" />
+        <el-option
+          key="HMAC_SHA256"
+          label="HMAC_SHA256算法"
+          value="HMAC_SHA256"
+        />
       </el-select>
     </el-form-item>
     <el-form-item label="过期时间/参数名" prop="security.sign.expire_args">
