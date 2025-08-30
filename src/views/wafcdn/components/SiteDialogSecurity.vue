@@ -34,16 +34,24 @@
     />
   </el-form-item>
   <el-card v-if="security.limit.status" shadow="always">
-    <el-form-item label="流量限速 k/s" prop="security.limit.rate">
+    <el-form-item label="单链接限速 k/s" prop="security.limit.rate">
       <el-input-number v-model="security.limit.rate" />
     </el-form-item>
     <el-form-item label="请求速率" prop="security.limit">
       <el-card shadow="always">
-        在<el-input-number v-model="security.limit.seconds" size="small" />秒
-        最多请求<el-input-number
+        在
+        <el-input-number
+          :min="1"
+          v-model="security.limit.seconds"
+          size="small"
+        />
+        秒 最多请求
+        <el-input-number
+          :min="10"
           v-model="security.limit.queries"
           size="small"
-        />次
+        />
+        次
       </el-card>
     </el-form-item>
   </el-card>
