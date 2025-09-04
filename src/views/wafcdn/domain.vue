@@ -135,16 +135,24 @@
       <el-form-item label="域名" prop="domain">
         <el-input v-model="dialog.form.domain" placeholder="请输入域名" />
       </el-form-item>
-      <el-form-item label="域名泛解析" prop="wildcard">
+      <el-form-item label="泛域名" prop="wildcard">
         <el-switch
           v-model="dialog.form.wildcard"
           inline-prompt
           active-icon="Check"
           inactive-icon="Close"
         />
+        <small
+          >&nbsp; 证书需要DNS解析支持(单独申请)
+          域名并会自动格式化为主域名</small
+        >
       </el-form-item>
       <el-form-item label="绑定站点" prop="SiteId">
         <el-input-number v-model="dialog.form.SiteId" />
+      </el-form-item>
+
+      <el-form-item label="站点邮箱" prop="sslEmail">
+        <el-input v-model="dialog.form.sslEmail" />
       </el-form-item>
       <el-form-item label="HTTPS状态" prop="ssl">
         <el-switch
@@ -163,9 +171,6 @@
             active-icon="Check"
             inactive-icon="Close"
           />
-        </el-form-item>
-        <el-form-item label="证书邮箱" prop="sslEmail">
-          <el-input v-model="dialog.form.sslEmail" />
         </el-form-item>
         <el-row>
           <el-col :span="12">

@@ -29,6 +29,7 @@
         </el-tab-pane>
 
         <el-tab-pane label="返回头">
+          <span></span>
           <el-row
             v-for="(value, index) in dialog.form.header"
             :key="index"
@@ -39,7 +40,10 @@
               <el-input v-model="value.name" placeholder="名" />
             </el-col>
             <el-col :span="11">
-              <el-input v-model="value.value" placeholder="值" />
+              <el-input
+                v-model="value.value"
+                placeholder="值 如果不设置则为删除本请求头"
+              />
             </el-col>
             <el-col :span="2" style="text-align: center">
               <el-button
