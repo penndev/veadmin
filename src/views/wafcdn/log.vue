@@ -25,6 +25,13 @@
         clearable
       />
     </el-form-item>
+        <el-form-item label="状态码">
+      <el-input-number
+        v-model="table.query.status"
+        placeholder="状态码"
+        clearable
+      />
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" icon="search" @click="table.handleTableData">
         查询
@@ -117,6 +124,7 @@ const table = ref({
     site_id: null,
     host: null,
     request: null,
+    status: null,
     remote_addr: null, //请求IP
   },
   data: [],
