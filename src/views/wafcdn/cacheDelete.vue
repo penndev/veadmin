@@ -21,6 +21,9 @@
       <el-button type="primary" icon="Plus" @click="dialog.handleDialogAdd">
         新建任务
       </el-button>
+      <el-button type="danger" @click="dialog.handleDialogDelete">
+        清空记录
+      </el-button>
     </el-row>
     <br />
     <el-table
@@ -80,8 +83,12 @@
 
 <script setup>
 import { ref } from "vue";
-import { getCacheDelete, putCacheDelete } from "@/apis/wafcdn/cache";
-import { ElMessage } from "element-plus";
+import {
+  clearCache,
+  getCacheDelete,
+  putCacheDelete,
+} from "@/apis/wafcdn/cache";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const tableRef = ref();
 
@@ -167,6 +174,18 @@ const dialog = ref({
       } else {
         ElMessage.error("请输入正确的数据！");
       }
+    });
+  },
+  handleDialogDelete: () => {
+    ElMessageBox.confirm(`请仔细确认是否清空全部记录?`, "警告", {
+      confirmButtonText: "清空",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(() => {
+      clearCache().then((result) => {
+        ElMessage.warning(result);
+        table.value.handleTableData();
+      });
     });
   },
 });

@@ -6,10 +6,11 @@
         <el-input-number v-model="table.query.site_id" placeholder="站点ID" />
       </el-form-item>
       <el-form-item label="路径">
-        <el-input v-model="table.query.path" placeholder="/url" clearable />
-      </el-form-item>
-      <el-form-item label="路径">
-        <el-input v-model="table.query.path" placeholder="/url" clearable />
+        <el-input
+          v-model="table.query.uri"
+          placeholder="请求路径部分"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="search" @click="handleTableData">
@@ -123,7 +124,8 @@ const table = ref({
     limit: 20,
     page: 1,
     order: null,
-    path: null,
+    site_id: null,
+    uri: null,
   },
   data: [],
 });

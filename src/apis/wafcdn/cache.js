@@ -41,3 +41,11 @@ export const putCacheDelete = (data) => {
     data,
   });
 };
+
+export const clearCache = (params) => {
+  return service({
+    url: "/wafcdn/cache-clear",
+    method: "delete",
+    params,
+  });
+};

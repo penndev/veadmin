@@ -8,3 +8,11 @@ export const getLog = (params) => {
     params,
   });
 };
+
+export const clearLog = (params) => {
+  return service({
+    url: "/wafcdn/log-clear",
+    method: "delete",
+    params,
+  });
+};

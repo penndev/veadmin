@@ -25,7 +25,7 @@
         clearable
       />
     </el-form-item>
-        <el-form-item label="状态码">
+    <el-form-item label="状态码">
       <el-input-number
         v-model="table.query.status"
         placeholder="状态码"
@@ -45,6 +45,12 @@
   <!-- 数据展示框 -->
   <el-main class="ea-table">
     <!-- 数据table -->
+    <el-row>
+      <el-button type="danger" @click="dialog.handleDialogDelete">
+        清空全部日志
+      </el-button>
+    </el-row>
+    <br />
     <el-table
       ref="tableRef"
       :data="table.data"
@@ -109,7 +115,9 @@
 
 <script setup>
 import { ref } from "vue";
-import { getLog } from "@/apis/wafcdn/log";
+import { getLog, clearLog } from "@/apis/wafcdn/log";
+
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const tableRef = ref();
 
@@ -120,7 +128,6 @@ const table = ref({
     limit: 20,
     page: 1,
     order: null,
-    name: null,
     site_id: null,
     host: null,
     request: null,
@@ -135,7 +142,6 @@ const table = ref({
     });
   },
   handleQueryRefresh: () => {
-    table.value.query.name = null;
     table.value.query.order = null;
     table.value.handleTableData();
   },
@@ -194,6 +200,18 @@ const dialog = ref({
     dialog.value.visible = true;
     dialog.value.formAction = "edit";
     dialog.value.form = row;
+  },
+  handleDialogDelete: () => {
+    ElMessageBox.confirm(`请仔细确认是否清空全部数据?`, "警告", {
+      confirmButtonText: "清空",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(() => {
+      clearLog().then((result) => {
+        ElMessage.warning(result);
+        table.value.handleTableData();
+      });
+    });
   },
 });
 

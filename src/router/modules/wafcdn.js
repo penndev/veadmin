@@ -28,7 +28,7 @@ export const wafcdn = {
       path: "cache-delete",
       component: () => import("@/views/wafcdn/cacheDelete.vue"),
       name: "WafCdnCacheDelete",
-      meta: { title: "缓存清理", icon: "Delete" },
+      meta: { title: "缓存清理", icon: "FolderDelete" },
     },
     {
       path: "log",
