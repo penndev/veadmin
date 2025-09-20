@@ -1,4 +1,15 @@
 <template>
+  <!-- 开启captcha限制 -->
+  <br />
+  <el-form-item label="人机JS验证" prop="security.captcha">
+    <el-switch
+      v-model="security.captcha"
+      inline-prompt
+      active-icon="Check"
+      inactive-icon="Close"
+    />
+  </el-form-item>
+  <br />
   <!-- 开启IP限制 -->
   <el-form-item label="开启IP限制" prop="security.ip.status">
     <el-switch
