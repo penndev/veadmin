@@ -20,6 +20,7 @@
           <el-form-item label="站点类型" prop="type">
             <el-select v-model="dialog.form.type" placeholder="站点类型">
               <el-option key="proxy" label="反向代理" value="proxy" />
+              <el-option key="static" label="静态站点" value="static" />
             </el-select>
           </el-form-item>
         </el-tab-pane>
@@ -64,6 +65,28 @@
         <!-- 反向代理配置 -->
         <el-tab-pane v-if="dialog.form.type === 'proxy'" label="反向代理">
           <SiteProxy v-model="dialog.form.proxy" />
+        </el-tab-pane>
+        <el-tab-pane v-if="dialog.form.type === 'static'" label="静态站点">
+          <el-form-item
+            label="目录名"
+            prop="static.root"
+            :rules="[
+              {
+                required: true,
+                message: '请填写静态站点目录名',
+                trigger: 'blur',
+              },
+            ]"
+          >
+            <el-input
+              v-model="dialog.form.static.root"
+              placeholder="相对静态根目录的路径，例如 mysite"
+            />
+          </el-form-item>
+          <el-text type="info">
+            保存后会在数据根目录的 static
+            子目录下创建该目录，可到「文件管理」上传文件。
+          </el-text>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -114,6 +137,9 @@ const handleDialogAdd = () => {
   dialog.value.form = {
     header: [],
     type: "proxy",
+    static: {
+      root: "",
+    },
     proxy: {
       service: null,
       host: null,
@@ -159,6 +185,9 @@ const handleDialogEdit = (row) => {
   dialog.value.formAction = "edit";
   // 对对象进行copy
   dialog.value.form = JSON.parse(JSON.stringify(row));
+  if (!dialog.value.form.static) {
+    dialog.value.form.static = { root: "" };
+  }
 };
 
 const handleSubmitForm = () => {

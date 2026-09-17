@@ -54,20 +54,26 @@
           <!-- <pre>{{ JSON.stringify(scope.row.header, 4) }}</pre> -->
         </template>
       </el-table-column>
-      <el-table-column label="反向代理" align="center" width="300">
+      <el-table-column label="配置" align="center" min-width="280">
         <template #default="scope">
-          <el-text type="info"> 回源地址: </el-text>
-          <el-link type="primary">
-            {{ scope.row.proxy.server }}
-          </el-link>
-          <br />
-          <el-text type="info"> 回源域名: </el-text>
-          <el-link type="warning">
-            {{ scope.row.proxy.host }}
-          </el-link>
+          <template v-if="scope.row.type === 'static'">
+            <el-text type="info">静态目录: </el-text>
+            <el-link type="primary">{{ scope.row.static.root }}</el-link>
+          </template>
+          <template v-else>
+            <el-text type="info"> 回源地址: </el-text>
+            <el-link type="primary">
+              {{ scope.row.proxy.server }}
+            </el-link>
+            <br />
+            <el-text type="info"> 回源域名: </el-text>
+            <el-link type="warning">
+              {{ scope.row.proxy.host }}
+            </el-link>
+          </template>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="105">
+      <el-table-column fixed="right" label="操作" width="150">
         <template #default="scope">
           <el-button
             link
@@ -75,6 +81,14 @@
             @click="dialog.handleDialogEdit(scope.row)"
           >
             编辑
+          </el-button>
+          <el-button
+            v-if="scope.row.type === 'static'"
+            link
+            type="success"
+            @click="handleOpenDir(scope.row)"
+          >
+            目录
           </el-button>
           <el-button
             link
@@ -103,12 +117,14 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 // import api
 import { getSite } from "@/apis/wafcdn/site";
 import OpenResty from "./components/OpenResty.vue";
 import SiteDialog from "./components/SiteDialog.vue";
 
+const router = useRouter();
 const dialog = ref(Object);
 
 const table = ref({
@@ -134,6 +150,13 @@ const handleChangeLimit = (value) => {
 const handleQueryRefresh = () => {
   table.value.query.remark = null;
   handleTableData();
+};
+
+const handleOpenDir = (row) => {
+  router.push({
+    name: "WafCdnFiles",
+    query: { path: row.static?.root || "" },
+  });
 };
 
 const handleTableData = () => {

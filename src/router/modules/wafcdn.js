@@ -19,6 +19,12 @@ export const wafcdn = {
       meta: { title: "站点管理", icon: "Menu" },
     },
     {
+      path: "files",
+      component: () => import("@/views/wafcdn/files.vue"),
+      name: "WafCdnFiles",
+      meta: { title: "文件管理", icon: "FolderOpened" },
+    },
+    {
       path: "cache",
       component: () => import("@/views/wafcdn/cache.vue"),
       name: "WafCdnCache",
