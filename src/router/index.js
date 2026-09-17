@@ -4,6 +4,7 @@ import { dashboard, system } from "./modules/system";
 import { video, archive } from "./modules/video";
 import { example, icon } from "./modules/example";
 import { wafcdn } from "./modules/wafcdn";
+import { files } from "./modules/files";
 
 import { formatRouteItem, formatRouteList } from "@/utils";
 
@@ -60,6 +61,7 @@ if (import.meta.env.MODE === "wafcdn") {
       archive,
       video,
       wafcdn,
+      files,
       example,
       icon,
     ]),
