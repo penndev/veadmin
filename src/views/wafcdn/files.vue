@@ -205,6 +205,10 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { byteFormat } from "penndev/utils";
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/editor/editor.worker?worker";
+import cssWorker from "monaco-editor/language/css/css.worker?worker";
+import htmlWorker from "monaco-editor/language/html/html.worker?worker";
+import jsonWorker from "monaco-editor/language/json/json.worker?worker";
+import tsWorker from "monaco-editor/language/typescript/ts.worker?worker";
 import {
   deleteFiles,
   downloadFile,
@@ -215,7 +219,19 @@ import {
 } from "@/apis/wafcdn/files";
 
 globalThis.MonacoEnvironment = {
-  getWorker() {
+  getWorker(_workerId, label) {
+    if (label === "json") {
+      return new jsonWorker();
+    }
+    if (label === "css" || label === "scss" || label === "less") {
+      return new cssWorker();
+    }
+    if (label === "html" || label === "handlebars" || label === "razor") {
+      return new htmlWorker();
+    }
+    if (label === "typescript" || label === "javascript") {
+      return new tsWorker();
+    }
     return new editorWorker();
   },
 };
@@ -228,7 +244,6 @@ const editorEl = ref(null);
 const dragging = ref(false);
 let monacoEditor = null;
 let darkObserver = null;
-let dragDepth = 0;
 
 const table = ref({
   selectStat: false,
@@ -474,7 +489,6 @@ const handleUpload = (options) => {
 };
 
 const handleDragEnter = () => {
-  dragDepth += 1;
   dragging.value = true;
 };
 
@@ -486,12 +500,10 @@ const handleDragLeave = (e) => {
   if (e.currentTarget.contains(e.relatedTarget)) {
     return;
   }
-  dragDepth = 0;
   dragging.value = false;
 };
 
 const handlePageDrop = (e) => {
-  dragDepth = 0;
   dragging.value = false;
   const files = [];
   const items = e.dataTransfer.items;

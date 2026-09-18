@@ -56,21 +56,28 @@
       </el-table-column>
       <el-table-column label="配置" align="center" min-width="280">
         <template #default="scope">
-          <template v-if="scope.row.type === 'static'">
-            <el-text type="info">静态目录: </el-text>
-            <el-link type="primary">{{ scope.row.static.root }}</el-link>
-          </template>
-          <template v-else>
-            <el-text type="info"> 回源地址: </el-text>
-            <el-link type="primary">
-              {{ scope.row.proxy.server }}
-            </el-link>
-            <br />
-            <el-text type="info"> 回源域名: </el-text>
-            <el-link type="warning">
-              {{ scope.row.proxy.host }}
-            </el-link>
-          </template>
+          <div v-if="scope.row.type === 'static'" class="site-cfg">
+            <div class="site-cfg-row">
+              <span class="site-cfg-label">静态目录</span>
+              <el-link type="primary" @click="handleOpenDir(scope.row)">
+                {{ scope.row.static?.root }}
+              </el-link>
+            </div>
+          </div>
+          <div v-else class="site-cfg">
+            <div class="site-cfg-row">
+              <span class="site-cfg-label">回源地址</span>
+              <el-link type="primary">
+                {{ scope.row.proxy.server }}
+              </el-link>
+            </div>
+            <div class="site-cfg-row">
+              <span class="site-cfg-label">回源域名</span>
+              <el-link type="warning">
+                {{ scope.row.proxy.host }}
+              </el-link>
+            </div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
@@ -168,3 +175,24 @@ const handleTableData = () => {
 
 handleTableData();
 </script>
+
+<style scoped>
+.site-cfg {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+}
+.site-cfg-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.site-cfg-label {
+  width: 4.5em;
+  flex-shrink: 0;
+  color: var(--el-text-color-secondary);
+  text-align: right;
+}
+</style>
