@@ -97,6 +97,9 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dialog.form.email" placeholder="申请证书时使用" />
       </el-form-item>
+      <el-form-item label="域名" prop="domain">
+        <el-input v-model="dialog.form.domain" placeholder="example.com" />
+      </el-form-item>
       <el-form-item label="泛解析" prop="wildcard">
         <el-switch
           v-model="dialog.form.wildcard"
@@ -104,13 +107,7 @@
           active-icon="Check"
           inactive-icon="Close"
         />
-        <small
-          >&nbsp; 开启后填写主域名。申请 *.主域名 时会给出 DNS
-          TXT，添加后再继续</small
-        >
-      </el-form-item>
-      <el-form-item v-if="dialog.form.wildcard" label="主域名" prop="domain">
-        <el-input v-model="dialog.form.domain" placeholder="example.com" />
+        <small>&nbsp; 开启后这张证书同时包含域名和 *.域名</small>
       </el-form-item>
       <el-form-item label="证书" prop="publicKey">
         <el-input
@@ -176,52 +173,42 @@ const table = ref({
     table.value.handleTableData();
   },
   handleAcmeAction: (row) => {
-    if (!row.email) {
-      ElMessage.warning("请先在证书里填写邮箱");
+    if (!row.email || !row.domain) {
+      ElMessage.warning("请先填写邮箱和域名");
       return;
     }
-    const inputValue =
-      row.wildcard && row.domain
-        ? "*." + row.domain
-        : (row.certInfo?.dns_names || [])[0] || "";
-    ElMessageBox.prompt("要申请证书的域名", "申请证书", {
-      confirmButtonText: "申请",
-      cancelButtonText: "取消",
-      inputValue,
-    }).then(({ value }) => {
-      postCertAcme({
-        id: row.id,
-        remark: row.remark,
-        email: row.email,
-        wildcard: row.wildcard,
-        domain: value,
-      }).then((result) => {
-        if (result && result.dns) {
-          const text = (result.records || [])
-            .map((item) => item.name + "\nTXT " + item.value)
-            .join("\n\n");
-          ElMessageBox.confirm(
-            h(
-              "div",
-              { style: "white-space: pre-wrap; word-break: break-all" },
-              text,
-            ),
-            "添加 DNS TXT 后继续",
-            {
-              confirmButtonText: "已添加，继续",
-              cancelButtonText: "取消",
-            },
-          ).then(() => {
-            postCertAcme({ session: result.session }).then((done) => {
-              ElMessage.success(done.message || done);
-              table.value.handleTableData();
-            });
+    postCertAcme({
+      id: row.id,
+      remark: row.remark,
+      email: row.email,
+      wildcard: row.wildcard,
+      domain: row.domain,
+    }).then((result) => {
+      if (result && result.dns) {
+        const text = (result.records || [])
+          .map((item) => item.name + "\nTXT " + item.value)
+          .join("\n\n");
+        ElMessageBox.confirm(
+          h(
+            "div",
+            { style: "white-space: pre-wrap; word-break: break-all" },
+            text,
+          ),
+          "添加 DNS TXT 后继续",
+          {
+            confirmButtonText: "已添加，继续",
+            cancelButtonText: "取消",
+          },
+        ).then(() => {
+          postCertAcme({ session: result.session }).then((done) => {
+            ElMessage.success(done.message || done);
+            table.value.handleTableData();
           });
-          return;
-        }
-        ElMessage.success(result.message || result);
-        table.value.handleTableData();
-      });
+        });
+        return;
+      }
+      ElMessage.success(result.message || result);
+      table.value.handleTableData();
     });
   },
 });
@@ -251,6 +238,13 @@ const dialog = ref({
     dialog.value.visible = true;
   },
   handleSubmitForm: () => {
+    dialog.value.form.domain = String(dialog.value.form.domain || "")
+      .trim()
+      .replace(/^\*\./, "");
+    if (!dialog.value.form.domain) {
+      ElMessage.warning("请填写域名");
+      return;
+    }
     const request = dialog.value.formAction === "add" ? postCert : putCert;
     request(dialog.value.form).then((result) => {
       dialog.value.visible = false;

@@ -17,23 +17,6 @@
           <el-form-item label="备注" prop="remark">
             <el-input v-model="dialog.form.remark" />
           </el-form-item>
-          <el-form-item label="绑定域名">
-            <el-select
-              v-model="dialog.form.domainIds"
-              multiple
-              filterable
-              clearable
-              style="width: 100%"
-              placeholder="可绑定多个域名"
-            >
-              <el-option
-                v-for="item in domains"
-                :key="item.id"
-                :label="domainLabel(item)"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
           <el-form-item label="站点类型" prop="type">
             <el-select v-model="dialog.form.type" placeholder="站点类型">
               <el-option key="proxy" label="反向代理" value="proxy" />
@@ -104,41 +87,49 @@
             保存后会在数据根目录的 static
             子目录下创建该目录，可到「文件管理」上传文件。
           </el-text>
-          <div
+          <div class="static-locations-bar">
+            <span>路径反代</span>
+            <el-button
+              type="primary"
+              icon="Plus"
+              @click="
+                dialog.form.static.locations.push({
+                  path: '',
+                  proxy: emptyProxy(),
+                })
+              "
+            >
+              添加路径反代
+            </el-button>
+          </div>
+          <el-card
             v-for="(item, index) in dialog.form.static.locations"
             :key="index"
-            style="margin-top: 16px"
+            class="static-location"
+            shadow="never"
           >
-            <el-form-item
-              label="路径"
-              :prop="'static.locations.' + index + '.path'"
-              :rules="locationPathRules"
-            >
-              <el-input v-model="item.path" placeholder="/api" />
-            </el-form-item>
-            <el-button
-              type="danger"
-              @click="dialog.form.static.locations.splice(index, 1)"
-            >
-              删除该路径
-            </el-button>
+            <template #header>
+              <div class="static-location-head">
+                <el-form-item
+                  label="路径"
+                  :prop="'static.locations.' + index + '.path'"
+                  :rules="locationPathRules"
+                >
+                  <el-input v-model="item.path" placeholder="/api" />
+                </el-form-item>
+                <el-button
+                  type="danger"
+                  @click="dialog.form.static.locations.splice(index, 1)"
+                >
+                  删除
+                </el-button>
+              </div>
+            </template>
             <SiteProxy
               v-model="item.proxy"
               :prop-prefix="'static.locations.' + index + '.proxy'"
             />
-          </div>
-          <el-button
-            type="primary"
-            style="margin-top: 12px"
-            @click="
-              dialog.form.static.locations.push({
-                path: '',
-                proxy: emptyProxy(),
-              })
-            "
-          >
-            添加路径反代
-          </el-button>
+          </el-card>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -155,7 +146,6 @@
 <script setup>
 import { ref } from "vue";
 import { postSite, putSite, deleteSite } from "@/apis/wafcdn/site";
-import { getDomain } from "@/apis/wafcdn/domain";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 import SiteSecurity from "./SiteDialogSecurity.vue";
@@ -172,21 +162,6 @@ const props = defineProps({
 const handleTableData = props.handleTableData;
 
 const dialogRef = ref(null);
-const domains = ref([]);
-
-const loadDomains = () => {
-  getDomain({ page: 1, limit: 500 }).then((result) => {
-    domains.value = result.data || [];
-  });
-};
-
-const domainLabel = (item) => {
-  const name = item.domain;
-  if (item.SiteId) {
-    return name + "（站点" + item.SiteId + "）";
-  }
-  return name;
-};
 
 const emptyProxy = () => {
   return {
@@ -239,12 +214,10 @@ const dialog = ref({
 });
 
 const handleDialogAdd = () => {
-  loadDomains();
-  dialog.value.title = "绑定新域名";
+  dialog.value.title = "新增站点";
   dialog.value.visible = true;
   dialog.value.formAction = "add";
   dialog.value.form = {
-    domainIds: [],
     header: [],
     type: "proxy",
     static: {
@@ -291,12 +264,9 @@ const handleDialogAdd = () => {
 };
 
 const handleDialogEdit = (row) => {
-  loadDomains();
   dialog.value.title = "修改 " + row.remark + " 的配置";
   dialog.value.formAction = "edit";
-  // 对对象进行copy
   const form = JSON.parse(JSON.stringify(row));
-  form.domainIds = (form.Domains || []).map((item) => item.id);
   if (!form.static) {
     form.static = { root: "", locations: [] };
   }
@@ -363,3 +333,24 @@ defineExpose({
   handleDialogDelete,
 });
 </script>
+
+<style scoped>
+.static-locations-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 12px;
+}
+.static-location {
+  margin-bottom: 16px;
+}
+.static-location-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.static-location-head .el-form-item {
+  flex: 1;
+  margin-bottom: 0;
+}
+</style>

@@ -52,20 +52,10 @@
           }}
         </template>
       </el-table-column>
-      <el-table-column label="证书" min-width="180">
+      <el-table-column label="HTTPS" min-width="140">
         <template #default="scope">
-          <div v-if="scope.row.certId">
-            {{ scope.row.cert?.remark || "证书#" + scope.row.certId }}
-          </div>
-          <div v-else>未绑定</div>
-          <el-text :type="scope.row.ssl ? 'success' : 'info'">
-            {{
-              scope.row.ssl
-                ? scope.row.sslForce
-                  ? "强制 HTTPS"
-                  : "已启用 HTTPS"
-                : "未启用 HTTPS"
-            }}
+          <el-text :type="scope.row.sslForce ? 'success' : 'info'">
+            {{ scope.row.sslForce ? "自动跳转 HTTPS" : "不跳转" }}
           </el-text>
         </template>
       </el-table-column>
@@ -125,55 +115,20 @@
           placeholder="example.com 或 *.example.com"
         />
       </el-form-item>
-      <el-form-item label="绑定站点" prop="SiteId">
-        <el-select
-          v-model="dialog.form.SiteId"
-          clearable
-          filterable
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in sites"
-            :key="item.id"
-            :label="item.remark"
-            :value="item.id"
-          />
-        </el-select>
+      <el-form-item label="站点ID" prop="SiteId">
+        <el-input-number v-model="dialog.form.SiteId" :min="0" :step="1" />
       </el-form-item>
-      <el-form-item label="HTTPS状态" prop="ssl">
+      <el-form-item label="自动跳转 HTTPS" prop="sslForce">
         <el-switch
-          v-model="dialog.form.ssl"
+          :model-value="!!dialog.form.sslForce"
           inline-prompt
           active-icon="Check"
           inactive-icon="Close"
+          @change="dialog.handleSslForce"
         />
-      </el-form-item>
-      <el-form-item label="绑定证书" prop="certId">
-        <el-select
-          v-model="dialog.form.certId"
-          clearable
-          filterable
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in certs"
-            :key="item.id"
-            :label="certLabel(item)"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        v-if="dialog.form.ssl"
-        label="强制HTTPS访问"
-        prop="sslForce"
-      >
-        <el-switch
-          v-model="dialog.form.sslForce"
-          inline-prompt
-          active-icon="Check"
-          inactive-icon="Close"
-        />
+        <el-text v-if="!domainCovered()" type="info" style="margin-left: 8px">
+          没有覆盖该域名的证书时不能开启
+        </el-text>
       </el-form-item>
     </el-form>
 
@@ -198,32 +153,53 @@ import {
   putDomain,
   deleteDomain,
 } from "@/apis/wafcdn/domain";
-import { getSite } from "@/apis/wafcdn/site";
 import { getCert } from "@/apis/wafcdn/cert";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-const sites = ref([]);
 const certs = ref([]);
 
 const loadOptions = () => {
-  getSite({ page: 1, limit: 500 }).then((result) => {
-    sites.value = result.data || [];
-  });
-  getCert({ page: 1, limit: 500 }).then((result) => {
+  getCert({ page: 1, limit: 100 }).then((result) => {
     certs.value = result.data || [];
   });
 };
 
-const certLabel = (item) => {
-  const names = [];
-  if (item.wildcard && item.domain) {
-    names.push("*." + item.domain);
+const dnsCovers = (pattern, host) => {
+  pattern = String(pattern || "")
+    .trim()
+    .toLowerCase();
+  host = String(host || "")
+    .trim()
+    .toLowerCase();
+  if (!pattern || !host) {
+    return false;
   }
-  names.push(...(item.certInfo?.dns_names || []));
-  if (names.length) {
-    return item.remark + "（" + names.join(", ") + "）";
+  if (pattern === host) {
+    return true;
   }
-  return item.remark || "证书#" + item.id;
+  if (!pattern.startsWith("*.") || host.startsWith("*.")) {
+    return false;
+  }
+  const suffix = pattern.slice(1);
+  if (!host.endsWith(suffix)) {
+    return false;
+  }
+  const label = host.slice(0, host.length - suffix.length);
+  return label.length > 0 && !label.includes(".");
+};
+
+const domainCovered = () => {
+  const host = dialog.value.form?.domain;
+  for (const cert of certs.value) {
+    const names = [...(cert.certInfo?.dns_names || [])];
+    if (cert.wildcard && cert.domain) {
+      names.push("*." + cert.domain);
+    }
+    if (names.some((name) => dnsCovers(name, host))) {
+      return true;
+    }
+  }
+  return false;
 };
 
 const tableRef = ref();
@@ -288,12 +264,20 @@ const dialog = ref({
     ],
   },
   formAction: "add", // add|edit
+  handleSslForce: (value) => {
+    if (value && !domainCovered()) {
+      ElMessage.warning("没有覆盖该域名的证书，不能开启自动跳转 HTTPS");
+      dialog.value.form.sslForce = false;
+      return;
+    }
+    dialog.value.form.sslForce = value;
+  },
   handleDialogAdd: () => {
     loadOptions();
     dialog.value.title = "创建数据";
     dialog.value.visible = true;
     dialog.value.formAction = "add";
-    dialog.value.form = {};
+    dialog.value.form = { SiteId: 0, sslForce: false };
   },
   handleDialogEdit: (row) => {
     loadOptions();

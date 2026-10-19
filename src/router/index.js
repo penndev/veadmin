@@ -52,7 +52,7 @@ const routes = [
 if (import.meta.env.MODE === "wafcdn") {
   wafcdn.path = "/";
   wafcdn.redirect = "/domain";
-  routes.push(formatRouteItem(wafcdn, "/"));
+  routes.push(formatRouteItem(wafcdn, ""));
 } else {
   routes.push(
     ...formatRouteList([
