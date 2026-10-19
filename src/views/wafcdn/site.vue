@@ -36,7 +36,7 @@
       <el-table-column label="绑定域名" align="center">
         <template #default="scope">
           <p v-for="item of scope.row.Domains" :key="item.id">
-            {{ (item.wildcard ? "*." : "") + item.domain }}
+            {{ item.domain }}
           </p>
         </template>
       </el-table-column>
@@ -54,29 +54,49 @@
           <!-- <pre>{{ JSON.stringify(scope.row.header, 4) }}</pre> -->
         </template>
       </el-table-column>
-      <el-table-column label="配置" align="center" min-width="280">
+      <el-table-column label="配置" min-width="340">
         <template #default="scope">
-          <div v-if="scope.row.type === 'static'" class="site-cfg">
-            <div class="site-cfg-row">
-              <span class="site-cfg-label">静态目录</span>
-              <el-link type="primary" @click="handleOpenDir(scope.row)">
-                {{ scope.row.static?.root }}
-              </el-link>
-            </div>
-          </div>
-          <div v-else class="site-cfg">
-            <div class="site-cfg-row">
-              <span class="site-cfg-label">回源地址</span>
-              <el-link type="primary">
-                {{ scope.row.proxy.server }}
-              </el-link>
-            </div>
-            <div class="site-cfg-row">
-              <span class="site-cfg-label">回源域名</span>
-              <el-link type="warning">
-                {{ scope.row.proxy.host }}
-              </el-link>
-            </div>
+          <div class="site-cfg">
+            <el-tag
+              size="small"
+              :type="scope.row.type === 'static' ? 'success' : 'primary'"
+            >
+              {{ scope.row.type === "static" ? "静态站点" : "反向代理" }}
+            </el-tag>
+            <template v-if="scope.row.type === 'static'">
+              <div class="site-cfg-line">
+                <span class="site-cfg-label">目录</span>
+                <el-link
+                  class="site-cfg-value"
+                  type="primary"
+                  @click="handleOpenDir(scope.row)"
+                >
+                  {{ scope.row.static?.root || "未设置" }}
+                </el-link>
+              </div>
+              <div
+                v-for="(item, index) in scope.row.static?.locations || []"
+                :key="index"
+                class="site-cfg-line"
+              >
+                <span class="site-cfg-label">{{ item.path }}</span>
+                <span class="site-cfg-value" :title="item.proxy?.server">
+                  {{ item.proxy?.server || "未设置回源" }}
+                </span>
+              </div>
+            </template>
+            <template v-else>
+              <div class="site-cfg-line">
+                <span class="site-cfg-label">回源</span>
+                <span class="site-cfg-value" :title="scope.row.proxy?.server">
+                  {{ scope.row.proxy?.server || "未设置" }}
+                </span>
+              </div>
+              <div v-if="scope.row.proxy?.host" class="site-cfg-line">
+                <span class="site-cfg-label">Host</span>
+                <span class="site-cfg-value">{{ scope.row.proxy.host }}</span>
+              </div>
+            </template>
           </div>
         </template>
       </el-table-column>
@@ -178,21 +198,37 @@ handleTableData();
 
 <style scoped>
 .site-cfg {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
-  text-align: left;
+  gap: 6px;
+  padding: 4px 0;
 }
-.site-cfg-row {
+.site-cfg-line {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 .site-cfg-label {
-  width: 4.5em;
+  width: 3.2em;
   flex-shrink: 0;
   color: var(--el-text-color-secondary);
-  text-align: right;
+}
+.site-cfg-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site-cfg-line :deep(.el-link) {
+  min-width: 0;
+}
+.site-cfg-line :deep(.el-link__inner) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

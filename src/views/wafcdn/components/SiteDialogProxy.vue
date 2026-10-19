@@ -7,10 +7,14 @@
         <span>回源设置</span>
       </div>
     </template>
-    <el-form-item label="主机" prop="proxy.server">
+    <el-form-item
+      label="回源地址"
+      :prop="propPrefix + '.server'"
+      :rules="[{ required: true, message: '请填写回源地址' }]"
+    >
       <InputServer v-model="proxy.server" />
     </el-form-item>
-    <el-form-item label="Host" prop="proxy.host">
+    <el-form-item label="Host" :prop="propPrefix + '.host'">
       <el-input v-model="proxy.host" />
     </el-form-item>
     <div class="card-header">
@@ -51,7 +55,7 @@
     </template>
     <el-form-item
       label="连接数"
-      prop="proxy.keepalive_requests"
+      :prop="propPrefix + '.keepalive_requests'"
       :rules="[{ required: true, message: '必须设置连接数10-10000' }]"
     >
       <el-input-number
@@ -63,7 +67,7 @@
     </el-form-item>
     <el-form-item
       label="超时时间/秒"
-      prop="proxy.keepalive_timeout"
+      :prop="propPrefix + '.keepalive_timeout'"
       :rules="[{ required: true, message: '必须设置超时时间5-300秒' }]"
     >
       <el-input-number
@@ -85,7 +89,7 @@
 
     <el-form-item
       label="缓存快捷清理[HTTP METHOD PURGE]"
-      prop="proxy.cache_purge"
+      :prop="propPrefix + '.cache_purge'"
     >
       <el-switch
         v-model="proxy.cache_purge"
@@ -196,4 +200,11 @@ import { secFormat } from "penndev/utils";
 import InputServer from "./InputServer.vue";
 
 const proxy = defineModel();
+
+defineProps({
+  propPrefix: {
+    type: String,
+    default: "proxy",
+  },
+});
 </script>

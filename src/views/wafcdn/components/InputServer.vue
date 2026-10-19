@@ -18,6 +18,11 @@
       type="number"
       style="width: 80px"
     />
+    <el-input
+      v-model="path"
+      placeholder="路径 /api"
+      style="width: 160px; margin-left: 8px"
+    />
     <el-tag type="info" style="margin-left: 12px">
       完整URL: {{ modelValue }}
     </el-tag>
@@ -31,8 +36,22 @@ import { ref, onMounted, watch } from "vue";
 const protocol = ref("");
 const domain = ref("");
 const port = ref("");
+const path = ref("");
 
 const url = defineModel();
+
+const buildURL = () => {
+  let value = protocol.value + "//" + domain.value + ":" + port.value;
+  let next = String(path.value || "").trim();
+  if (next !== "") {
+    if (!next.startsWith("/")) {
+      next = "/" + next;
+    }
+    next = next.replace(/\/+$/, "");
+    value += next;
+  }
+  url.value = value;
+};
 
 // 初始化时解析URL
 onMounted(() => {
@@ -41,6 +60,8 @@ onMounted(() => {
     protocol.value = urlObj.protocol;
     domain.value = urlObj.hostname;
     port.value = urlObj.port;
+    path.value =
+      urlObj.pathname === "/" ? "" : urlObj.pathname.replace(/\/+$/, "");
     if (!port.value) {
       port.value = protocol.value === "http:" ? "80" : "443";
     }
@@ -49,16 +70,20 @@ onMounted(() => {
     protocol.value = "http:";
     domain.value = "";
     port.value = 80;
+    path.value = "";
   }
   watch(protocol, () => {
     protocol.value == "http:" ? (port.value = "80") : (port.value = "443");
-    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+    buildURL();
   });
   watch(port, () => {
-    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+    buildURL();
   });
   watch(domain, () => {
-    url.value = protocol.value + "//" + domain.value + ":" + port.value;
+    buildURL();
+  });
+  watch(path, () => {
+    buildURL();
   });
 });
 </script>

@@ -203,12 +203,19 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { byteFormat } from "penndev/utils";
-import * as monaco from "monaco-editor";
+import * as monaco from "monaco-editor/editor/editor.api.js";
 import editorWorker from "monaco-editor/editor/editor.worker?worker";
-import cssWorker from "monaco-editor/language/css/css.worker?worker";
-import htmlWorker from "monaco-editor/language/html/html.worker?worker";
-import jsonWorker from "monaco-editor/language/json/json.worker?worker";
-import tsWorker from "monaco-editor/language/typescript/ts.worker?worker";
+import "monaco-editor/editor/browser/coreCommands.js";
+import "monaco-editor/editor/contrib/clipboard/browser/clipboard.js";
+import "monaco-editor/editor/contrib/contextmenu/browser/contextmenu.js";
+import "monaco-editor/features/find/register.js";
+import "monaco-editor/editor/contrib/comment/browser/comment.js";
+import "monaco-editor/editor/contrib/bracketMatching/browser/bracketMatching.js";
+import "monaco-editor/editor/contrib/wordOperations/browser/wordOperations.js";
+import "monaco-editor/features/codicon/register.js";
+import "monaco-editor/languages/definitions/html/register.js";
+import "monaco-editor/languages/definitions/css/register.js";
+import "monaco-editor/languages/definitions/javascript/register.js";
 import {
   deleteFiles,
   downloadFile,
@@ -219,19 +226,7 @@ import {
 } from "@/apis/wafcdn/files";
 
 globalThis.MonacoEnvironment = {
-  getWorker(_workerId, label) {
-    if (label === "json") {
-      return new jsonWorker();
-    }
-    if (label === "css" || label === "scss" || label === "less") {
-      return new cssWorker();
-    }
-    if (label === "html" || label === "handlebars" || label === "razor") {
-      return new htmlWorker();
-    }
-    if (label === "typescript" || label === "javascript") {
-      return new tsWorker();
-    }
+  getWorker() {
     return new editorWorker();
   },
 };

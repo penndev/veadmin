@@ -44,37 +44,29 @@
       <el-table-column label="ID" prop="id" width="80" sortable="custom" />
       <el-table-column label="备注" prop="remark" align="center" />
       <el-table-column label="域名" prop="domain" align="center" />
-      <el-table-column label="站点ID" prop="SiteId" sortable="custom" />
-      <el-table-column label="SSL证书配置" align="center">
+      <el-table-column label="站点" min-width="140">
         <template #default="scope">
-          <div>
-            <span>状态:</span>
-            <el-text :type="scope.row.ssl ? 'success' : 'danger'">
-              {{ scope.row.ssl ? "启用" : "禁用" }}
-            </el-text>
+          {{
+            scope.row.Site?.remark ||
+            (scope.row.SiteId ? "#" + scope.row.SiteId : "未绑定")
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="证书" min-width="180">
+        <template #default="scope">
+          <div v-if="scope.row.certId">
+            {{ scope.row.cert?.remark || "证书#" + scope.row.certId }}
           </div>
-          <div>
-            <span>跳转:</span>
-            <el-text>
-              {{ scope.row.sslForce ? "HTTP跳转HTTPS" : "允许HTTP访问" }}
-            </el-text>
-          </div>
-          <div>
-            <span>邮箱:</span>
-            <span>
-              {{ scope.row.sslEmail || "未设置" }}
-            </span>
-          </div>
-          <div>
-            <el-popover width="400">
-              <template #reference>
-                <el-link size="small">查看证书详情</el-link>
-              </template>
-              <template #default>
-                <pre>{{ JSON.stringify(scope.row.certInfo, null, 2) }}</pre>
-              </template>
-            </el-popover>
-          </div>
+          <div v-else>未绑定</div>
+          <el-text :type="scope.row.ssl ? 'success' : 'info'">
+            {{
+              scope.row.ssl
+                ? scope.row.sslForce
+                  ? "强制 HTTPS"
+                  : "已启用 HTTPS"
+                : "未启用 HTTPS"
+            }}
+          </el-text>
         </template>
       </el-table-column>
       <el-table-column prop="updatedAt" label="最近更新" />
@@ -84,11 +76,6 @@
           <div>
             <el-link type="primary" @click="dialog.handleDialogEdit(scope.row)">
               编辑
-            </el-link>
-          </div>
-          <div>
-            <el-link type="primary" @click="table.handleAcmeAction(scope.row)">
-              ACME证书
             </el-link>
           </div>
           <div>
@@ -133,26 +120,25 @@
         <el-input v-model="dialog.form.remark" />
       </el-form-item>
       <el-form-item label="域名" prop="domain">
-        <el-input v-model="dialog.form.domain" placeholder="请输入域名" />
-      </el-form-item>
-      <el-form-item label="泛域名" prop="wildcard">
-        <el-switch
-          v-model="dialog.form.wildcard"
-          inline-prompt
-          active-icon="Check"
-          inactive-icon="Close"
+        <el-input
+          v-model="dialog.form.domain"
+          placeholder="example.com 或 *.example.com"
         />
-        <small
-          >&nbsp; 证书需要DNS解析支持(单独申请)
-          域名并会自动格式化为主域名</small
-        >
       </el-form-item>
       <el-form-item label="绑定站点" prop="SiteId">
-        <el-input-number v-model="dialog.form.SiteId" />
-      </el-form-item>
-
-      <el-form-item label="站点邮箱" prop="sslEmail">
-        <el-input v-model="dialog.form.sslEmail" />
+        <el-select
+          v-model="dialog.form.SiteId"
+          clearable
+          filterable
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in sites"
+            :key="item.id"
+            :label="item.remark"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="HTTPS状态" prop="ssl">
         <el-switch
@@ -162,39 +148,33 @@
           inactive-icon="Close"
         />
       </el-form-item>
-
-      <div v-if="dialog.form.ssl">
-        <el-form-item label="强制HTTPS访问" prop="sslForce">
-          <el-switch
-            v-model="dialog.form.sslForce"
-            inline-prompt
-            active-icon="Check"
-            inactive-icon="Close"
+      <el-form-item label="绑定证书" prop="certId">
+        <el-select
+          v-model="dialog.form.certId"
+          clearable
+          filterable
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in certs"
+            :key="item.id"
+            :label="certLabel(item)"
+            :value="item.id"
           />
-        </el-form-item>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="私钥" label-position="right" prop="privateKey">
-              <el-input
-                v-model="dialog.form.privateKey"
-                :autosize="{ minRows: 4, maxRows: 30 }"
-                resize="vertical"
-                type="textarea"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="证书" label-position="right" prop="publicKey">
-              <el-input
-                v-model="dialog.form.publicKey"
-                :autosize="{ minRows: 4, maxRows: 30 }"
-                resize="vertical"
-                type="textarea"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </div>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        v-if="dialog.form.ssl"
+        label="强制HTTPS访问"
+        prop="sslForce"
+      >
+        <el-switch
+          v-model="dialog.form.sslForce"
+          inline-prompt
+          active-icon="Check"
+          inactive-icon="Close"
+        />
+      </el-form-item>
     </el-form>
 
     <template #footer>
@@ -217,9 +197,34 @@ import {
   postDomain,
   putDomain,
   deleteDomain,
-  postAcme,
 } from "@/apis/wafcdn/domain";
+import { getSite } from "@/apis/wafcdn/site";
+import { getCert } from "@/apis/wafcdn/cert";
 import { ElMessage, ElMessageBox } from "element-plus";
+
+const sites = ref([]);
+const certs = ref([]);
+
+const loadOptions = () => {
+  getSite({ page: 1, limit: 500 }).then((result) => {
+    sites.value = result.data || [];
+  });
+  getCert({ page: 1, limit: 500 }).then((result) => {
+    certs.value = result.data || [];
+  });
+};
+
+const certLabel = (item) => {
+  const names = [];
+  if (item.wildcard && item.domain) {
+    names.push("*." + item.domain);
+  }
+  names.push(...(item.certInfo?.dns_names || []));
+  if (names.length) {
+    return item.remark + "（" + names.join(", ") + "）";
+  }
+  return item.remark || "证书#" + item.id;
+};
 
 const tableRef = ref();
 
@@ -267,19 +272,6 @@ const table = ref({
       tableRef.value.toggleRowSelection(row);
     });
   },
-  handleAcmeAction: (row) => {
-    // 申请免费证书
-    ElMessageBox.confirm(`请仔细确认是否申请免费证书[${row.domain}]?`, "警告", {
-      confirmButtonText: "申请",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(() => {
-      postAcme(row).then((result) => {
-        ElMessage.success(result);
-        table.value.handleTableData();
-      });
-    });
-  },
 });
 
 // dialog 的 element 实例
@@ -297,12 +289,14 @@ const dialog = ref({
   },
   formAction: "add", // add|edit
   handleDialogAdd: () => {
+    loadOptions();
     dialog.value.title = "创建数据";
     dialog.value.visible = true;
     dialog.value.formAction = "add";
     dialog.value.form = {};
   },
   handleDialogEdit: (row) => {
+    loadOptions();
     dialog.value.title = "编辑数据";
     dialog.value.visible = true;
     dialog.value.formAction = "edit";

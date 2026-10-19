@@ -7,6 +7,12 @@ export const wafcdn = {
   meta: { title: "WAFCDN", icon: "Postcard" },
   children: [
     {
+      path: "cert",
+      component: () => import("@/views/wafcdn/cert.vue"),
+      name: "WafCdnCert",
+      meta: { title: "证书管理", icon: "Lock" },
+    },
+    {
       path: "domain",
       component: () => import("@/views/wafcdn/domain.vue"),
       name: "WafCdnDomain",
