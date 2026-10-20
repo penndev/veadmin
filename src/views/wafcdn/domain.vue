@@ -120,15 +120,11 @@
       </el-form-item>
       <el-form-item label="自动跳转 HTTPS" prop="sslForce">
         <el-switch
-          :model-value="!!dialog.form.sslForce"
+          v-model="dialog.form.sslForce"
           inline-prompt
           active-icon="Check"
           inactive-icon="Close"
-          @change="dialog.handleSslForce"
         />
-        <el-text v-if="!domainCovered()" type="info" style="margin-left: 8px">
-          没有覆盖该域名的证书时不能开启
-        </el-text>
       </el-form-item>
     </el-form>
 
@@ -153,54 +149,7 @@ import {
   putDomain,
   deleteDomain,
 } from "@/apis/wafcdn/domain";
-import { getCert } from "@/apis/wafcdn/cert";
 import { ElMessage, ElMessageBox } from "element-plus";
-
-const certs = ref([]);
-
-const loadOptions = () => {
-  getCert({ page: 1, limit: 100 }).then((result) => {
-    certs.value = result.data || [];
-  });
-};
-
-const dnsCovers = (pattern, host) => {
-  pattern = String(pattern || "")
-    .trim()
-    .toLowerCase();
-  host = String(host || "")
-    .trim()
-    .toLowerCase();
-  if (!pattern || !host) {
-    return false;
-  }
-  if (pattern === host) {
-    return true;
-  }
-  if (!pattern.startsWith("*.") || host.startsWith("*.")) {
-    return false;
-  }
-  const suffix = pattern.slice(1);
-  if (!host.endsWith(suffix)) {
-    return false;
-  }
-  const label = host.slice(0, host.length - suffix.length);
-  return label.length > 0 && !label.includes(".");
-};
-
-const domainCovered = () => {
-  const host = dialog.value.form?.domain;
-  for (const cert of certs.value) {
-    const names = [...(cert.certInfo?.dns_names || [])];
-    if (cert.wildcard && cert.domain) {
-      names.push("*." + cert.domain);
-    }
-    if (names.some((name) => dnsCovers(name, host))) {
-      return true;
-    }
-  }
-  return false;
-};
 
 const tableRef = ref();
 
@@ -264,27 +213,17 @@ const dialog = ref({
     ],
   },
   formAction: "add", // add|edit
-  handleSslForce: (value) => {
-    if (value && !domainCovered()) {
-      ElMessage.warning("没有覆盖该域名的证书，不能开启自动跳转 HTTPS");
-      dialog.value.form.sslForce = false;
-      return;
-    }
-    dialog.value.form.sslForce = value;
-  },
   handleDialogAdd: () => {
-    loadOptions();
     dialog.value.title = "创建数据";
     dialog.value.visible = true;
     dialog.value.formAction = "add";
     dialog.value.form = { SiteId: 0, sslForce: false };
   },
   handleDialogEdit: (row) => {
-    loadOptions();
     dialog.value.title = "编辑数据";
     dialog.value.visible = true;
     dialog.value.formAction = "edit";
-    dialog.value.form = row;
+    dialog.value.form = JSON.parse(JSON.stringify(row));
   },
   handleSubmitForm: () => {
     // 提交数据

@@ -24,9 +24,6 @@
       <el-table-column label="覆盖域名" min-width="220">
         <template #default="scope">
           <div class="cert-names">
-            <el-tag v-if="scope.row.wildcard" size="small" type="warning">
-              *.{{ scope.row.domain }}
-            </el-tag>
             <el-tag
               v-for="name in scope.row.certInfo?.dns_names || []"
               :key="name"
@@ -34,11 +31,7 @@
             >
               {{ name }}
             </el-tag>
-            <span
-              v-if="
-                !scope.row.wildcard &&
-                !(scope.row.certInfo?.dns_names || []).length
-              "
+            <span v-if="!(scope.row.certInfo?.dns_names || []).length"
               >未解析</span
             >
           </div>
@@ -131,10 +124,46 @@
       >
     </template>
   </el-dialog>
+
+  <el-dialog
+    v-model="dns.visible"
+    title="添加 DNS TXT 记录"
+    :close-on-click-modal="false"
+    width="720px"
+  >
+    <p class="dns-tip">到域名服务商添加下面的记录，生效后再继续。</p>
+    <el-card
+      v-for="(item, index) in dns.records"
+      :key="index"
+      shadow="never"
+      class="dns-card"
+      :body-style="{ padding: '12px 14px' }"
+    >
+      <el-tag effect="dark" type="warning">TXT</el-tag>
+      <div class="dns-row">
+        <span class="dns-label">主机</span>
+        <span class="dns-text">{{ item.name }}</span>
+        <el-button link type="primary" @click="copyText(item.name)">
+          复制
+        </el-button>
+      </div>
+      <div class="dns-row">
+        <span class="dns-label">记录值</span>
+        <span class="dns-text">{{ item.value }}</span>
+        <el-button link type="primary" @click="copyText(item.value)">
+          复制
+        </el-button>
+      </div>
+    </el-card>
+    <template #footer>
+      <el-button @click="dns.visible = false">取消</el-button>
+      <el-button type="primary" @click="dns.confirm">已添加，继续</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { h, ref } from "vue";
+import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   getCert,
@@ -145,6 +174,17 @@ import {
 } from "@/apis/wafcdn/cert";
 
 const dialogRef = ref(null);
+
+const copyText = (text) => {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      ElMessage.success("已复制");
+    },
+    () => {
+      ElMessage.warning("复制失败，请手动选择");
+    },
+  );
+};
 
 const table = ref({
   total: 0,
@@ -185,29 +225,25 @@ const table = ref({
       domain: row.domain,
     }).then((result) => {
       if (result && result.dns) {
-        const text = (result.records || [])
-          .map((item) => item.name + "\nTXT " + item.value)
-          .join("\n\n");
-        ElMessageBox.confirm(
-          h(
-            "div",
-            { style: "white-space: pre-wrap; word-break: break-all" },
-            text,
-          ),
-          "添加 DNS TXT 后继续",
-          {
-            confirmButtonText: "已添加，继续",
-            cancelButtonText: "取消",
-          },
-        ).then(() => {
-          postCertAcme({ session: result.session }).then((done) => {
-            ElMessage.success(done.message || done);
-            table.value.handleTableData();
-          });
-        });
+        dns.value.records = result.records || [];
+        dns.value.session = result.session;
+        dns.value.visible = true;
         return;
       }
       ElMessage.success(result.message || result);
+      table.value.handleTableData();
+    });
+  },
+});
+
+const dns = ref({
+  visible: false,
+  records: [],
+  session: "",
+  confirm: () => {
+    postCertAcme({ session: dns.value.session }).then((done) => {
+      dns.value.visible = false;
+      ElMessage.success(done.message || done);
       table.value.handleTableData();
     });
   },
@@ -274,5 +310,34 @@ table.value.handleTableData();
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.dns-tip {
+  margin: 0 0 12px;
+}
+
+.dns-card + .dns-card {
+  margin-top: 12px;
+}
+
+.dns-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dns-label {
+  flex: none;
+  width: 48px;
+  line-height: 24px;
+  color: var(--el-text-color-secondary);
+}
+
+.dns-text {
+  flex: 1;
+  min-width: 0;
+  line-height: 24px;
+  word-break: break-all;
 }
 </style>

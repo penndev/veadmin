@@ -1,84 +1,91 @@
 <template>
-  <el-text> 下面为地区选择 </el-text>
-  <el-divider border-style="solid" />
-  <el-row
-    :gutter="10"
-    style="
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      margin-top: 12px;
-    "
-    v-for="(v, i) of model"
-    :key="i"
-  >
-    <el-col style="flex: 0 0 auto">
-      <el-text type="primary">
-        <el-icon><Location /></el-icon> {{ v }}
-      </el-text>
-    </el-col>
-    <el-col style="flex: 1">
-      <el-button
-        size="small"
-        type="danger"
-        icon="Delete"
-        circle
-        @click="model.splice(i, 1)"
+  <div v-if="model.length" class="region-list">
+    <div v-for="(item, i) in model" :key="i" class="region-item">
+      <span>{{
+        [item.Country, item.Province, item.City, item.County]
+          .filter(Boolean)
+          .join(" / ")
+      }}</span>
+      <el-button link type="danger" @click="model.splice(i, 1)">删除</el-button>
+    </div>
+  </div>
+  <div class="region-form">
+    <el-select
+      v-model="draft.Country"
+      filterable
+      clearable
+      placeholder="国家"
+      @change="onCountry"
+    >
+      <el-option
+        v-for="name in countries"
+        :key="name"
+        :label="name"
+        :value="name"
       />
-    </el-col>
-  </el-row>
-  <el-divider border-style="solid" />
-  <el-row
-    :gutter="10"
-    style="display: flex; flex-wrap: nowrap; align-items: center"
-  >
-    <!-- 左侧：文本 -->
-    <el-col :style="{ flex: '0 0 auto' }">
-      <el-text type="info">
-        <el-icon><Location /></el-icon>
-        {{ region || "请选择详细的地址" }}
-      </el-text>
-    </el-col>
-
-    <!-- 中间：下拉选择 -->
-    <el-col style="flex: 1; max-width: 400px">
-      <el-select
-        v-model="current"
-        filterable
-        reserve-keyword
-        placeholder="选择地区"
-        style="width: 100%"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-    </el-col>
-
-    <!-- 右侧：按钮 -->
-    <el-col :style="{ flex: '0 0 auto' }">
-      <el-button type="primary" icon="Plus" circle @click="add()" />
-
-      <el-button type="info" icon="Refresh" circle @click="reset()" />
-    </el-col>
-  </el-row>
+    </el-select>
+    <el-select
+      v-model="draft.Province"
+      filterable
+      clearable
+      placeholder="省份"
+      :disabled="!draft.Country"
+      @change="onProvince"
+    >
+      <el-option
+        v-for="name in provinces"
+        :key="name"
+        :label="name"
+        :value="name"
+      />
+    </el-select>
+    <el-select
+      v-model="draft.City"
+      filterable
+      clearable
+      placeholder="城市"
+      :disabled="!draft.Province"
+      @change="onCity"
+    >
+      <el-option
+        v-for="name in cities"
+        :key="name"
+        :label="name"
+        :value="name"
+      />
+    </el-select>
+    <el-select
+      v-model="draft.County"
+      filterable
+      clearable
+      placeholder="区县"
+      :disabled="!draft.City"
+    >
+      <el-option
+        v-for="name in counties"
+        :key="name"
+        :label="name"
+        :value="name"
+      />
+    </el-select>
+    <el-button type="primary" :disabled="!draft.Country" @click="add">
+      添加
+    </el-button>
+  </div>
 </template>
+
 <script setup>
 import { getIPRegion } from "@/apis/wafcdn/ipRegion";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
-// 处理默认数据展示
 const model = defineModel();
 model.value ??= [];
 
-const options = ref([]);
-
-const current = ref("");
-
-const region = ref({
+const countries = ref([]);
+const provinces = ref([]);
+const cities = ref([]);
+const counties = ref([]);
+const draft = ref({
   Country: "",
   Province: "",
   City: "",
@@ -86,41 +93,94 @@ const region = ref({
   ISP: "",
 });
 
-const load = () => {
-  getIPRegion(region.value).then((result) => {
-    options.value = result.data;
+const load = (query) => {
+  return getIPRegion(query).then((result) => result.data || []);
+};
+
+load({}).then((data) => {
+  countries.value = data;
+});
+
+const onCountry = () => {
+  draft.value.Province = "";
+  draft.value.City = "";
+  draft.value.County = "";
+  provinces.value = [];
+  cities.value = [];
+  counties.value = [];
+  if (!draft.value.Country) {
+    return;
+  }
+  load({ Country: draft.value.Country }).then((data) => {
+    provinces.value = data;
   });
 };
 
-watch(current, () => {
-  if (region.value.Country == "") {
-    region.value.Country = current.value;
-  } else {
-    if (region.value.Province == "") {
-      region.value.Province = current.value;
-    } else {
-      if (region.value.City == "") {
-        region.value.City = current.value;
-      } else {
-        region.value.County = current.value;
-      }
-    }
+const onProvince = () => {
+  draft.value.City = "";
+  draft.value.County = "";
+  cities.value = [];
+  counties.value = [];
+  if (!draft.value.Province) {
+    return;
   }
-  options.value = [];
-  load();
-});
+  load({
+    Country: draft.value.Country,
+    Province: draft.value.Province,
+  }).then((data) => {
+    cities.value = data;
+  });
+};
 
-const reset = () => {
-  for (const item in region.value) {
-    region.value[item] = "";
+const onCity = () => {
+  draft.value.County = "";
+  counties.value = [];
+  if (!draft.value.City) {
+    return;
   }
-  current.value = "";
+  load({
+    Country: draft.value.Country,
+    Province: draft.value.Province,
+    City: draft.value.City,
+  }).then((data) => {
+    counties.value = data;
+  });
 };
 
 const add = () => {
-  model.value.push(JSON.parse(JSON.stringify(region.value)));
-  reset();
+  if (!draft.value.Country) {
+    return;
+  }
+  model.value.push({ ...draft.value });
+  draft.value.Province = "";
+  draft.value.City = "";
+  draft.value.County = "";
+  cities.value = [];
+  counties.value = [];
 };
-
-load();
 </script>
+
+<style scoped>
+.region-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.region-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.region-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.region-form .el-select {
+  width: 140px;
+}
+</style>

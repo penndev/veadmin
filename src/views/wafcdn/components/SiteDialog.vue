@@ -4,25 +4,100 @@
     :title="dialog.title"
     :close-on-click-modal="false"
     destroy-on-close
-    size="80%"
+    size="920px"
   >
     <el-form
       ref="dialogRef"
       label-position="left"
+      label-width="120px"
       :model="dialog.form"
       :rules="dialog.formRule"
     >
       <el-tabs type="border-card">
-        <el-tab-pane label="备注设置">
+        <el-tab-pane label="站点配置">
           <el-form-item label="备注" prop="remark">
             <el-input v-model="dialog.form.remark" />
           </el-form-item>
-          <el-form-item label="站点类型" prop="type">
-            <el-select v-model="dialog.form.type" placeholder="站点类型">
-              <el-option key="proxy" label="反向代理" value="proxy" />
-              <el-option key="static" label="静态站点" value="static" />
-            </el-select>
+          <el-form-item
+            label="站点目录"
+            prop="root"
+            :rules="[
+              {
+                required: true,
+                message: '请填写站点目录',
+                trigger: 'blur',
+              },
+            ]"
+          >
+            <el-input
+              v-model="dialog.form.root"
+              placeholder="例如 mysite，文件放在 static/mysite"
+            />
           </el-form-item>
+          <p class="site-hint">
+            其余路径都读取这个目录。额外路径只能反向代理或重定向，要改范围直接改路径。
+          </p>
+          <div class="static-locations-bar">
+            <span>路径</span>
+            <el-button @click="dialog.form.locations.push(emptyLocation(''))">
+              添加路径
+            </el-button>
+          </div>
+          <el-card
+            v-for="(item, index) in dialog.form.locations"
+            :key="index"
+            class="static-location"
+            shadow="never"
+          >
+            <div class="static-location-head">
+              <el-form-item
+                label-width="0"
+                :prop="'locations.' + index + '.path'"
+                :rules="locationPathRules"
+              >
+                <el-input
+                  v-model="item.path"
+                  placeholder="路径，例如 / 或 /api"
+                />
+              </el-form-item>
+              <el-form-item label-width="0">
+                <el-select v-model="item.action" style="width: 100%">
+                  <el-option label="反向代理" value="proxy" />
+                  <el-option label="重定向" value="redirect" />
+                </el-select>
+              </el-form-item>
+              <el-button
+                link
+                type="danger"
+                @click="dialog.form.locations.splice(index, 1)"
+              >
+                删除
+              </el-button>
+            </div>
+            <SiteProxy
+              v-if="item.action === 'proxy'"
+              v-model="item.proxy"
+              :prop-prefix="'locations.' + index + '.proxy'"
+            />
+            <template v-else>
+              <el-form-item
+                label="地址"
+                :prop="'locations.' + index + '.redirect'"
+                :rules="[{ required: true, message: '请填写重定向地址' }]"
+              >
+                <el-input
+                  v-model="item.redirect"
+                  placeholder="https://example.com/path 或 /path"
+                />
+              </el-form-item>
+              <el-form-item label="状态码">
+                <el-select v-model="item.code" style="width: 160px">
+                  <el-option label="301 永久" :value="301" />
+                  <el-option label="302 临时" :value="302" />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-card>
         </el-tab-pane>
 
         <el-tab-pane label="安全防护">
@@ -30,105 +105,30 @@
         </el-tab-pane>
 
         <el-tab-pane label="返回头">
-          <span></span>
-          <el-row
-            v-for="(value, index) in dialog.form.header"
-            :key="index"
-            :gutter="10"
-            style="margin: 12px auto"
-          >
-            <el-col :span="11">
-              <el-input v-model="value.name" placeholder="名" />
-            </el-col>
-            <el-col :span="11">
+          <el-card shadow="never" class="header-card">
+            <div
+              v-for="(value, index) in dialog.form.header"
+              :key="index"
+              class="header-row"
+            >
+              <el-input v-model="value.name" placeholder="名称" />
               <el-input
                 v-model="value.value"
-                placeholder="值 如果不设置则为删除本请求头"
+                placeholder="值，留空表示删除这个响应头"
               />
-            </el-col>
-            <el-col :span="2" style="text-align: center">
               <el-button
-                icon="Delete"
+                link
                 type="danger"
-                circle
                 @click="dialog.form.header.splice(index, 1)"
-              />
-            </el-col>
-          </el-row>
-          <el-button
-            type="primary"
-            icon="Plus"
-            circle
-            @click="dialog.form.header.push({ name: null, value: null })"
-          />
-        </el-tab-pane>
-        <!-- 反向代理配置 -->
-        <el-tab-pane v-if="dialog.form.type === 'proxy'" label="反向代理">
-          <SiteProxy v-model="dialog.form.proxy" />
-        </el-tab-pane>
-        <el-tab-pane v-if="dialog.form.type === 'static'" label="静态站点">
-          <el-form-item
-            label="目录名"
-            prop="static.root"
-            :rules="[
-              {
-                required: true,
-                message: '请填写静态站点目录名',
-                trigger: 'blur',
-              },
-            ]"
-          >
-            <el-input
-              v-model="dialog.form.static.root"
-              placeholder="相对静态根目录的路径，例如 mysite"
-            />
-          </el-form-item>
-          <el-text type="info">
-            保存后会在数据根目录的 static
-            子目录下创建该目录，可到「文件管理」上传文件。
-          </el-text>
-          <div class="static-locations-bar">
-            <span>路径反代</span>
+              >
+                删除
+              </el-button>
+            </div>
             <el-button
-              type="primary"
-              icon="Plus"
-              @click="
-                dialog.form.static.locations.push({
-                  path: '',
-                  proxy: emptyProxy(),
-                })
-              "
+              @click="dialog.form.header.push({ name: '', value: '' })"
             >
-              添加路径反代
+              添加返回头
             </el-button>
-          </div>
-          <el-card
-            v-for="(item, index) in dialog.form.static.locations"
-            :key="index"
-            class="static-location"
-            shadow="never"
-          >
-            <template #header>
-              <div class="static-location-head">
-                <el-form-item
-                  label="路径"
-                  :prop="'static.locations.' + index + '.path'"
-                  :rules="locationPathRules"
-                >
-                  <el-input v-model="item.path" placeholder="/api" />
-                </el-form-item>
-                <el-button
-                  type="danger"
-                  @click="dialog.form.static.locations.splice(index, 1)"
-                >
-                  删除
-                </el-button>
-              </div>
-            </template>
-            <SiteProxy
-              v-model="item.proxy"
-              :prop-prefix="'static.locations.' + index + '.proxy'"
-            />
           </el-card>
         </el-tab-pane>
       </el-tabs>
@@ -175,19 +175,30 @@ const emptyProxy = () => {
   };
 };
 
+const emptyLocation = (path) => {
+  return {
+    path,
+    action: "proxy",
+    redirect: "",
+    code: 302,
+    proxy: emptyProxy(),
+  };
+};
+
 const locationPathRules = [
   { required: true, message: "请填写路径", trigger: "blur" },
   {
     validator: (_rule, value, callback) => {
-      const path = String(value || "")
-        .trim()
-        .replace(/\/+$/, "");
+      let path = String(value || "").trim();
+      if (path !== "/") {
+        path = path.replace(/\/+$/, "");
+      }
       if (!path.startsWith("/")) {
         callback(new Error("路径必须以 / 开头"));
         return;
       }
       if (
-        path === "/" ||
+        path === "" ||
         path.includes("..") ||
         path.includes("//") ||
         path.includes("?") ||
@@ -219,19 +230,8 @@ const handleDialogAdd = () => {
   dialog.value.formAction = "add";
   dialog.value.form = {
     header: [],
-    type: "proxy",
-    static: {
-      root: "",
-      locations: [],
-    },
-    proxy: {
-      service: null,
-      host: null,
-      keepalive_timeout: null,
-      keepalive_requests: null,
-      header: [],
-      cache: [],
-    },
+    root: "",
+    locations: [],
     security: {
       ip: {
         status: false,
@@ -259,6 +259,7 @@ const handleDialogAdd = () => {
         credentials: null,
         age: null,
       },
+      captcha: false,
     },
   };
 };
@@ -267,13 +268,19 @@ const handleDialogEdit = (row) => {
   dialog.value.title = "修改 " + row.remark + " 的配置";
   dialog.value.formAction = "edit";
   const form = JSON.parse(JSON.stringify(row));
-  if (!form.static) {
-    form.static = { root: "", locations: [] };
+  if (!form.header) {
+    form.header = [];
   }
-  if (!form.static.locations) {
-    form.static.locations = [];
+  if (!form.locations) {
+    form.locations = [];
   }
-  form.static.locations.forEach((item) => {
+  form.locations.forEach((item) => {
+    if (item.action !== "redirect") {
+      item.action = "proxy";
+    }
+    if (!item.code) {
+      item.code = 302;
+    }
     if (!item.proxy) {
       item.proxy = emptyProxy();
     }
@@ -335,22 +342,44 @@ defineExpose({
 </script>
 
 <style scoped>
+.site-hint {
+  margin: 0 0 16px 120px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--el-text-color-secondary);
+}
 .static-locations-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 16px 0 12px;
+  margin: 4px 0 12px;
+  font-size: 14px;
 }
 .static-location {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+.static-location :deep(.el-card__body) {
+  padding: 14px 16px 4px;
 }
 .static-location-head {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px auto;
   gap: 12px;
+  align-items: start;
 }
 .static-location-head .el-form-item {
+  margin-bottom: 12px;
+}
+.header-card :deep(.el-card__body) {
+  padding: 14px 16px;
+}
+.header-card .header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.header-row .el-input {
   flex: 1;
-  margin-bottom: 0;
 }
 </style>

@@ -1,7 +1,5 @@
 <template>
-  <br />
-  <!-- 回源设置 -->
-  <el-card shadow="always">
+  <el-card shadow="never" class="proxy-block">
     <template #header>
       <div class="card-header">
         <span>回源设置</span>
@@ -17,37 +15,20 @@
     <el-form-item label="Host" :prop="propPrefix + '.host'">
       <el-input v-model="proxy.host" />
     </el-form-item>
-    <div class="card-header">
-      <span>回源请求头</span>
+    <p class="proxy-sub">回源请求头</p>
+    <div v-for="(value, index) in proxy.header" :key="index" class="header-row">
+      <el-input v-model="value.name" placeholder="名称" />
+      <el-input v-model="value.value" placeholder="值" />
+      <el-button link type="danger" @click="proxy.header.splice(index, 1)">
+        删除
+      </el-button>
     </div>
-    <el-row v-for="(value, index) in proxy.header" :key="index" :gutter="10">
-      <el-col :span="11">
-        <el-input v-model="value.name" placeholder="名" />
-      </el-col>
-
-      <el-col :span="11">
-        <el-input v-model="value.value" placeholder="值" />
-      </el-col>
-      <el-col :span="2" style="text-align: center">
-        <el-button
-          type="danger"
-          icon="Delete"
-          circle
-          @click="proxy.header.splice(index, 1)"
-        />
-      </el-col>
-      <el-col :span="24" style="height: 5px" />
-    </el-row>
-    <el-button
-      type="primary"
-      icon="Plus"
-      circle
-      @click="proxy.header.push({ name: null, value: null })"
-    />
+    <el-button @click="proxy.header.push({ name: '', value: '' })">
+      添加请求头
+    </el-button>
   </el-card>
 
-  <br />
-  <el-card shadow="always">
+  <el-card shadow="never" class="proxy-block">
     <template #header>
       <div class="card-header">
         <span>连接池</span>
@@ -79,18 +60,14 @@
     </el-form-item>
   </el-card>
 
-  <br />
-  <el-card shadow="always">
+  <el-card shadow="never" class="proxy-block">
     <template #header>
       <div class="card-header">
         <span>缓存设置</span>
       </div>
     </template>
 
-    <el-form-item
-      label="缓存快捷清理[HTTP METHOD PURGE]"
-      :prop="propPrefix + '.cache_purge'"
-    >
+    <el-form-item label="快捷清理" :prop="propPrefix + '.cache_purge'">
       <el-switch
         v-model="proxy.cache_purge"
         :active-value="true"
@@ -100,40 +77,28 @@
       />
     </el-form-item>
 
-    <el-divider />
-    <el-text>缓存时间提示：</el-text>
-    <el-tag>时/秒: 3600</el-tag> &nbsp; <el-tag>周/秒: 86400</el-tag> &nbsp;
-    <el-tag>月/秒: 604800</el-tag> &nbsp;
-    <el-tag>年/秒: 31536000</el-tag> &nbsp;
-    <el-divider />
+    <p class="cache-hint">1 小时 3600 秒，1 天 86400 秒，7 天 604800 秒。</p>
 
-    <el-row
-      v-for="(value, index) in proxy.cache"
-      :key="index"
-      style="margin: 5px auto"
-      :gutter="10"
-    >
-      <el-col :md="6">
-        <el-input v-model="value.ruth" placeholder="路径/regex" />
-      </el-col>
-      <el-col :md="3">
-        <el-switch
-          v-model="value.args"
-          inline-prompt
-          style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-          active-text="保留GET参数"
-          inactive-text="忽略GET参数"
-        />
-      </el-col>
-      <el-col :md="5">
+    <div v-for="(value, index) in proxy.cache" :key="index" class="cache-rule">
+      <div class="cache-rule-main">
+        <el-input v-model="value.ruth" placeholder="路径 /regex" />
         <el-input-number
           v-model="value.time"
           :controls="false"
-          placeholder="缓存时间/s"
+          placeholder="秒"
         />
-        <el-tag>{{ secFormat(value.time) }}</el-tag>
-      </el-col>
-      <el-col :md="4">
+        <span class="cache-age">{{ secFormat(value.time) }}</span>
+        <el-button link type="danger" @click="proxy.cache.splice(index, 1)">
+          删除
+        </el-button>
+      </div>
+      <div class="cache-rule-extra">
+        <el-switch
+          v-model="value.args"
+          inline-prompt
+          active-text="保留参数"
+          inactive-text="忽略参数"
+        />
         <el-select v-model="value.method" multiple placeholder="请求方法">
           <el-option key="GET" label="GET" value="GET" />
           <el-option key="POST" label="POST" value="POST" />
@@ -143,8 +108,6 @@
           <el-option key="HEAD" label="HEAD" value="HEAD" />
           <el-option key="OPTIONS" label="OPTIONS" value="OPTIONS" />
         </el-select>
-      </el-col>
-      <el-col :md="4">
         <el-select
           v-model="value.status"
           multiple
@@ -167,22 +130,10 @@
           <el-option key="200" label="200" :value="200" />
           <el-option key="301" label="301" :value="301" />
         </el-select>
-      </el-col>
-      <el-col :md="2" style="text-align: right">
-        <el-button
-          type="danger"
-          icon="Delete"
-          circle
-          @click="proxy.cache.splice(index, 1)"
-        />
-      </el-col>
-      <el-divider />
-    </el-row>
+      </div>
+    </div>
 
     <el-button
-      type="primary"
-      icon="Plus"
-      circle
       @click="
         proxy.cache.push({
           ruth: null,
@@ -192,7 +143,9 @@
           status: [],
         })
       "
-    />
+    >
+      添加缓存规则
+    </el-button>
   </el-card>
 </template>
 <script setup>
@@ -208,3 +161,61 @@ defineProps({
   },
 });
 </script>
+
+<style scoped>
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.header-row .el-input {
+  flex: 1;
+}
+.proxy-block {
+  margin-top: 12px;
+}
+.proxy-block :deep(.el-card__header) {
+  padding: 10px 16px;
+}
+.proxy-block :deep(.el-card__body) {
+  padding: 14px 16px;
+}
+.proxy-sub {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+.cache-hint {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+.cache-rule {
+  padding: 10px 0;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+.cache-rule-main,
+.cache-rule-extra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cache-rule-extra {
+  margin-top: 8px;
+}
+.cache-rule-main .el-input {
+  flex: 1;
+}
+.cache-rule-main .el-input-number {
+  width: 110px;
+}
+.cache-rule-extra .el-select {
+  flex: 1;
+}
+.cache-age {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+}
+</style>

@@ -43,12 +43,15 @@
       <el-table-column label="备注" prop="remark" align="center" />
       <el-table-column label="返回头" align="center">
         <template #default="scope">
-          <el-popover placement="top" trigger="hover" width="350">
+          <span v-if="!(scope.row.header || []).length">-</span>
+          <el-popover v-else placement="top" trigger="hover" width="320">
             <template #reference>
-              <el-button type="primary" plain>查看</el-button>
+              <el-link type="primary">
+                {{ scope.row.header.length }} 项
+              </el-link>
             </template>
             <div v-for="(item, index) in scope.row.header" :key="index">
-              <span>{{ item.name }}: {{ item.value }}</span>
+              {{ item.name }}: {{ item.value || "删除" }}
             </div>
           </el-popover>
           <!-- <pre>{{ JSON.stringify(scope.row.header, 4) }}</pre> -->
@@ -57,46 +60,30 @@
       <el-table-column label="配置" min-width="340">
         <template #default="scope">
           <div class="site-cfg">
-            <el-tag
-              size="small"
-              :type="scope.row.type === 'static' ? 'success' : 'primary'"
-            >
-              {{ scope.row.type === "static" ? "静态站点" : "反向代理" }}
-            </el-tag>
-            <template v-if="scope.row.type === 'static'">
-              <div class="site-cfg-line">
-                <span class="site-cfg-label">目录</span>
-                <el-link
-                  class="site-cfg-value"
-                  type="primary"
-                  @click="handleOpenDir(scope.row)"
-                >
-                  {{ scope.row.static?.root || "未设置" }}
-                </el-link>
-              </div>
-              <div
-                v-for="(item, index) in scope.row.static?.locations || []"
-                :key="index"
-                class="site-cfg-line"
+            <div class="site-cfg-line">
+              <span class="site-cfg-label">目录</span>
+              <el-link
+                class="site-cfg-value"
+                type="primary"
+                @click="handleOpenDir(scope.row)"
               >
-                <span class="site-cfg-label">{{ item.path }}</span>
-                <span class="site-cfg-value" :title="item.proxy?.server">
-                  {{ item.proxy?.server || "未设置回源" }}
-                </span>
-              </div>
-            </template>
-            <template v-else>
-              <div class="site-cfg-line">
-                <span class="site-cfg-label">回源</span>
-                <span class="site-cfg-value" :title="scope.row.proxy?.server">
-                  {{ scope.row.proxy?.server || "未设置" }}
-                </span>
-              </div>
-              <div v-if="scope.row.proxy?.host" class="site-cfg-line">
-                <span class="site-cfg-label">Host</span>
-                <span class="site-cfg-value">{{ scope.row.proxy.host }}</span>
-              </div>
-            </template>
+                {{ scope.row.root || "未设置" }}
+              </el-link>
+            </div>
+            <div
+              v-for="(item, index) in scope.row.locations || []"
+              :key="index"
+              class="site-cfg-line"
+            >
+              <span class="site-cfg-label">{{ item.path }}</span>
+              <span class="site-cfg-value">
+                {{
+                  item.action === "redirect"
+                    ? "重定向 " + (item.redirect || "")
+                    : "反向代理 " + (item.proxy?.server || "")
+                }}
+              </span>
+            </div>
           </div>
         </template>
       </el-table-column>
@@ -109,12 +96,7 @@
           >
             编辑
           </el-button>
-          <el-button
-            v-if="scope.row.type === 'static'"
-            link
-            type="success"
-            @click="handleOpenDir(scope.row)"
-          >
+          <el-button link type="success" @click="handleOpenDir(scope.row)">
             目录
           </el-button>
           <el-button
@@ -182,7 +164,7 @@ const handleQueryRefresh = () => {
 const handleOpenDir = (row) => {
   router.push({
     name: "WafCdnFiles",
-    query: { path: row.static?.root || "" },
+    query: { path: row.root || "" },
   });
 };
 
@@ -212,7 +194,7 @@ handleTableData();
   min-width: 0;
 }
 .site-cfg-label {
-  width: 3.2em;
+  width: 72px;
   flex-shrink: 0;
   color: var(--el-text-color-secondary);
 }
