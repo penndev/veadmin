@@ -9,11 +9,11 @@
     <el-form
       ref="dialogRef"
       label-position="left"
-      label-width="120px"
+      label-width="140px"
       :model="dialog.form"
       :rules="dialog.formRule"
     >
-      <el-tabs type="border-card">
+      <el-tabs>
         <el-tab-pane label="站点配置">
           <el-form-item label="备注" prop="remark">
             <el-input v-model="dialog.form.remark" />
@@ -38,7 +38,7 @@
             其余路径都读取这个目录。额外路径只能反向代理或重定向，要改范围直接改路径。
           </p>
           <div class="static-locations-bar">
-            <span>路径</span>
+            <span>额外路径</span>
             <el-button @click="dialog.form.locations.push(emptyLocation(''))">
               添加路径
             </el-button>
@@ -49,31 +49,26 @@
             class="static-location"
             shadow="never"
           >
-            <div class="static-location-head">
-              <el-form-item
-                label-width="0"
-                :prop="'locations.' + index + '.path'"
-                :rules="locationPathRules"
-              >
-                <el-input
-                  v-model="item.path"
-                  placeholder="路径，例如 / 或 /api"
-                />
-              </el-form-item>
-              <el-form-item label-width="0">
-                <el-select v-model="item.action" style="width: 100%">
+            <el-form-item
+              label="路径"
+              :prop="'locations.' + index + '.path'"
+              :rules="locationPathRules"
+            >
+              <div class="static-location-head">
+                <el-input v-model="item.path" placeholder="例如 / 或 /api" />
+                <el-select v-model="item.action">
                   <el-option label="反向代理" value="proxy" />
                   <el-option label="重定向" value="redirect" />
                 </el-select>
-              </el-form-item>
-              <el-button
-                link
-                type="danger"
-                @click="dialog.form.locations.splice(index, 1)"
-              >
-                删除
-              </el-button>
-            </div>
+                <el-button
+                  link
+                  type="danger"
+                  @click="dialog.form.locations.splice(index, 1)"
+                >
+                  删除
+                </el-button>
+              </div>
+            </el-form-item>
             <SiteProxy
               v-if="item.action === 'proxy'"
               v-model="item.proxy"
@@ -105,31 +100,30 @@
         </el-tab-pane>
 
         <el-tab-pane label="返回头">
-          <el-card shadow="never" class="header-card">
-            <div
-              v-for="(value, index) in dialog.form.header"
-              :key="index"
-              class="header-row"
-            >
-              <el-input v-model="value.name" placeholder="名称" />
-              <el-input
-                v-model="value.value"
-                placeholder="值，留空表示删除这个响应头"
-              />
-              <el-button
-                link
-                type="danger"
-                @click="dialog.form.header.splice(index, 1)"
-              >
-                删除
-              </el-button>
-            </div>
+          <p class="sheet-hint">写到响应里。值留空表示删除这个头。</p>
+          <div v-if="dialog.form.header.length" class="sheet-head">
+            <span>名称</span>
+            <span>值</span>
+            <span></span>
+          </div>
+          <div
+            v-for="(value, index) in dialog.form.header"
+            :key="index"
+            class="sheet-row"
+          >
+            <el-input v-model="value.name" placeholder="名称" />
+            <el-input v-model="value.value" placeholder="值" />
             <el-button
-              @click="dialog.form.header.push({ name: '', value: '' })"
+              link
+              type="danger"
+              @click="dialog.form.header.splice(index, 1)"
             >
-              添加返回头
+              删除
             </el-button>
-          </el-card>
+          </div>
+          <el-button @click="dialog.form.header.push({ name: '', value: '' })">
+            添加返回头
+          </el-button>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -343,7 +337,7 @@ defineExpose({
 
 <style scoped>
 .site-hint {
-  margin: 0 0 16px 120px;
+  margin: 0 0 16px 140px;
   font-size: 13px;
   line-height: 1.5;
   color: var(--el-text-color-secondary);
@@ -352,34 +346,48 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 4px 0 12px;
+  margin: 8px 0 12px;
   font-size: 14px;
+  font-weight: 600;
 }
 .static-location {
   margin-bottom: 12px;
 }
 .static-location :deep(.el-card__body) {
-  padding: 14px 16px 4px;
+  padding: 16px 16px 4px;
 }
 .static-location-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 168px auto;
-  gap: 12px;
-  align-items: start;
-}
-.static-location-head .el-form-item {
-  margin-bottom: 12px;
-}
-.header-card :deep(.el-card__body) {
-  padding: 14px 16px;
-}
-.header-card .header-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  width: 100%;
 }
-.header-row .el-input {
+.static-location-head .el-input {
   flex: 1;
+}
+.static-location-head .el-select {
+  width: 140px;
+  flex: none;
+}
+.sheet-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--el-text-color-secondary);
+}
+.sheet-head,
+.sheet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) 48px;
+  gap: 8px;
+  align-items: center;
+}
+.sheet-head {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+.sheet-row {
+  margin-bottom: 8px;
 }
 </style>
