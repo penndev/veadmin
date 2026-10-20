@@ -54,7 +54,15 @@
       --el-menu-bg-color: var(--ea-aside-color);
       --el-menu-text-color: var(--ea-aside-text-color);
       --el-menu-hover-bg-color: var(--ea-aside-active-color);
-      --el-menu-border-color: var(--ea-aside-color)
+      --el-menu-border-color: var(--ea-aside-color);
+
+      .el-sub-menu__icon-arrow {
+        transform: rotate(-90deg) !important;
+      }
+
+      .el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow {
+        transform: rotate(0deg) !important;
+      }
     }
   }
 

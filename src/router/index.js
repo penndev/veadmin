@@ -50,6 +50,7 @@ const routes = [
 // 提供动态编译。编译阶段确定打包路由是否等于
 // > wafcdn === wafcdn 来使 rollup来优化代码
 if (import.meta.env.MODE === "wafcdn") {
+  routes.push(formatRouteItem(system, ""));
   wafcdn.path = "/";
   wafcdn.redirect = "/domain";
   routes.push(formatRouteItem(wafcdn, ""));
